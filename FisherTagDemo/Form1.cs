@@ -72,7 +72,7 @@ namespace FisherTagDemo
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
             MainHttp();
-            InitializeWebView();
+
         }
         public async Task MainHttp()
         {
@@ -177,7 +177,11 @@ namespace FisherTagDemo
             }
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceCurrentLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId_Obj.Text, locatorLogInInfo.mds));
-
+            if (devRet == null)
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},返回数据为空,ret:{devRet}");
+                return;
+            }
             Locator_GetDeviceCurrentLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceCurrentLocationAck>(devRet) as Locator_GetDeviceCurrentLocationAck;
             if (devInfo == null)
             {
@@ -236,7 +240,11 @@ namespace FisherTagDemo
             }
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(locatorLogInInfo.id, locatorLogInInfo.mds));
-
+            if (devRet == null)
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据异常,ret:{devRet}");
+                return;
+            }
             Locator_GetDeviceListAck deviceInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Locator_GetDeviceListAck>(devRet) as Locator_GetDeviceListAck;
 
             if (deviceInfo == null)
@@ -320,7 +328,7 @@ namespace FisherTagDemo
             }
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, locatorLogInInfo.mds,
-                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-14)).ToString(),TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now).ToString()));
+                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-14)).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now).ToString()));
 
             Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
             if (devInfo == null)
@@ -345,30 +353,66 @@ namespace FisherTagDemo
             for (int i = 0; i < points.Length; i++)
             {
                 string[] pointsData = points[i].Split(',');
-                if (pointsData.Length<3)
+                if (pointsData.Length < 3)
                 {
                     _log.Warn($"pointsData:{points[i]}数据异常");
                     continue;
                 }
-                LocatoreHistoryLocation his=new LocatoreHistoryLocation(pointsData[0], pointsData[1], pointsData[2]);
+                LocatoreHistoryLocation his = new LocatoreHistoryLocation(pointsData[0], pointsData[1], pointsData[2]);
                 data.Add(his);
             }
 
             //获得经纬度速度
-           string locationStr=JsonConvert.SerializeObject(data);
+            string locationStr = JsonConvert.SerializeObject(data);
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory('{locationStr}'" );.
             // 调用 JavaScript 函数，传入 JSON 字符串
-        await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
+            await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
 
 
         }
 
+        private void splitContainer_Main_Panel1_SizeChanged(object sender, EventArgs e)
+        {
+            //if (((Control)sender).Size.Width>500)//489, 366
+            //{
+            //    ((Control)sender).Size = new Size(500,((Control)sender).Size.Height);
+            //}
+            //if (((Control)sender).Size.Height > 400)//489, 366
+            //{
+            //    ((Control)sender).Size = new Size(((Control)sender).Size.Width,400);
+            //}
+        }
 
+        private async void Map_initUI()
+        {
+            await webView_map.CoreWebView2.ExecuteScriptAsync("initMapSub()");
+        }
 
+        private void splitContainer_Main_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (((SplitContainer)sender).SplitterDistance > 500)
+            {
+                ((SplitContainer)sender).SplitterDistance = 500;
+            }
+        }
 
+        private void splitContainer_Sub1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (((SplitContainer)sender).SplitterDistance > 400)
+            {
+                ((SplitContainer)sender).SplitterDistance = 400;
+            }
+        }
 
+        private void webView_map_SizeChanged(object sender, EventArgs e)
+        {
+           // Map_initUI();
+        }
 
-
-
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //this.WindowState = FormWindowState.Maximized;
+            InitializeWebView();
+        }
     }
 }

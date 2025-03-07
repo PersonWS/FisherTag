@@ -71,10 +71,15 @@
         #resetButton:hover {
             background-color: #2a6fcc;
         }
+        #showLabelsCheckbox {
+            margin-left: 10px;
+        }
     </style>
     <script type="text/javascript">
         var map, geocoder;
         var gpsData = []; // 存储轨迹点数据
+        var labels = []; // 存储所有标签对象
+        var popupLabel = null; // 用于存储当前弹出的 Label
 
         // 加载百度地图脚本
         function loadBaiduMapScript() {
@@ -103,6 +108,12 @@
 
             // 绑定重置按钮点击事件
             document.getElementById("resetButton").addEventListener("click", resetTrajectory);
+
+            // 绑定复选框点击事件
+            document.getElementById("showLabelsCheckbox").addEventListener("change", toggleLabels);
+
+            // 默认选中复选框
+            document.getElementById("showLabelsCheckbox").checked = true;
         }
 
         // 添加自由缩放的控件
@@ -114,9 +125,14 @@
         }
 
         // 添加标记
-        function addMarker(point) {
+        function addMarker(point, time) {
             var marker = new BMap.Marker(point);
             map.addOverlay(marker);
+
+            // 绑定点击事件
+            marker.addEventListener("click", function (e) {
+                showPopupLabel(e.target.getPosition(), time);
+            });
         }
 
         // 显示指定位置并添加标签（带箭头）
@@ -126,10 +142,14 @@
             map.clearOverlays(); // 移除地图上所有的覆盖物，包括标记
 
             // 添加标记
-            addMarker(point);
+            addMarker(point, timeStamp);
 
             // 添加标签，显示 labName、longitude、lat 和 timeStamp
-            addLabel(point, labName, longitude, lat, timeStamp);
+            var label = addLabel(point, labName, longitude, lat, timeStamp);
+            labels.push(label); // 将标签保存到数组中
+
+            // 根据复选框状态初始化标签显示
+            toggleLabels();
         }
 
         // 添加标签（带箭头）
@@ -150,7 +170,7 @@
             // 创建一个标签
             var label = new BMap.Label(labelContent, {
                 position: point, // 设置标签位置
-                offset: new BMap.Size(-115, -135) // 设置标签偏移量（相对于点的位置）
+                offset: new BMap.Size(-11, -135) // 设置标签偏移量（相对于点的位置）
             });
 
             // 设置标签样式（可选）
@@ -161,6 +181,7 @@
 
             // 将标签添加到地图上
             map.addOverlay(label);
+            return label; // 返回标签对象
         }
 
         // 格式化时间戳
@@ -219,6 +240,9 @@
             // 清除之前的覆盖物
             map.clearOverlays();
 
+            // 清空标签数组
+            labels = [];
+
             var points = [];
             for (var i = 0; i < gpsData.length; i++) {
                 // 将字符串类型的经度和纬度转换为数字
@@ -228,10 +252,11 @@
                 points.push(point);
 
                 // 添加标记
-                addMarker(point);
+                addMarker(point, gpsData[i].time);
 
                 // 添加日期和时间标签（不带箭头）
-                addTraceLabel(point, gpsData[i].time);
+                var label = addTraceLabel(point, gpsData[i].time);
+                labels.push(label); // 将标签保存到数组中
             }
 
             // 绘制轨迹线
@@ -244,6 +269,9 @@
 
             // 调整地图视野以显示所有轨迹点
             map.setViewport(points);
+
+            // 根据复选框状态初始化标签显示
+            toggleLabels();
         }
 
         // 添加日期和时间标签（不带箭头）
@@ -265,6 +293,51 @@
             });
 
             map.addOverlay(label);
+            return label; // 返回标签对象
+        }
+
+        // 切换标签显示状态
+        function toggleLabels() {
+            var showLabels = document.getElementById("showLabelsCheckbox").checked;
+            for (var i = 0; i < labels.length; i++) {
+                if (showLabels) {
+                    labels[i].show(); // 显示标签
+                } else {
+                    labels[i].hide(); // 隐藏标签
+                }
+            }
+        }
+
+        // 显示点击 Marker 时的弹出 Label
+        function showPopupLabel(point, time) {
+            // 如果已经存在弹出 Label，先移除
+            if (popupLabel) {
+                map.removeOverlay(popupLabel);
+            }
+
+            // 创建弹出 Label 内容
+            var labelContent = `
+                <div class="custom-label custom-label-arrow">
+                    经度: ${point.lng.toFixed(6)}<br>
+                    纬度: ${point.lat.toFixed(6)}<br>
+                    时间: ${formatTimeStamp(time)}
+                </div>
+            `;
+
+            // 创建弹出 Label
+            popupLabel = new BMap.Label(labelContent, {
+                position: point, // 设置标签位置
+                offset: new BMap.Size(-11, -135) // 设置标签偏移量（相对于点的位置）
+            });
+
+            // 设置标签样式
+            popupLabel.setStyle({
+                backgroundColor: "transparent", // 背景透明
+                border: "none" // 无边框
+            });
+
+            // 将弹出 Label 添加到地图上
+            map.addOverlay(popupLabel);
         }
 
         // 重置轨迹显示
@@ -285,6 +358,9 @@
     <div id="searchContainer">
         <input type="text" id="searchInput" placeholder="请输入地址进行搜索">
         <button onclick="searchLocation()">搜索</button>
+        <label for="showLabelsCheckbox">
+            <input type="checkbox" id="showLabelsCheckbox" checked> 显示轨迹标签
+        </label>
     </div>
     <button id="resetButton">重置轨迹</button>
 </body>
