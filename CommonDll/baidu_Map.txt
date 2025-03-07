@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>百度地图示例</title>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=你的API密钥"></script>
+    <script type="text/javascript">
+        var map;
+        function initializeMap() {
+            map = new BMap.Map("mapContainer"); // 创建Map实例
+            var point = new BMap.Point(116.404, 39.915); // 定义一个中心点坐标（北京天安门）
+            map.centerAndZoom(point, 15); // 初始化地图,设置中心点坐标和地图级别
+            map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+        }
+
+        function addMarker(latitude, longitude) {
+            var point = new BMap.Point(longitude, latitude); // 创建标记点的坐标
+            var marker = new BMap.Marker(point); // 创建标注
+            map.addOverlay(marker); // 将标注添加到地图中
+        }
+    </script>
+</head>
+<body onload="initializeMap()">
+    <div id="mapContainer" style="width: 100%; height: 100%;"></div>
+</body>
+</html>

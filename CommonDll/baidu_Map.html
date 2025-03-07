@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>百度地图示例</title>
+    <link rel="icon" href="data:,"> <!-- 禁用 favicon.ico 请求 -->
+    <style>
+        html, body, #mapContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #searchContainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #searchInput {
+            width: 200px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .custom-label {
+            position: relative;
+            font-size: 14px;
+            color: red;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .custom-label::after {
+            content: '';
+            position: absolute;
+            top: 100%; /* 箭头位置在标签框下方 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid rgba(255, 255, 255, 0.9); /* 箭头颜色与标签背景一致 */
+        }
+    </style>
+    <script type="text/javascript">
+        var map, geocoder;
+
+        // 加载百度地图脚本
+        function loadBaiduMapScript() {
+            var script = document.createElement('script');
+            script.src = 'https://api.map.baidu.com/api?v=3.0&ak=6uFPp706d6IdOFzGSi1UdjJNjstRfU2n&callback=initMap';
+            document.head.appendChild(script);
+        }
+
+        // 初始化地图
+        function initMap() {
+            map = new BMap.Map("mapContainer");
+            var point = new BMap.Point(116.404, 39.915); // 默认经纬度（北京天安门）
+            map.centerAndZoom(point, 15); // 初始化地图中心和缩放级别
+
+            // 添加自由缩放的控件
+            addNavigationControl();
+
+            // 添加默认标记
+            addMarker(point);
+
+            // 初始化地理编码器
+            geocoder = new BMap.Geocoder();
+        }
+
+        // 添加自由缩放的控件
+        function addNavigationControl() {
+            map.addControl(new BMap.NavigationControl({
+                anchor: BMAP_ANCHOR_TOP_RIGHT, // 控件位置（右上角）
+                type: BMAP_NAVIGATION_CONTROL_LARGE // 控件类型（大控件，带缩放滑块）
+            }));
+        }
+
+        // 添加标记
+        function addMarker(point) {
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+        }
+
+        // 显示指定位置并添加标签
+        function showLocation(longitude, lat, labName, timeStamp) {
+            var point = new BMap.Point(longitude, lat); // 创建点
+            map.centerAndZoom(point, 17); // 初始化地图中心和缩放级别
+            map.clearOverlays(); // 移除地图上所有的覆盖物，包括标记
+
+            // 添加标记
+            addMarker(point);
+
+            // 添加标签，显示 labName、longitude、lat 和 timeStamp
+            addLabel(point, labName, longitude, lat, timeStamp);
+        }
+
+        // 添加标签
+        function addLabel(point, labName, longitude, lat, timeStamp) {
+            // 格式化时间戳
+            var formattedTime = formatTimeStamp(timeStamp);
+
+            // 创建标签内容
+            var labelContent = `
+                <div class="custom-label">
+                    <strong>${labName}</strong><br>
+                    经度: ${longitude.toFixed(6)}<br>
+                    纬度: ${lat.toFixed(6)}<br>
+                    更新时间: ${formattedTime}
+                </div>
+            `;
+
+            // 创建一个标签
+            var label = new BMap.Label(labelContent, {
+                position: point, // 设置标签位置
+                offset: new BMap.Size(-80, -135) // 设置标签偏移量（相对于点的位置）
+            });
+
+            // 设置标签样式（可选）
+            label.setStyle({
+                backgroundColor: "transparent", // 背景透明
+                border: "none" // 无边框
+            });
+
+            // 将标签添加到地图上
+            map.addOverlay(label);
+        }
+
+        // 格式化时间戳
+        function formatTimeStamp(timeStamp) {
+            // 如果 timeStamp 是数字（Unix 时间戳），转换为 Date 对象
+            if (typeof timeStamp === 'number') {
+                timeStamp = new Date(timeStamp);
+            }
+
+            // 如果 timeStamp 是字符串，尝试解析为 Date 对象
+            if (typeof timeStamp === 'string') {
+                timeStamp = new Date(timeStamp);
+            }
+
+            // 如果 timeStamp 是 Date 对象，格式化输出
+            if (timeStamp instanceof Date) {
+                return timeStamp.toLocaleString(); // 返回本地化的时间字符串
+            }
+
+            // 如果无法解析，返回原始值
+            return timeStamp;
+        }
+
+        // 搜索地址并定位
+        function searchLocation() {
+            var address = document.getElementById("searchInput").value;
+            if (!address) {
+                alert("请输入地址进行搜索！");
+                return;
+            }
+            // 根据地址进行地理编码
+            geocoder.getPoint(address, function (point) {
+                if (point) {
+                    // 清除之前的标注
+                    map.clearOverlays();
+                    // 创建新的标注
+                    addMarker(point);
+                    // 将地图中心移动到搜索到的地点
+                    map.centerAndZoom(point, 15);
+                } else {
+                    alert("地址解析失败，请检查输入！");
+                }
+            });
+        }
+
+        // 异步加载百度地图脚本
+        loadBaiduMapScript();
+    </script>
+</head>
+<body>
+    <div id="mapContainer"></div>
+    <div id="searchContainer">
+        <input type="text" id="searchInput" placeholder="请输入地址进行搜索">
+        <button onclick="searchLocation()">搜索</button>
+    </div>
+</body>
+</html>
