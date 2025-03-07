@@ -30,6 +30,7 @@
             padding: 5px 10px;
             cursor: pointer;
         }
+        /* 通用标签样式 */
         .custom-label {
             position: relative;
             font-size: 14px;
@@ -41,7 +42,8 @@
             text-align: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .custom-label::after {
+        /* 带箭头的标签样式 */
+        .custom-label-arrow::after {
             content: '';
             position: absolute;
             top: 100%; /* 箭头位置在标签框下方 */
@@ -53,9 +55,26 @@
             border-right: 10px solid transparent;
             border-top: 10px solid rgba(255, 255, 255, 0.9); /* 箭头颜色与标签背景一致 */
         }
+        #resetButton {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px 20px;
+            background-color: #3388FF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #resetButton:hover {
+            background-color: #2a6fcc;
+        }
     </style>
     <script type="text/javascript">
         var map, geocoder;
+        var gpsData = []; // 存储轨迹点数据
 
         // 加载百度地图脚本
         function loadBaiduMapScript() {
@@ -70,6 +89,9 @@
             var point = new BMap.Point(116.404, 39.915); // 默认经纬度（北京天安门）
             map.centerAndZoom(point, 15); // 初始化地图中心和缩放级别
 
+            // 启用鼠标滚轮缩放
+            map.enableScrollWheelZoom();
+
             // 添加自由缩放的控件
             addNavigationControl();
 
@@ -78,6 +100,9 @@
 
             // 初始化地理编码器
             geocoder = new BMap.Geocoder();
+
+            // 绑定重置按钮点击事件
+            document.getElementById("resetButton").addEventListener("click", resetTrajectory);
         }
 
         // 添加自由缩放的控件
@@ -94,7 +119,7 @@
             map.addOverlay(marker);
         }
 
-        // 显示指定位置并添加标签
+        // 显示指定位置并添加标签（带箭头）
         function showLocation(longitude, lat, labName, timeStamp) {
             var point = new BMap.Point(longitude, lat); // 创建点
             map.centerAndZoom(point, 17); // 初始化地图中心和缩放级别
@@ -107,14 +132,14 @@
             addLabel(point, labName, longitude, lat, timeStamp);
         }
 
-        // 添加标签
+        // 添加标签（带箭头）
         function addLabel(point, labName, longitude, lat, timeStamp) {
             // 格式化时间戳
             var formattedTime = formatTimeStamp(timeStamp);
 
             // 创建标签内容
             var labelContent = `
-                <div class="custom-label">
+                <div class="custom-label custom-label-arrow">
                     <strong>${labName}</strong><br>
                     经度: ${longitude.toFixed(6)}<br>
                     纬度: ${lat.toFixed(6)}<br>
@@ -125,7 +150,7 @@
             // 创建一个标签
             var label = new BMap.Label(labelContent, {
                 position: point, // 设置标签位置
-                offset: new BMap.Size(-80, -135) // 设置标签偏移量（相对于点的位置）
+                offset: new BMap.Size(-115, -135) // 设置标签偏移量（相对于点的位置）
             });
 
             // 设置标签样式（可选）
@@ -181,6 +206,76 @@
             });
         }
 
+        // 绘制轨迹（独立函数，支持外部调用）
+        function drawTrajectory(data) {
+            if (!map) {
+                console.error("地图未初始化！");
+                return;
+            }
+
+            // 存储轨迹点数据
+            gpsData = data;
+
+            // 清除之前的覆盖物
+            map.clearOverlays();
+
+            var points = [];
+            for (var i = 0; i < gpsData.length; i++) {
+                // 将字符串类型的经度和纬度转换为数字
+                var lng = parseFloat(gpsData[i].lng);
+                var lat = parseFloat(gpsData[i].lat);
+                var point = new BMap.Point(lng, lat);
+                points.push(point);
+
+                // 添加标记
+                addMarker(point);
+
+                // 添加日期和时间标签（不带箭头）
+                addTraceLabel(point, gpsData[i].time);
+            }
+
+            // 绘制轨迹线
+            var polyline = new BMap.Polyline(points, {
+                strokeColor: "#3388FF", // 轨迹线颜色
+                strokeWeight: 3, // 轨迹线宽度
+                strokeOpacity: 0.8 // 轨迹线透明度
+            });
+            map.addOverlay(polyline);
+
+            // 调整地图视野以显示所有轨迹点
+            map.setViewport(points);
+        }
+
+        // 添加日期和时间标签（不带箭头）
+        function addTraceLabel(point, time) {
+            var labelContent = `
+                <div class="custom-label">
+                    ${time}
+                </div>
+            `;
+
+            var label = new BMap.Label(labelContent, {
+                position: point, // 设置标签位置
+                offset: new BMap.Size(10, -20) // 设置标签偏移量（相对于点的位置）
+            });
+
+            label.setStyle({
+                backgroundColor: "transparent", // 背景透明
+                border: "none" // 无边框
+            });
+
+            map.addOverlay(label);
+        }
+
+        // 重置轨迹显示
+        function resetTrajectory() {
+            if (gpsData.length > 0) {
+                drawTrajectory(gpsData);
+            } else {
+                console.warn("没有轨迹数据可供显示！");
+            }
+        }
+
         // 异步加载百度地图脚本
         loadBaiduMapScript();
     </script>
@@ -191,5 +286,6 @@
         <input type="text" id="searchInput" placeholder="请输入地址进行搜索">
         <button onclick="searchLocation()">搜索</button>
     </div>
+    <button id="resetButton">重置轨迹</button>
 </body>
 </html>

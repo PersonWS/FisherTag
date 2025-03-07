@@ -77,7 +77,7 @@ namespace FisherTagDemo
         public async Task MainHttp()
         {
             string url = "http://localhost:8000/"; // 服务器地址
-            _httpServer= new HttpServer(url);
+            _httpServer = new HttpServer(url);
             try
             {
                 await _httpServer.StartAsync();
@@ -184,7 +184,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                 return;
             }
-            else if (devInfo.success!="true")
+            else if (devInfo.success != "true")
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                 return;
@@ -198,7 +198,7 @@ namespace FisherTagDemo
             double lng = Convert.ToDouble(devInfo.data[0].records[0][devInfo.data[0].key.jingdu]); // 经度（上海外滩）
             double lat = Convert.ToDouble(devInfo.data[0].records[0][devInfo.data[0].key.weidu]);  // 纬度
             await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat}," +
-                $"'{devInfo.data[0].records[0][devInfo.data[0].key.user_name].ToString()}','{devInfo.data[0].records[0][devInfo.data[0].key.datetime]}')");
+                $"'{devInfo.data[0].records[0][devInfo.data[0].key.user_name].ToString()}',{devInfo.data[0].records[0][devInfo.data[0].key.datetime]})");
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat},'{"A00001"}')");
 
         }
@@ -257,10 +257,10 @@ namespace FisherTagDemo
                     dr["FullName"] = info.fullName;
                     dr["Offline"] = info.offline;
                     dr["Speed"] = info.speed;
-                    dr["Server_time"] = GPS_DateConvertToUTC8(info.server_time);
-                    dr["Updtime"] = GPS_DateConvertToUTC8(info.updtime);
+                    dr["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(info.server_time));
+                    dr["Updtime"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(info.updtime));
                     dr["Speed"] = info.speed;
-                    dr["Gpstime"] = GPS_DateConvertToUTC8(info.gpstime);
+                    dr["Gpstime"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(info.gpstime));
                     _dt_locator.Rows.Add(dr);
                 }
                 dgv_locatorList.DataSource = _dt_locator;
@@ -293,19 +293,7 @@ namespace FisherTagDemo
             return true;
         }
 
-        private string GPS_DateConvertToUTC8(long gpsTimeStamp)
-        {
-            // 将Unix时间戳转换为DateTimeOffset（UTC时间）
-            DateTimeOffset utcTime = DateTimeOffset.FromUnixTimeMilliseconds(gpsTimeStamp);
 
-            // 将UTC时间转换为北京时间（UTC+8）
-            DateTime beijingTime = utcTime.ToLocalTime().AddHours(8).UtcDateTime;
-
-            // 或者，如果你知道系统时区是UTC+8，也可以直接使用：
-            // DateTime beijingTime = utcTime.UtcDateTime.AddHours(8);
-
-            return beijingTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        }
 
         private void dgv_locatorList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -316,5 +304,71 @@ namespace FisherTagDemo
             txt_ShipLocatorId.Text = _dt_locator.Rows[e.RowIndex]["Macid"].ToString();
             txt_ShipLocatorId_Obj.Text = _dt_locator.Rows[e.RowIndex]["Objectid"].ToString();
         }
+
+        private async void btn_getHistoryPath_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txt_ShipLocatorId.Text))
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器！");
+                return;
+            }
+            LocatorLogIn locatorLogInInfo;
+            //先获取MDS
+            if (!GetMds(out locatorLogInInfo))
+            {
+                return;
+            }
+            //获取设备数据
+            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, locatorLogInInfo.mds,
+                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-14)).ToString(),TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now).ToString()));
+
+            Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
+            if (devInfo == null)
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.success != "true")
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.data == null || devInfo.data.Count == 0 || string.IsNullOrEmpty(devInfo.data[0].point))
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
+                return;
+            }
+
+            //处理point数据
+            string[] points = devInfo.data[0].point.Split(';');
+            List<LocatoreHistoryLocation> data = new List<LocatoreHistoryLocation>();
+            for (int i = 0; i < points.Length; i++)
+            {
+                string[] pointsData = points[i].Split(',');
+                if (pointsData.Length<3)
+                {
+                    _log.Warn($"pointsData:{points[i]}数据异常");
+                    continue;
+                }
+                LocatoreHistoryLocation his=new LocatoreHistoryLocation(pointsData[0], pointsData[1], pointsData[2]);
+                data.Add(his);
+            }
+
+            //获得经纬度速度
+           string locationStr=JsonConvert.SerializeObject(data);
+            //await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory('{locationStr}'" );.
+            // 调用 JavaScript 函数，传入 JSON 字符串
+        await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
+
+
+        }
+
+
+
+
+
+
+
+
     }
 }

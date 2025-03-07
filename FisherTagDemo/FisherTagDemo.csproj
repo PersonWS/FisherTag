@@ -95,12 +95,15 @@
     <Compile Include="Locator\Locator_GetDeviceDataDetailReq.cs" />
     <Compile Include="Locator\LocatorLogIn.cs" />
     <Compile Include="Locator\LocatorServerInterope.cs" />
+    <Compile Include="Locator\Locator_GetDeviceHistoryLocationAck.cs" />
+    <Compile Include="Locator\Locator_GetDeviceHistoryLocationReq.cs" />
     <Compile Include="Locator\Locator_GetDeviceListAck.cs" />
     <Compile Include="Locator\Locator_GetDeviceListReq.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestfulReturnMsgBase.cs" />
     <Compile Include="RFID_DataAnalysis.cs" />
+    <Compile Include="TimeDataConvert.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

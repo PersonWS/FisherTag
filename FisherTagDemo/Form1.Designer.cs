@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.txt_RFID_ServerIP = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
@@ -54,9 +54,9 @@
             this.labelX3 = new DevComponents.DotNetBar.LabelX();
             this.splitContainer_subLeftDown = new System.Windows.Forms.SplitContainer();
             this.dgv_rfid = new DevComponents.DotNetBar.Controls.DataGridViewX();
-            this.dgv_locatorList = new DevComponents.DotNetBar.Controls.DataGridViewX();
-            this.splitContainer_sub_right = new System.Windows.Forms.SplitContainer();
             this.txt_showMessage = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.splitContainer_sub_right = new System.Windows.Forms.SplitContainer();
+            this.dgv_locatorList = new DevComponents.DotNetBar.Controls.DataGridViewX();
             this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -73,11 +73,11 @@
             this.splitContainer_subLeftDown.Panel2.SuspendLayout();
             this.splitContainer_subLeftDown.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_rfid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_sub_right)).BeginInit();
             this.splitContainer_sub_right.Panel1.SuspendLayout();
             this.splitContainer_sub_right.Panel2.SuspendLayout();
             this.splitContainer_sub_right.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.webView_map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.SuspendLayout();
@@ -250,6 +250,7 @@
             this.btn_getHistoryPath.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_getHistoryPath.TabIndex = 19;
             this.btn_getHistoryPath.Text = "获取历史位置";
+            this.btn_getHistoryPath.Click += new System.EventHandler(this.btn_getHistoryPath_Click);
             // 
             // txt_ShipLocatorId_Obj
             // 
@@ -412,14 +413,14 @@
             // 
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -430,28 +431,20 @@
             this.dgv_rfid.Size = new System.Drawing.Size(275, 199);
             this.dgv_rfid.TabIndex = 1;
             // 
-            // dgv_locatorList
+            // txt_showMessage
             // 
-            this.dgv_locatorList.AllowUserToAddRows = false;
-            this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
-            this.dgv_locatorList.Name = "dgv_locatorList";
-            this.dgv_locatorList.ReadOnly = true;
-            this.dgv_locatorList.RowHeadersVisible = false;
-            this.dgv_locatorList.RowTemplate.Height = 23;
-            this.dgv_locatorList.Size = new System.Drawing.Size(473, 136);
-            this.dgv_locatorList.TabIndex = 0;
-            this.dgv_locatorList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_locatorList_CellClick);
+            // 
+            // 
+            // 
+            this.txt_showMessage.Border.Class = "TextBoxBorder";
+            this.txt_showMessage.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_showMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txt_showMessage.Location = new System.Drawing.Point(0, 0);
+            this.txt_showMessage.Multiline = true;
+            this.txt_showMessage.Name = "txt_showMessage";
+            this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txt_showMessage.Size = new System.Drawing.Size(253, 199);
+            this.txt_showMessage.TabIndex = 0;
             // 
             // splitContainer_sub_right
             // 
@@ -471,20 +464,28 @@
             this.splitContainer_sub_right.SplitterDistance = 136;
             this.splitContainer_sub_right.TabIndex = 0;
             // 
-            // txt_showMessage
+            // dgv_locatorList
             // 
-            // 
-            // 
-            // 
-            this.txt_showMessage.Border.Class = "TextBoxBorder";
-            this.txt_showMessage.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_showMessage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_showMessage.Location = new System.Drawing.Point(0, 0);
-            this.txt_showMessage.Multiline = true;
-            this.txt_showMessage.Name = "txt_showMessage";
-            this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(253, 199);
-            this.txt_showMessage.TabIndex = 0;
+            this.dgv_locatorList.AllowUserToAddRows = false;
+            this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
+            this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
+            this.dgv_locatorList.Name = "dgv_locatorList";
+            this.dgv_locatorList.ReadOnly = true;
+            this.dgv_locatorList.RowHeadersVisible = false;
+            this.dgv_locatorList.RowTemplate.Height = 23;
+            this.dgv_locatorList.Size = new System.Drawing.Size(473, 136);
+            this.dgv_locatorList.TabIndex = 0;
+            this.dgv_locatorList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_locatorList_CellClick);
             // 
             // webView_map
             // 
@@ -548,11 +549,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_subLeftDown)).EndInit();
             this.splitContainer_subLeftDown.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_rfid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).EndInit();
             this.splitContainer_sub_right.Panel1.ResumeLayout(false);
             this.splitContainer_sub_right.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_sub_right)).EndInit();
             this.splitContainer_sub_right.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.webView_map)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
