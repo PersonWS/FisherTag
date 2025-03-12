@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.txt_msgShow = new DevComponents.DotNetBar.Controls.TextBoxX();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btn_log = new DevComponents.DotNetBar.ButtonX();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.btn_clearLog = new DevComponents.DotNetBar.ButtonX();
             this.btn_getHistoryPath = new DevComponents.DotNetBar.ButtonX();
             this.btn_connectRfid = new DevComponents.DotNetBar.ButtonX();
             this.txt_ShipLocatorId_Obj = new DevComponents.DotNetBar.Controls.TextBoxX();
@@ -61,6 +61,10 @@
             this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.dT_InBegin = new DevComponents.Editors.DateTimeAdv.DateTimeInput();
+            this.labelX7 = new DevComponents.DotNetBar.LabelX();
+            this.labelX8 = new DevComponents.DotNetBar.LabelX();
+            this.dT_InEnd = new DevComponents.Editors.DateTimeAdv.DateTimeInput();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -85,24 +89,10 @@
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dT_InBegin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dT_InEnd)).BeginInit();
             this.SuspendLayout();
-            // 
-            // txt_msgShow
-            // 
-            // 
-            // 
-            // 
-            this.txt_msgShow.Border.Class = "TextBoxBorder";
-            this.txt_msgShow.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_msgShow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_msgShow.Location = new System.Drawing.Point(0, 0);
-            this.txt_msgShow.Multiline = true;
-            this.txt_msgShow.Name = "txt_msgShow";
-            this.txt_msgShow.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_msgShow.Size = new System.Drawing.Size(375, 231);
-            this.txt_msgShow.TabIndex = 5;
             // 
             // btn_log
             // 
@@ -150,7 +140,7 @@
             // 
             this.splitContainer_Sub1.Panel2.Controls.Add(this.splitContainer_subLeftDown);
             this.splitContainer_Sub1.Size = new System.Drawing.Size(489, 569);
-            this.splitContainer_Sub1.SplitterDistance = 311;
+            this.splitContainer_Sub1.SplitterDistance = 334;
             this.splitContainer_Sub1.TabIndex = 18;
             this.splitContainer_Sub1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Sub1_SplitterMoved);
             // 
@@ -159,6 +149,11 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.dT_InEnd);
+            this.panel_operate.Controls.Add(this.labelX8);
+            this.panel_operate.Controls.Add(this.labelX7);
+            this.panel_operate.Controls.Add(this.dT_InBegin);
+            this.panel_operate.Controls.Add(this.btn_clearLog);
             this.panel_operate.Controls.Add(this.btn_getHistoryPath);
             this.panel_operate.Controls.Add(this.btn_connectRfid);
             this.panel_operate.Controls.Add(this.txt_ShipLocatorId_Obj);
@@ -180,7 +175,7 @@
             this.panel_operate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_operate.Location = new System.Drawing.Point(0, 0);
             this.panel_operate.Name = "panel_operate";
-            this.panel_operate.Size = new System.Drawing.Size(489, 311);
+            this.panel_operate.Size = new System.Drawing.Size(489, 334);
             this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -190,13 +185,25 @@
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
             // 
+            // btn_clearLog
+            // 
+            this.btn_clearLog.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_clearLog.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_clearLog.Location = new System.Drawing.Point(360, 234);
+            this.btn_clearLog.Name = "btn_clearLog";
+            this.btn_clearLog.Size = new System.Drawing.Size(103, 49);
+            this.btn_clearLog.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_clearLog.TabIndex = 20;
+            this.btn_clearLog.Text = "清除信息";
+            this.btn_clearLog.Click += new System.EventHandler(this.btn_clearLog_Click);
+            // 
             // btn_getHistoryPath
             // 
             this.btn_getHistoryPath.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_getHistoryPath.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getHistoryPath.Location = new System.Drawing.Point(360, 234);
+            this.btn_getHistoryPath.Location = new System.Drawing.Point(360, 179);
             this.btn_getHistoryPath.Name = "btn_getHistoryPath";
-            this.btn_getHistoryPath.Size = new System.Drawing.Size(103, 63);
+            this.btn_getHistoryPath.Size = new System.Drawing.Size(103, 49);
             this.btn_getHistoryPath.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_getHistoryPath.TabIndex = 19;
             this.btn_getHistoryPath.Text = "获取历史位置";
@@ -208,7 +215,7 @@
             this.btn_connectRfid.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
             this.btn_connectRfid.Location = new System.Drawing.Point(251, 9);
             this.btn_connectRfid.Name = "btn_connectRfid";
-            this.btn_connectRfid.Size = new System.Drawing.Size(103, 63);
+            this.btn_connectRfid.Size = new System.Drawing.Size(103, 49);
             this.btn_connectRfid.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_connectRfid.TabIndex = 4;
             this.btn_connectRfid.Text = "启动RFID监听服务";
@@ -221,7 +228,7 @@
             // 
             this.txt_ShipLocatorId_Obj.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorId_Obj.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorId_Obj.Location = new System.Drawing.Point(284, 200);
+            this.txt_ShipLocatorId_Obj.Location = new System.Drawing.Point(284, 173);
             this.txt_ShipLocatorId_Obj.Name = "txt_ShipLocatorId_Obj";
             this.txt_ShipLocatorId_Obj.Size = new System.Drawing.Size(70, 21);
             this.txt_ShipLocatorId_Obj.TabIndex = 18;
@@ -234,7 +241,7 @@
             // 
             // 
             this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX3.Location = new System.Drawing.Point(9, 196);
+            this.labelX3.Location = new System.Drawing.Point(9, 169);
             this.labelX3.Name = "labelX3";
             this.labelX3.Size = new System.Drawing.Size(98, 23);
             this.labelX3.TabIndex = 9;
@@ -244,9 +251,9 @@
             // 
             this.btn_GetDevList.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_GetDevList.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_GetDevList.Location = new System.Drawing.Point(360, 95);
+            this.btn_GetDevList.Location = new System.Drawing.Point(360, 69);
             this.btn_GetDevList.Name = "btn_GetDevList";
-            this.btn_GetDevList.Size = new System.Drawing.Size(103, 63);
+            this.btn_GetDevList.Size = new System.Drawing.Size(103, 49);
             this.btn_GetDevList.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_GetDevList.TabIndex = 17;
             this.btn_GetDevList.Text = "获取定位器列表";
@@ -260,7 +267,7 @@
             this.txt_ShipLocatorId.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorId.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.txt_ShipLocatorId.Enabled = false;
-            this.txt_ShipLocatorId.Location = new System.Drawing.Point(113, 200);
+            this.txt_ShipLocatorId.Location = new System.Drawing.Point(113, 173);
             this.txt_ShipLocatorId.Name = "txt_ShipLocatorId";
             this.txt_ShipLocatorId.Size = new System.Drawing.Size(241, 21);
             this.txt_ShipLocatorId.TabIndex = 10;
@@ -281,9 +288,9 @@
             // 
             this.btn_getLocation.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_getLocation.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getLocation.Location = new System.Drawing.Point(360, 165);
+            this.btn_getLocation.Location = new System.Drawing.Point(360, 124);
             this.btn_getLocation.Name = "btn_getLocation";
-            this.btn_getLocation.Size = new System.Drawing.Size(103, 63);
+            this.btn_getLocation.Size = new System.Drawing.Size(103, 49);
             this.btn_getLocation.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_getLocation.TabIndex = 8;
             this.btn_getLocation.Text = "获取定位器位置";
@@ -296,12 +303,12 @@
             // 
             this.txt_ShipLocatorPassWord.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorPassWord.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorPassWord.Location = new System.Drawing.Point(142, 168);
+            this.txt_ShipLocatorPassWord.Location = new System.Drawing.Point(142, 141);
             this.txt_ShipLocatorPassWord.Name = "txt_ShipLocatorPassWord";
             this.txt_ShipLocatorPassWord.PasswordChar = '*';
             this.txt_ShipLocatorPassWord.Size = new System.Drawing.Size(212, 21);
             this.txt_ShipLocatorPassWord.TabIndex = 16;
-            this.txt_ShipLocatorPassWord.Text = "123456";
+            this.txt_ShipLocatorPassWord.Text = "ym@123456";
             // 
             // labelX4
             // 
@@ -309,7 +316,7 @@
             // 
             // 
             this.labelX4.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX4.Location = new System.Drawing.Point(8, 94);
+            this.labelX4.Location = new System.Drawing.Point(8, 67);
             this.labelX4.Name = "labelX4";
             this.labelX4.Size = new System.Drawing.Size(98, 23);
             this.labelX4.TabIndex = 11;
@@ -322,7 +329,7 @@
             // 
             this.txt_RFID_ServerPort.Border.Class = "TextBoxBorder";
             this.txt_RFID_ServerPort.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_RFID_ServerPort.Location = new System.Drawing.Point(113, 49);
+            this.txt_RFID_ServerPort.Location = new System.Drawing.Point(113, 38);
             this.txt_RFID_ServerPort.Name = "txt_RFID_ServerPort";
             this.txt_RFID_ServerPort.Size = new System.Drawing.Size(132, 21);
             this.txt_RFID_ServerPort.TabIndex = 3;
@@ -334,7 +341,7 @@
             this.btn_disConnect.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
             this.btn_disConnect.Location = new System.Drawing.Point(360, 10);
             this.btn_disConnect.Name = "btn_disConnect";
-            this.btn_disConnect.Size = new System.Drawing.Size(103, 63);
+            this.btn_disConnect.Size = new System.Drawing.Size(103, 49);
             this.btn_disConnect.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_disConnect.TabIndex = 7;
             this.btn_disConnect.Text = "停止RFID监听服务";
@@ -346,7 +353,7 @@
             // 
             // 
             this.labelX6.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX6.Location = new System.Drawing.Point(8, 166);
+            this.labelX6.Location = new System.Drawing.Point(8, 139);
             this.labelX6.Name = "labelX6";
             this.labelX6.Size = new System.Drawing.Size(143, 23);
             this.labelX6.TabIndex = 15;
@@ -359,7 +366,7 @@
             // 
             this.txt_ShipLocatorURL.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorURL.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorURL.Location = new System.Drawing.Point(113, 96);
+            this.txt_ShipLocatorURL.Location = new System.Drawing.Point(113, 69);
             this.txt_ShipLocatorURL.Multiline = true;
             this.txt_ShipLocatorURL.Name = "txt_ShipLocatorURL";
             this.txt_ShipLocatorURL.Size = new System.Drawing.Size(241, 32);
@@ -386,7 +393,7 @@
             // 
             this.txt_ShipLocatorUserName.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorUserName.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorUserName.Location = new System.Drawing.Point(142, 139);
+            this.txt_ShipLocatorUserName.Location = new System.Drawing.Point(142, 112);
             this.txt_ShipLocatorUserName.Name = "txt_ShipLocatorUserName";
             this.txt_ShipLocatorUserName.Size = new System.Drawing.Size(212, 21);
             this.txt_ShipLocatorUserName.TabIndex = 14;
@@ -398,7 +405,7 @@
             // 
             // 
             this.labelX5.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX5.Location = new System.Drawing.Point(8, 135);
+            this.labelX5.Location = new System.Drawing.Point(8, 108);
             this.labelX5.Name = "labelX5";
             this.labelX5.Size = new System.Drawing.Size(143, 23);
             this.labelX5.TabIndex = 13;
@@ -410,7 +417,7 @@
             // 
             // 
             this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.Location = new System.Drawing.Point(8, 49);
+            this.labelX2.Location = new System.Drawing.Point(8, 38);
             this.labelX2.Name = "labelX2";
             this.labelX2.Size = new System.Drawing.Size(98, 23);
             this.labelX2.TabIndex = 2;
@@ -430,22 +437,22 @@
             // splitContainer_subLeftDown.Panel2
             // 
             this.splitContainer_subLeftDown.Panel2.Controls.Add(this.txt_showMessage);
-            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(489, 254);
-            this.splitContainer_subLeftDown.SplitterDistance = 116;
+            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(489, 231);
+            this.splitContainer_subLeftDown.SplitterDistance = 105;
             this.splitContainer_subLeftDown.TabIndex = 0;
             // 
             // dgv_rfid
             // 
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -453,7 +460,7 @@
             this.dgv_rfid.ReadOnly = true;
             this.dgv_rfid.RowHeadersVisible = false;
             this.dgv_rfid.RowTemplate.Height = 23;
-            this.dgv_rfid.Size = new System.Drawing.Size(489, 116);
+            this.dgv_rfid.Size = new System.Drawing.Size(489, 105);
             this.dgv_rfid.TabIndex = 1;
             // 
             // txt_showMessage
@@ -468,7 +475,7 @@
             this.txt_showMessage.Multiline = true;
             this.txt_showMessage.Name = "txt_showMessage";
             this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(489, 134);
+            this.txt_showMessage.Size = new System.Drawing.Size(489, 122);
             this.txt_showMessage.TabIndex = 0;
             // 
             // splitContainer_sub_right
@@ -493,14 +500,14 @@
             // 
             this.dgv_locatorList.AllowUserToAddRows = false;
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
@@ -524,6 +531,7 @@
             this.webView_map.TabIndex = 0;
             this.webView_map.ZoomFactor = 1D;
             this.webView_map.SizeChanged += new System.EventHandler(this.webView_map_SizeChanged);
+            this.webView_map.Resize += new System.EventHandler(this.webView_map_Resize);
             // 
             // splitContainer2
             // 
@@ -544,13 +552,128 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.txt_msgShow);
-            this.splitContainer1.Size = new System.Drawing.Size(568, 231);
-            this.splitContainer1.SplitterDistance = 189;
+            this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
+            // 
+            // dT_InBegin
+            // 
+            // 
+            // 
+            // 
+            this.dT_InBegin.BackgroundStyle.Class = "DateTimeInputBackground";
+            this.dT_InBegin.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InBegin.ButtonDropDown.Shortcut = DevComponents.DotNetBar.eShortcut.AltDown;
+            this.dT_InBegin.ButtonDropDown.Visible = true;
+            this.dT_InBegin.IsPopupCalendarOpen = false;
+            this.dT_InBegin.Location = new System.Drawing.Point(142, 200);
+            // 
+            // 
+            // 
+            this.dT_InBegin.MonthCalendar.AnnuallyMarkedDates = new System.DateTime[0];
+            // 
+            // 
+            // 
+            this.dT_InBegin.MonthCalendar.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InBegin.MonthCalendar.CalendarDimensions = new System.Drawing.Size(1, 1);
+            this.dT_InBegin.MonthCalendar.ClearButtonVisible = true;
+            // 
+            // 
+            // 
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BackColorGradientAngle = 90;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BorderTop = DevComponents.DotNetBar.eStyleBorderType.Solid;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BorderTopColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarDockedBorder;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.BorderTopWidth = 1;
+            this.dT_InBegin.MonthCalendar.CommandsBackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InBegin.MonthCalendar.DisplayMonth = new System.DateTime(2025, 3, 1, 0, 0, 0, 0);
+            this.dT_InBegin.MonthCalendar.MarkedDates = new System.DateTime[0];
+            this.dT_InBegin.MonthCalendar.MonthlyMarkedDates = new System.DateTime[0];
+            // 
+            // 
+            // 
+            this.dT_InBegin.MonthCalendar.NavigationBackgroundStyle.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
+            this.dT_InBegin.MonthCalendar.NavigationBackgroundStyle.BackColorGradientAngle = 90;
+            this.dT_InBegin.MonthCalendar.NavigationBackgroundStyle.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
+            this.dT_InBegin.MonthCalendar.NavigationBackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InBegin.MonthCalendar.TodayButtonVisible = true;
+            this.dT_InBegin.MonthCalendar.WeeklyMarkedDays = new System.DayOfWeek[0];
+            this.dT_InBegin.Name = "dT_InBegin";
+            this.dT_InBegin.Size = new System.Drawing.Size(212, 21);
+            this.dT_InBegin.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.dT_InBegin.TabIndex = 21;
+            // 
+            // labelX7
+            // 
+            // 
+            // 
+            // 
+            this.labelX7.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX7.Location = new System.Drawing.Point(8, 200);
+            this.labelX7.Name = "labelX7";
+            this.labelX7.Size = new System.Drawing.Size(128, 23);
+            this.labelX7.TabIndex = 22;
+            this.labelX7.Text = "历史位置开始日期:";
+            // 
+            // labelX8
+            // 
+            // 
+            // 
+            // 
+            this.labelX8.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX8.Location = new System.Drawing.Point(8, 227);
+            this.labelX8.Name = "labelX8";
+            this.labelX8.Size = new System.Drawing.Size(128, 23);
+            this.labelX8.TabIndex = 23;
+            this.labelX8.Text = "历史位置结束日期:";
+            // 
+            // dT_InEnd
+            // 
+            // 
+            // 
+            // 
+            this.dT_InEnd.BackgroundStyle.Class = "DateTimeInputBackground";
+            this.dT_InEnd.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InEnd.ButtonDropDown.Shortcut = DevComponents.DotNetBar.eShortcut.AltDown;
+            this.dT_InEnd.ButtonDropDown.Visible = true;
+            this.dT_InEnd.IsPopupCalendarOpen = false;
+            this.dT_InEnd.Location = new System.Drawing.Point(142, 227);
+            // 
+            // 
+            // 
+            this.dT_InEnd.MonthCalendar.AnnuallyMarkedDates = new System.DateTime[0];
+            // 
+            // 
+            // 
+            this.dT_InEnd.MonthCalendar.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InEnd.MonthCalendar.CalendarDimensions = new System.Drawing.Size(1, 1);
+            this.dT_InEnd.MonthCalendar.ClearButtonVisible = true;
+            // 
+            // 
+            // 
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground2;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BackColorGradientAngle = 90;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BorderTop = DevComponents.DotNetBar.eStyleBorderType.Solid;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BorderTopColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarDockedBorder;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.BorderTopWidth = 1;
+            this.dT_InEnd.MonthCalendar.CommandsBackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InEnd.MonthCalendar.DisplayMonth = new System.DateTime(2025, 3, 1, 0, 0, 0, 0);
+            this.dT_InEnd.MonthCalendar.MarkedDates = new System.DateTime[0];
+            this.dT_InEnd.MonthCalendar.MonthlyMarkedDates = new System.DateTime[0];
+            // 
+            // 
+            // 
+            this.dT_InEnd.MonthCalendar.NavigationBackgroundStyle.BackColor2SchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
+            this.dT_InEnd.MonthCalendar.NavigationBackgroundStyle.BackColorGradientAngle = 90;
+            this.dT_InEnd.MonthCalendar.NavigationBackgroundStyle.BackColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
+            this.dT_InEnd.MonthCalendar.NavigationBackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.dT_InEnd.MonthCalendar.TodayButtonVisible = true;
+            this.dT_InEnd.MonthCalendar.WeeklyMarkedDays = new System.DayOfWeek[0];
+            this.dT_InEnd.Name = "dT_InEnd";
+            this.dT_InEnd.Size = new System.Drawing.Size(212, 21);
+            this.dT_InEnd.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.dT_InEnd.TabIndex = 24;
             // 
             // Form1
             // 
@@ -587,9 +710,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dT_InBegin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dT_InEnd)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -626,6 +750,11 @@
         private DevComponents.DotNetBar.Controls.TextBoxX txt_ShipLocatorUserName;
         private DevComponents.DotNetBar.LabelX labelX5;
         private DevComponents.DotNetBar.LabelX labelX2;
+        private DevComponents.DotNetBar.ButtonX btn_clearLog;
+        private DevComponents.Editors.DateTimeAdv.DateTimeInput dT_InEnd;
+        private DevComponents.DotNetBar.LabelX labelX8;
+        private DevComponents.DotNetBar.LabelX labelX7;
+        private DevComponents.Editors.DateTimeAdv.DateTimeInput dT_InBegin;
     }
 }
 

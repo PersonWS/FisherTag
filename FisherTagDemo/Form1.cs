@@ -16,6 +16,7 @@ using System.IO;
 using FisherTagDemo.Locator;
 using System.Threading;
 using System.Security.Policy;
+using System.Net;
 
 namespace FisherTagDemo
 {
@@ -68,6 +69,8 @@ namespace FisherTagDemo
             _dt_rfid.Columns.Add("TagFunction"); ;
             _dt_rfid.Columns.Add("TagSignal");
             _dt_rfid.Columns.Add("TimeStamp");
+            dT_InBegin.Value= DateTime.Now.AddDays(-7);
+            dT_InEnd.Value= DateTime.Now;
 
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
@@ -103,16 +106,33 @@ namespace FisherTagDemo
             _socketServer = new SocketServerClass(txt_RFID_ServerIP.Text, Convert.ToInt32(txt_RFID_ServerPort.Text));
             _socketServer.StartServer();
             _socketServer.receiveMessageEvent += RfidSocketMessageReceived;
+            //ConnectRFIDServer("",0);
             btn_connectRfid.Enabled = false;
             btn_disConnect.Enabled = true;
+            ShowMessage("RFID 监听服务已启动");
+        }
+
+        private void ConnectRFIDServer(string ip,int port)
+        {
+            SocketClientClass socketClient = new SocketClientClass(IPAddress.Parse("192.168.1.88"),2000);
+            socketClient.CreateConnect();
+
+            socketClient.ReceivedMessageAsyncEvent += RfidSocketMessageReceived_sub;
+            socketClient.ReceiveMessageAsyncStart();
         }
 
         private void RfidSocketMessageReceived(SocketModule s)
         {
+
+                _log.Debug($"SocketMessageReceived，client:{s.RemoteEndPoint.ToString()}, ASCII:{Encoding.UTF8.GetString(s.receiveBuffer)}");
+                RfidSocketMessageReceived_sub(s.receiveBuffer);
+        }
+
+        private void RfidSocketMessageReceived_sub(byte[] bytes)
+        {
             lock (this)
             {
-                _log.Debug($"SocketMessageReceived，client:{s.RemoteEndPoint.ToString()}, ASCII:{Encoding.UTF8.GetString(s.receiveBuffer)}");
-                RFID_DataAnalysis rFID_Data = new RFID_DataAnalysis(s.receiveBuffer);
+                RFID_DataAnalysis rFID_Data = new RFID_DataAnalysis(bytes);
                 rFID_Data.Analysis();
                 bool isNewRfid = true;
                 if (Convert.ToInt64(rFID_Data.RfidTagSerialNum) == 0)
@@ -140,11 +160,21 @@ namespace FisherTagDemo
                 this.Invoke(new Action(() =>
                 {
                     dgv_rfid.DataSource = _dt_rfid;
+                    dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dgv_rfid.Refresh();
                 }));
-                ShowMessage(Newtonsoft.Json.JsonConvert.SerializeObject(rFID_Data, Newtonsoft.Json.Formatting.Indented));
-            }
 
+                string append = "";
+                if (rFID_Data.RfidTagFunction.ToLower() == "b")
+                {
+                    append = "\r\n该标签已被拆除！";
+                }
+                ShowMessage(
+
+                  $"{Newtonsoft.Json.JsonConvert.SerializeObject(rFID_Data, Newtonsoft.Json.Formatting.Indented)}{append}"
+
+                    );
+            }
         }
 
         private void btn_log_Click(object sender, EventArgs e)
@@ -160,6 +190,9 @@ namespace FisherTagDemo
                 _socketServer.StopServer();
                 _socketServer = null;
             }
+            btn_connectRfid.Enabled = true;
+            btn_disConnect.Enabled = false;
+            ShowMessage("RFID 监听服务已停止");
         }
 
         private async void btn_getLocation_Click(object sender, EventArgs e)
@@ -328,7 +361,7 @@ namespace FisherTagDemo
             }
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, locatorLogInInfo.mds,
-                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-14)).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now).ToString()));
+                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()));
 
             Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
             if (devInfo == null)
@@ -413,6 +446,17 @@ namespace FisherTagDemo
         {
             //this.WindowState = FormWindowState.Maximized;
             InitializeWebView();
+        }
+
+        private void btn_clearLog_Click(object sender, EventArgs e)
+        {
+            txt_showMessage.Text = "";
+            _dt_rfid.Rows.Clear();
+        }
+
+        private void webView_map_Resize(object sender, EventArgs e)
+        {
+            webView_map.CoreWebView2?.ExecuteScriptAsync($"handleResize())");
         }
     }
 }

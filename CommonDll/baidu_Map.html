@@ -170,7 +170,7 @@
             // 创建一个标签
             var label = new BMap.Label(labelContent, {
                 position: point, // 设置标签位置
-                offset: new BMap.Size(-11, -135) // 设置标签偏移量（相对于点的位置）
+                offset: new BMap.Size(-110, -135) // 设置标签偏移量（相对于点的位置）
             });
 
             // 设置标签样式（可选）
@@ -327,7 +327,7 @@
             // 创建弹出 Label
             popupLabel = new BMap.Label(labelContent, {
                 position: point, // 设置标签位置
-                offset: new BMap.Size(-11, -135) // 设置标签偏移量（相对于点的位置）
+                offset: new BMap.Size(-110, -135) // 设置标签偏移量（相对于点的位置）
             });
 
             // 设置标签样式
@@ -359,7 +359,7 @@
         <input type="text" id="searchInput" placeholder="请输入地址进行搜索">
         <button onclick="searchLocation()">搜索</button>
         <label for="showLabelsCheckbox">
-            <input type="checkbox" id="showLabelsCheckbox" checked> 显示轨迹标签
+            <input type="checkbox" id="showLabelsCheckbox" checked> 显示标签
         </label>
     </div>
     <button id="resetButton">重置轨迹</button>
