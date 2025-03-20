@@ -18,6 +18,12 @@ namespace FisherTagDemo.Locator
         public string PoiAddress { get; set; } // PoiAddress
         public string SetPositionType { get; set; } // SetPositionType
 
+        /// <summary>
+        /// 获取登录信息
+        /// </summary>
+        /// <param name="usrName"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         public static string GetLogInAppendMsg(string usrName ,string pwd)
         {
             return $"/loginSystem?LoginName={usrName}&LoginPassword={pwd}&LoginType=ENTERPRISE&language=cn";

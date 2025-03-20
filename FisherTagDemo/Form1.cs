@@ -69,8 +69,8 @@ namespace FisherTagDemo
             _dt_rfid.Columns.Add("TagFunction"); ;
             _dt_rfid.Columns.Add("TagSignal");
             _dt_rfid.Columns.Add("TimeStamp");
-            dT_InBegin.Value= DateTime.Now.AddDays(-7);
-            dT_InEnd.Value= DateTime.Now;
+            dT_InBegin.Value = DateTime.Now.AddDays(-7);
+            dT_InEnd.Value = DateTime.Now;
 
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
@@ -98,6 +98,7 @@ namespace FisherTagDemo
         private void ShowMessage(string msg)
         {
             FormSet.BaseFrmControl.ShowMessageOnTextBox(this, txt_showMessage, msg, true);
+            _log.Info(msg);
         }
 
         private void btn_connect_Click(object sender, EventArgs e)
@@ -112,9 +113,9 @@ namespace FisherTagDemo
             ShowMessage("RFID 监听服务已启动");
         }
 
-        private void ConnectRFIDServer(string ip,int port)
+        private void ConnectRFIDServer(string ip, int port)
         {
-            SocketClientClass socketClient = new SocketClientClass(IPAddress.Parse("192.168.1.88"),2000);
+            SocketClientClass socketClient = new SocketClientClass(IPAddress.Parse("192.168.1.88"), 2000);
             socketClient.CreateConnect();
 
             socketClient.ReceivedMessageAsyncEvent += RfidSocketMessageReceived_sub;
@@ -124,8 +125,8 @@ namespace FisherTagDemo
         private void RfidSocketMessageReceived(SocketModule s)
         {
 
-                _log.Debug($"SocketMessageReceived，client:{s.RemoteEndPoint.ToString()}, ASCII:{Encoding.UTF8.GetString(s.receiveBuffer)}");
-                RfidSocketMessageReceived_sub(s.receiveBuffer);
+            _log.Debug($"SocketMessageReceived，client:{s.RemoteEndPoint.ToString()}, ASCII:{Encoding.UTF8.GetString(s.receiveBuffer)}");
+            RfidSocketMessageReceived_sub(s.receiveBuffer);
         }
 
         private void RfidSocketMessageReceived_sub(byte[] bytes)
@@ -313,10 +314,12 @@ namespace FisherTagDemo
         private bool GetMds(out LocatorLogIn locatorLogIn)
         {
             locatorLogIn = null;
+            _log.Info("获取远程mds");
             string mdsRet = _locatorServer.GetMessageByRestful(LocatorLogIn.GetLogInAppendMsg(txt_ShipLocatorUserName.Text, txt_ShipLocatorPassWord.Text));
             if (string.IsNullOrEmpty(mdsRet))
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器服务mds失败!");
+                ShowMessage($"获取定位器服务mds失败!");
                 return false;
             }
 
@@ -324,13 +327,16 @@ namespace FisherTagDemo
             if (locatorLogIn == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器云端服务mds报文异常!,ret:{mdsRet}");
+                ShowMessage($"定位器云端服务mds报文异常!,ret:{mdsRet}");
                 return false;
             }
             if (locatorLogIn.success.ToLower() != "true")
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器云端服务mds获取失败,ret:{mdsRet}");
+                ShowMessage($"定位器云端服务mds获取失败,ret:{mdsRet}");
                 return false;
             }
+            ShowMessage($"mds获取成功,mds:{locatorLogIn.mds}");
             return true;
         }
 
@@ -359,6 +365,7 @@ namespace FisherTagDemo
             {
                 return;
             }
+            ShowMessage($"开始获取设备数据...");
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, locatorLogInInfo.mds,
                 TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()));
@@ -366,16 +373,19 @@ namespace FisherTagDemo
             Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
             if (devInfo == null)
             {
+                ShowMessage($"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                 return;
             }
             else if (devInfo.success != "true")
             {
+                ShowMessage($"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                 return;
             }
             else if (devInfo.data == null || devInfo.data.Count == 0 || string.IsNullOrEmpty(devInfo.data[0].point))
             {
+                ShowMessage($"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                 return;
             }
@@ -399,6 +409,7 @@ namespace FisherTagDemo
             string locationStr = JsonConvert.SerializeObject(data);
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory('{locationStr}'" );.
             // 调用 JavaScript 函数，传入 JSON 字符串
+            ShowMessage($"await webView_map.CoreWebView2.ExecuteScriptAsync($\"drawTrajectory(JSON.parse('{{locationStr}}'))\")");
             await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
 
 
@@ -439,7 +450,7 @@ namespace FisherTagDemo
 
         private void webView_map_SizeChanged(object sender, EventArgs e)
         {
-           // Map_initUI();
+            // Map_initUI();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -456,7 +467,13 @@ namespace FisherTagDemo
 
         private void webView_map_Resize(object sender, EventArgs e)
         {
+            ShowMessage($"webView_map.CoreWebView2?.ExecuteScriptAsync($\"handleResize())\")");
             webView_map.CoreWebView2?.ExecuteScriptAsync($"handleResize())");
+        }
+
+        private void btnLog_Click(object sender, EventArgs e)
+        {
+            LogHelper.EasyLogger.GetDiagnoseForm().Show(this);
         }
     }
 }
