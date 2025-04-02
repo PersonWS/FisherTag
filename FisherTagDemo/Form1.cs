@@ -220,7 +220,7 @@ namespace FisherTagDemo
                 return;
             }
             //获取设备数据
-            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceCurrentLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId_Obj.Text, _locatorLogIn.mds));
+            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceCurrentLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId_Obj.Text, _locatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},返回数据为空,ret:{devRet}");
@@ -282,7 +282,7 @@ namespace FisherTagDemo
                 return;
             }
             //获取设备数据
-            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds));
+            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds),chk_traceLog.Checked);
             if (devRet == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据异常,ret:{devRet}");
@@ -322,7 +322,7 @@ namespace FisherTagDemo
             {
                 _timerGetGpsAlarms = new System.Timers.Timer();
                 _timerGetGpsAlarms.Elapsed += AlarmTimerCallback;
-                _timerGetGpsAlarms.Interval = 1000;
+                _timerGetGpsAlarms.Interval = 2000;
                 _timerGetGpsAlarms.Start();
             }
         }
@@ -340,7 +340,7 @@ namespace FisherTagDemo
                     return;
                 }
                 //获取设备数据
-                string devRet = _locatorServer.GetMessageByRestful(Locator_GetLocalAlarmInfoUtcReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds, _maxTime.ToString()));
+                string devRet = _locatorServer.GetMessageByRestful(Locator_GetLocalAlarmInfoUtcReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds, _maxTime.ToString()), chk_traceLog.Checked);
                 if (devRet == null)
                 {
                     BaseFrmControl.ShowErrorMessageBox(this, $"alarm,返回数据为空,ret:{devRet}");
@@ -393,7 +393,7 @@ namespace FisherTagDemo
                 return true;
             }
             _log.Info("mds过期, 获取远程mds");
-            string mdsRet = _locatorServer.GetMessageByRestful(LocatorLogIn.GetLogInAppendMsg(txt_ShipLocatorUserName.Text, txt_ShipLocatorPassWord.Text));
+            string mdsRet = _locatorServer.GetMessageByRestful(LocatorLogIn.GetLogInAppendMsg(txt_ShipLocatorUserName.Text, txt_ShipLocatorPassWord.Text), chk_traceLog.Checked);
             if (string.IsNullOrEmpty(mdsRet))
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器服务mds失败!");
@@ -446,7 +446,7 @@ namespace FisherTagDemo
             ShowMessage($"开始获取设备数据...");
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, _locatorLogIn.mds,
-                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()));
+                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
 
             Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
             if (devInfo == null)
