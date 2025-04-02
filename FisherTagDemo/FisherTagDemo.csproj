@@ -89,6 +89,9 @@
     <Compile Include="FormSet\BaseFrmControl.cs" />
     <Compile Include="FormSet\SetFormStyle.cs" />
     <Compile Include="HttpServer.cs" />
+    <Compile Include="Locator\LocatorAlarmTypeEnum.cs" />
+    <Compile Include="Locator\Locator_GetLocalAlarmInfoUtcAck.cs" />
+    <Compile Include="Locator\Locator_GetLocalAlarmInfoUtcReq.cs" />
     <Compile Include="Locator\Locator_GetDeviceCurrentLocationAck.cs" />
     <Compile Include="Locator\Locator_GetDeviceCurrentLocationReq.cs" />
     <Compile Include="Locator\Locator_GetDeviceDataDetailAck.cs" />
