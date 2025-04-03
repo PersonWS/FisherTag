@@ -19,6 +19,7 @@ using System.Security.Policy;
 using System.Net;
 using DevComponents.Editors;
 using System.Timers;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace FisherTagDemo
 {
@@ -54,7 +55,10 @@ namespace FisherTagDemo
         /// 登录信息
         /// </summary>
         LocatorLogIn _locatorLogIn;
-
+        /// <summary>
+        /// rfid和locator的对应关系  string:rfid序列号
+        /// </summary>
+        Dictionary<string, Rfid_LocatorCorrespond> _dic_locatorRfidCorrespond = new Dictionary<string, Rfid_LocatorCorrespond>();
         public Form1()
         {
             InitializeComponent();
@@ -75,19 +79,42 @@ namespace FisherTagDemo
 
 
             _dt_rfid.Columns.Add("seq");
-            //_dt_rfid.Columns.Add("RfidDeviceID");
+            _dt_rfid.Columns.Add("ShipName_船牌号");
             _dt_rfid.Columns.Add("TagSerialNum");
-            _dt_rfid.Columns.Add("TagFunction"); ;
-            _dt_rfid.Columns.Add("TagSignal");
             _dt_rfid.Columns.Add("TimeStamp");
+
+            _dt_rfid.Columns.Add("TagFunction");
+            _dt_rfid.Columns.Add("TagSignal");
             dT_InBegin.Value = DateTime.Now.AddDays(-7);
             dT_InEnd.Value = DateTime.Now;
 
+            IniRfid_LocatorCorrespondInfo();
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
             MainHttp();
 
         }
+
+        private void IniRfid_LocatorCorrespondInfo()
+        {
+            string s = ReadTextSimple.ReadText("RFID_Config");
+            List<Rfid_LocatorCorrespond> rl = JsonConvert.DeserializeObject<List<Rfid_LocatorCorrespond>>(s);
+            if (rl.Count==0)
+            {
+                _log.Info($"未读取到locator与RFID的对应关系");
+                return;
+            }
+            foreach (var item in rl)
+            {
+                if (_dic_locatorRfidCorrespond.Keys.Contains(item.RfidSerial))
+                {
+                    _log.Error($"检测到重复的RFID和locator的对应编号，重复的RFID序列号:{item.RfidSerial}");
+                    continue;
+                }
+                _dic_locatorRfidCorrespond.Add(item.RfidSerial, item);
+            }
+        }
+
         public async Task MainHttp()
         {
             string url = "http://localhost:8000/"; // 服务器地址
@@ -163,6 +190,13 @@ namespace FisherTagDemo
                 {
                     DataRow dr = _dt_rfid.NewRow();
                     dr["seq"] = _dt_rfid.Rows.Count + 1;
+                    lock (_dic_locatorRfidCorrespond)
+                    {
+                        if (_dic_locatorRfidCorrespond.Keys.Contains(rFID_Data.RfidTagSerialNum))
+                        {
+                            dr["ShipName_船牌号"] = _dic_locatorRfidCorrespond[rFID_Data.RfidTagSerialNum].ShipName;
+                        }
+                    }
                     dr["TagSerialNum"] = rFID_Data.RfidTagSerialNum;
                     dr["TagFunction"] = rFID_Data.RfidTagFunction;
                     dr["TagSignal"] = rFID_Data.TagSignalStrength;
@@ -282,7 +316,7 @@ namespace FisherTagDemo
                 return;
             }
             //获取设备数据
-            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds),chk_traceLog.Checked);
+            string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据异常,ret:{devRet}");
@@ -318,7 +352,7 @@ namespace FisherTagDemo
                 dgv_locatorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             }
             //启动定时器定时查询报警信息
-            if (_timerGetGpsAlarms==null)
+            if (_timerGetGpsAlarms == null)
             {
                 _timerGetGpsAlarms = new System.Timers.Timer();
                 _timerGetGpsAlarms.Elapsed += AlarmTimerCallback;
@@ -327,7 +361,7 @@ namespace FisherTagDemo
             }
         }
 
-        long _maxTime= TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-1));
+        long _maxTime = TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-1));
         private void AlarmTimerCallback(object sender, ElapsedEventArgs e)
         {
             try
@@ -364,9 +398,9 @@ namespace FisherTagDemo
                 {
                     foreach (var item in alarmInfo.rows)
                     {
-                        if (item.gps_time> _maxTime)
+                        if (item.gps_time > _maxTime)
                         {
-                            _maxTime=item.gps_time;
+                            _maxTime = item.gps_time;
                         }
                         string alarmName = Enum.GetName(typeof(LocatorAlarmTypeEnum), item.type_id);
                         ShowMessage($"[ALARM!!!] 设备：{item.user_name}, alarmMsg:{alarmName}, " +
@@ -379,7 +413,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"alarm,程序出现异常,ex:{ex.ToString()}");
             }
             finally
-            { 
+            {
                 _timerGetGpsAlarms.Start();
             }
 
@@ -388,7 +422,7 @@ namespace FisherTagDemo
 
         private bool GetMds()
         {
-            if (_mdsDataTime!=null&&((DateTime.Now - _mdsDataTime).Value.TotalMinutes < 19 && _locatorLogIn != null))
+            if (_mdsDataTime != null && ((DateTime.Now - _mdsDataTime).Value.TotalMinutes < 19 && _locatorLogIn != null))
             {
                 return true;
             }
