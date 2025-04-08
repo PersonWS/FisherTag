@@ -28,11 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.chk_traceLog = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.btnLog = new DevComponents.DotNetBar.ButtonX();
             this.dT_InEnd = new DevComponents.Editors.DateTimeAdv.DateTimeInput();
             this.labelX8 = new DevComponents.DotNetBar.LabelX();
@@ -65,7 +66,7 @@
             this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.chk_traceLog = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.btn_getLocatorMode = new DevComponents.DotNetBar.ButtonX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -138,6 +139,7 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.btn_getLocatorMode);
             this.panel_operate.Controls.Add(this.chk_traceLog);
             this.panel_operate.Controls.Add(this.btnLog);
             this.panel_operate.Controls.Add(this.dT_InEnd);
@@ -175,6 +177,22 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // chk_traceLog
+            // 
+            // 
+            // 
+            // 
+            this.chk_traceLog.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chk_traceLog.Checked = true;
+            this.chk_traceLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_traceLog.CheckValue = "Y";
+            this.chk_traceLog.Location = new System.Drawing.Point(9, 311);
+            this.chk_traceLog.Name = "chk_traceLog";
+            this.chk_traceLog.Size = new System.Drawing.Size(100, 23);
+            this.chk_traceLog.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chk_traceLog.TabIndex = 26;
+            this.chk_traceLog.Text = "TraceLog";
             // 
             // btnLog
             // 
@@ -569,14 +587,14 @@
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -624,14 +642,14 @@
             // 
             this.dgv_locatorList.AllowUserToAddRows = false;
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
@@ -679,18 +697,17 @@
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
             // 
-            // chk_traceLog
+            // btn_getLocatorMode
             // 
-            // 
-            // 
-            // 
-            this.chk_traceLog.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chk_traceLog.Location = new System.Drawing.Point(9, 311);
-            this.chk_traceLog.Name = "chk_traceLog";
-            this.chk_traceLog.Size = new System.Drawing.Size(100, 23);
-            this.chk_traceLog.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chk_traceLog.TabIndex = 26;
-            this.chk_traceLog.Text = "TraceLog";
+            this.btn_getLocatorMode.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_getLocatorMode.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_getLocatorMode.Location = new System.Drawing.Point(118, 256);
+            this.btn_getLocatorMode.Name = "btn_getLocatorMode";
+            this.btn_getLocatorMode.Size = new System.Drawing.Size(103, 49);
+            this.btn_getLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_getLocatorMode.TabIndex = 27;
+            this.btn_getLocatorMode.Text = "获取定位器       设定信息";
+            this.btn_getLocatorMode.Click += new System.EventHandler(this.btn_getLocatorMode_Click);
             // 
             // Form1
             // 
@@ -773,6 +790,7 @@
         private DevComponents.Editors.DateTimeAdv.DateTimeInput dT_InBegin;
         private DevComponents.DotNetBar.ButtonX btnLog;
         private DevComponents.DotNetBar.Controls.CheckBoxX chk_traceLog;
+        private DevComponents.DotNetBar.ButtonX btn_getLocatorMode;
     }
 }
 

@@ -1,0 +1,14 @@
+API:
+https://apidoc.18gps.net:4443/web/#/645048599/133098322
+
+账号网址：
+http://www.18gps.net/
+账号：贝尔数据科技（大连）有限公司
+密码：ym@123456
+
+
+获取mds：
+http://openapi.18gps.net//GetDateServices.asmx/loginSystem?LoginName=贝尔数据科技（大连）有限公司&LoginPassword=123456&LoginType=ENTERPRISE&language=cn
+
+
+
