@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FisherTagDemo
 {
-    internal class RestfulReturnMsgBase
+    public class RestfulReturnMsgBase
     {
         public string success { get; set; } // success
         public string msg { get; set; } // msg

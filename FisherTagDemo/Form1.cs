@@ -20,6 +20,7 @@ using System.Net;
 using DevComponents.Editors;
 using System.Timers;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using DevComponents.DotNetBar;
 
 namespace FisherTagDemo
 {
@@ -74,13 +75,14 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("seq");
             _dt_locator.Columns.Add("FullName");
             _dt_locator.Columns.Add("Macid");
-            _dt_locator.Columns.Add("Objectid");
             _dt_locator.Columns.Add("Offline");
-            _dt_locator.Columns.Add("Speed");
-            _dt_locator.Columns.Add("Server_time");
-            _dt_locator.Columns.Add("Updtime");
-            _dt_locator.Columns.Add("Gpstime");
-            //以下显示定位器的状态
+            //以下显示定位器自身的状态
+            _dt_locator.Columns.Add("Charge");
+            _dt_locator.Columns.Add("Battery");
+            //以下显示定位器的位置
+            _dt_locator.Columns.Add("longitude");
+            _dt_locator.Columns.Add("latitude");
+            //以下显示定位器工作的状态
             _dt_locator.Columns.Add("WorkMode");
             _dt_locator.Columns.Add("ReportInterval");
             _dt_locator.Columns.Add("GPS");
@@ -88,6 +90,14 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("LBS");
             _dt_locator.Columns.Add("GPRS");
 
+
+            //其他信息
+
+            _dt_locator.Columns.Add("Speed");
+            _dt_locator.Columns.Add("Objectid");
+            _dt_locator.Columns.Add("Server_time");
+            _dt_locator.Columns.Add("Updtime");
+            _dt_locator.Columns.Add("Gpstime");
 
             _dt_rfid.Columns.Add("seq");
             _dt_rfid.Columns.Add("ShipName_船牌号");
@@ -110,7 +120,7 @@ namespace FisherTagDemo
         {
             string s = ReadTextSimple.ReadText("RFID_Config");
             List<Rfid_LocatorCorrespond> rl = JsonConvert.DeserializeObject<List<Rfid_LocatorCorrespond>>(s);
-            if (rl.Count==0)
+            if (rl.Count == 0)
             {
                 _log.Info($"未读取到locator与RFID的对应关系");
                 return;
@@ -330,7 +340,7 @@ namespace FisherTagDemo
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
-                BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据异常,ret:{devRet}");
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据为null,ret:{devRet}");
                 return;
             }
             _locatorDeviceInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Locator_GetDeviceListAck>(devRet) as Locator_GetDeviceListAck;
@@ -351,7 +361,8 @@ namespace FisherTagDemo
                     dr["Macid"] = info.macid;
                     dr["Objectid"] = info.objectid;
                     dr["FullName"] = info.fullName;
-                    dr["Offline"] = info.offline;
+                    string offLine = Enum.Parse(typeof(Locator.LocatorEnum_OfflineStateEnum), info.offline).ToString();
+                    dr["Offline"] = string.IsNullOrEmpty(offLine) ? info.offline : offLine;
                     dr["Speed"] = info.speed;
                     dr["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(info.server_time));
                     dr["Updtime"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(info.updtime));
@@ -388,20 +399,20 @@ namespace FisherTagDemo
                 string devRet = _locatorServer.GetMessageByRestful(Locator_GetLocalAlarmInfoUtcReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds, _maxTime.ToString()), chk_traceLog.Checked);
                 if (devRet == null)
                 {
-                    BaseFrmControl.ShowErrorMessageBox(this, $"alarm,返回数据为空,ret:{devRet}");
+                    ShowMessage($"alarm,返回数据为空,ret:{devRet}");
                     _timerGetGpsAlarms.Start();
                     return;
                 }
                 Locator_GetLocalAlarmInfoUtcAck alarmInfo = JsonConvert.DeserializeObject<Locator_GetLocalAlarmInfoUtcAck>(devRet) as Locator_GetLocalAlarmInfoUtcAck;
                 if (alarmInfo == null)
                 {
-                    BaseFrmControl.ShowErrorMessageBox(this, $"alarm,设备数据转换失败,ret:{devRet}");
+                    ShowMessage($"alarm,设备数据转换失败,ret:{devRet}");
                     _timerGetGpsAlarms.Start();
                     return;
                 }
                 else if (alarmInfo.success != "true")
                 {
-                    BaseFrmControl.ShowErrorMessageBox(this, $"alarm,数据异常,ret:{devRet}");
+                    ShowMessage($"alarm,数据异常,ret:{devRet}");
                     _timerGetGpsAlarms.Start();
                     return;
                 }
@@ -421,7 +432,7 @@ namespace FisherTagDemo
             }
             catch (Exception ex)
             {
-                BaseFrmControl.ShowErrorMessageBox(this, $"alarm,程序出现异常,ex:{ex.ToString()}");
+                ShowMessage($"alarm,程序出现异常,ex:{ex.ToString()}");
             }
             finally
             {
@@ -433,7 +444,7 @@ namespace FisherTagDemo
 
         private bool GetMds()
         {
-            if (_locatorServer==null)
+            if (_locatorServer == null)
             {
                 ShowMessage($"获取定位器服务mds失败,请先获取定位器列表");
                 return false;
@@ -497,7 +508,12 @@ namespace FisherTagDemo
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, _locatorLogIn.mds,
                 TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
-
+            if (devRet == null)
+            {
+                ShowMessage($"定位器ID:{txt_ShipLocatorId},设备数据为null ,ret:{devRet}");
+                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据为null");
+                return;
+            }
             Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
             if (devInfo == null)
             {
@@ -614,19 +630,20 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
                 return;
             }
-            _isLocatorModeProcessing=true;
+            _isLocatorModeProcessing = true;
 
-           Task.Run(() =>
-            {
-                GetLocatorMode();
-            });
+            Task.Run(() =>
+             {
+                 GetLocatorMode();
+             });
         }
         private void GetLocatorMode()
         {
             try
             {
                 ShowMessage($"获取定位器模式信息开始！");
-                GetLocatorModeSub();
+                GetLocatorModeSub02();
+                GetLocatorModeSub01();
                 ShowMessage($"获取定位器模式信息完成！");
             }
             catch (Exception ex)
@@ -639,15 +656,21 @@ namespace FisherTagDemo
                 _isLocatorModeProcessing = false;
             }
         }
-        private void GetLocatorModeSub()
+        /// <summary>
+        /// 发送透传数据
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns>string : id    DeviceInfo:设备信息</returns>
+        private Dictionary<string, DeviceInfo> SendMessageToLocatorBySendCommand(string param)
         {
+            Dictionary<string, DeviceInfo> devDic =null;
             //先获取MDS
             if (!GetMds())
             {
-                return;
+                return null;
             }
-            ShowMessage($"开始获取所有设备Mode数据回执...");
-            Dictionary<string, DeviceInfo > devDic=new Dictionary<string, DeviceInfo>();
+
+            devDic = new Dictionary<string, DeviceInfo>();
             foreach (var item in _locatorDeviceInfo.rows)
             {
                 //获取设备数据
@@ -657,25 +680,35 @@ namespace FisherTagDemo
                 Locator_SendCommandsAck devInfo = JsonConvert.DeserializeObject<Locator_SendCommandsAck>(devRet) as Locator_SendCommandsAck;
                 if (devInfo == null)
                 {
-                    ShowMessage($"定位器ID:{item.macName},设备Mode回执数据转换失败,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.macName},设备透传回执数据转换失败,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.success != "true")
                 {
-                    ShowMessage($"定位器ID:{item.macName},Mode回执数据异常,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.macName},透传回执数据异常,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.Data == null || devInfo.Data.Count == 0)
                 {
-                    ShowMessage($"定位器ID:{item.macName},无Mode回执信息,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.macName},透传回执信息,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                     continue;
                 }
                 devDic.Add(devInfo.Data[0].CmdNo, item);
             }
+            return devDic;
+        }
 
+        private void GetLocatorModeSub01()
+        {
+            ShowMessage($"开始获取所有设备Mode数据回执...");
+            Dictionary<string, DeviceInfo> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand());
+            if (devDic==null ||devDic.Count==0)
+            {
+                ShowMessage($"获取所有设备Mode数据失败!");
+            }
             Thread.Sleep(2000);
             //接下来获得结果
             //先获取MDS
@@ -727,10 +760,66 @@ namespace FisherTagDemo
                     drs[0]["GPRS"] = entity.GPRS06;
                 }
             }
-
         }
 
+        private void GetLocatorModeSub02()
+        {
+            if (!GetMds())
+            {
+                return;
+            }
+            ShowMessage($"开始获取所有设备的状态和电量数据...");
+            //获取设备数据
+            string devRet = _locatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds));
+            if (devRet == null)
+            {
+                ShowMessage($"批量获取设备数据结果为空,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
+                return;
+            }
+            Locator_GetCurrentLocationBatchAck devInfo = JsonConvert.DeserializeObject<Locator_GetCurrentLocationBatchAck>(devRet) as Locator_GetCurrentLocationBatchAck;
+            if (devInfo == null)
+            {
+                ShowMessage($"批量获取设备数据转换为json失败,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.success != "true")
+            {
+                ShowMessage($"批量获取设备数据，服务器返回失败,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.data == null || devInfo.data[0].deviceCount == 0)
+            {
+                ShowMessage($"批量获取设备数据,获取到的设备数量为0,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
+                return;
+            }
+            foreach (var dev in devInfo.data[0].records)
+            {
+                if (dev != null)
+                {
+                    DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
+                    if (drs.Count() > 0)
+                    {
+                        //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
+                        drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
+                        drs[0]["Battery"] = dev[devInfo.data[0].key.electric];
+                        drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
+                        drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
+                    }
+                }
+            }
+        }
 
-
+        private void btn_locating_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, DeviceInfo> devDic = SendMessageToLocatorBySendCommand("LJDW%23");
+            foreach (var item in devDic)
+            {
+                ShowMessage($"dev:{item.Value.fullName} 立即定位指令  Send OK");
+            }
+        }
     }
 }

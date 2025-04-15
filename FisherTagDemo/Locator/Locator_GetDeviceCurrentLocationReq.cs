@@ -16,5 +16,6 @@ namespace FisherTagDemo.Locator
         {
             return $"/GetDate?method=getUserAndGpsInfoByIDsUtcNew&mapType=BAIDU&option=cn&user_id={dev_id}&mds={mds}";
         }
+
     }
 }

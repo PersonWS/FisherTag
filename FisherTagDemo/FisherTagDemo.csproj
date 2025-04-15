@@ -88,12 +88,21 @@
     <Compile Include="FormSet\AppConfigSetData.cs" />
     <Compile Include="FormSet\BaseFrmControl.cs" />
     <Compile Include="FormSet\SetFormStyle.cs" />
+    <Compile Include="Frm_Template.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Frm_Template.Designer.cs">
+      <DependentUpon>Frm_Template.cs</DependentUpon>
+    </Compile>
     <Compile Include="HttpServer.cs" />
     <Compile Include="Locator\LocatorEnum_AlarmType.cs" />
+    <Compile Include="Locator\LocatorEnum_OfflineStateEnum.cs" />
     <Compile Include="Locator\LocatorEnum_PassThrough.cs" />
     <Compile Include="Locator\LocatorEnum_SendCommand.cs" />
     <Compile Include="Locator\Locator_GetCommandsResultAck.cs" />
     <Compile Include="Locator\Locator_GetCommandsResultReq.cs" />
+    <Compile Include="Locator\Locator_GetCurrentLocationBatchAck.cs" />
+    <Compile Include="Locator\Locator_GetCurrentLocationBatchReq.cs" />
     <Compile Include="Locator\Locator_GetLocalAlarmInfoUtcAck.cs" />
     <Compile Include="Locator\Locator_GetLocalAlarmInfoUtcReq.cs" />
     <Compile Include="Locator\Locator_GetDeviceCurrentLocationAck.cs" />
@@ -109,6 +118,7 @@
     <Compile Include="Locator\Locator_ModeEntity.cs" />
     <Compile Include="Locator\Locator_SendCommandsAck.cs" />
     <Compile Include="Locator\Locator_SendCommandsReq.cs" />
+    <Compile Include="Locator\Locator_Status.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadTextSimple.cs" />

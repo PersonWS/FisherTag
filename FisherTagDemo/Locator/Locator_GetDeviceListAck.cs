@@ -13,9 +13,18 @@ namespace FisherTagDemo.Locator
 
     public class DeviceInfo
     {
+        /// <summary>
+        /// 设备 object ID
+        /// </summary>
         public string objectid { get; set; } // 设备id
         public string platenumber { get; set; } // 车牌号
+        /// <summary>
+        /// 定位器名称
+        /// </summary>
         public string fullName { get; set; } // 名称
+        /// <summary>
+        /// 设备编号
+        /// </summary>
         public string macid { get; set; } // 设备号
         public string blockdate { get; set; } // 到期时间
         public string offline { get; set; } // 是否在线
