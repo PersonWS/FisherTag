@@ -226,6 +226,72 @@
                 }
             });
         }
+		
+		/**
+ * 批量显示多个位置并添加标签，并自动调整地图范围
+ * @param {number[]} longitudes - 经度数组
+ * @param {number[]} latitudes - 纬度数组
+ * @param {string[]} labNames - 标签名数组
+ * @param {string[]} timeStamps - 时间戳数组
+ */
+function showLocations(longitudes, latitudes, labNames, timeStamps) {
+    // 参数校验
+    if (!longitudes || !latitudes || longitudes.length === 0 || latitudes.length === 0) {
+        console.warn("经纬度数据不能为空");
+        return;
+    }
+
+    // 确保数组长度一致
+    const pointCount = longitudes.length;
+    if (latitudes.length !== pointCount || 
+        (labNames && labNames.length !== pointCount) || 
+        (timeStamps && timeStamps.length !== pointCount)) {
+        console.warn("输入数组长度不一致");
+        return;
+    }
+
+    // 清除现有覆盖物
+    map.clearOverlays();
+    labels = []; // 清空标签数组
+
+    // 创建所有点并计算边界
+    var points = [];
+    var bounds = new BMap.Bounds(); // 创建地理范围对象
+
+    // 遍历所有位置数据
+    for (let i = 0; i < pointCount; i++) {
+        var longitude = longitudes[i];
+        var latitude = latitudes[i];
+        var labName = labNames ? labNames[i] : ""; // 可选参数处理
+        var timeStamp = timeStamps ? timeStamps[i] : ""; // 可选参数处理
+
+        // 创建点并添加到数组
+        var point = new BMap.Point(longitude, latitude);
+        points.push(point);
+        
+        // 扩展地图边界以包含当前点
+        bounds.extend(point);
+
+        // 添加标记
+        addMarker(point, timeStamp);
+
+        // 添加标签
+        var label = addLabel(point, labName, longitude, latitude, timeStamp);
+        labels.push(label);
+    }
+
+    // **关键改进：确保地图正确缩放到所有标记点**
+    if (points.length === 1) {
+        // 单个点：固定缩放级别
+        map.centerAndZoom(points[0], 17);
+    } else {
+        // 多个点：调整视图以包含所有标记点
+        map.setViewport(points); // 自动调整地图范围
+    }
+
+    // 根据复选框状态初始化标签显示
+    toggleLabels();
+}
 
         // 绘制轨迹（独立函数，支持外部调用）
         function drawTrajectory(data) {

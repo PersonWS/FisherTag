@@ -21,6 +21,7 @@ using DevComponents.Editors;
 using System.Timers;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using DevComponents.DotNetBar;
+using DevComponents.DotNetBar.Schedule;
 
 namespace FisherTagDemo
 {
@@ -106,7 +107,7 @@ namespace FisherTagDemo
 
             _dt_rfid.Columns.Add("TagFunction");
             _dt_rfid.Columns.Add("TagSignal");
-            dT_InBegin.Value = DateTime.Now.AddDays(-7);
+            dT_InBegin.Value = DateTime.Now.AddDays(-1);
             dT_InEnd.Value = DateTime.Now;
 
             IniRfid_LocatorCorrespondInfo();
@@ -663,7 +664,7 @@ namespace FisherTagDemo
         /// <returns>string : id    DeviceInfo:设备信息</returns>
         private Dictionary<string, DeviceInfo> SendMessageToLocatorBySendCommand(string param)
         {
-            Dictionary<string, DeviceInfo> devDic =null;
+            Dictionary<string, DeviceInfo> devDic = null;
             //先获取MDS
             if (!GetMds())
             {
@@ -705,7 +706,7 @@ namespace FisherTagDemo
         {
             ShowMessage($"开始获取所有设备Mode数据回执...");
             Dictionary<string, DeviceInfo> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand());
-            if (devDic==null ||devDic.Count==0)
+            if (devDic == null || devDic.Count == 0)
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
             }
@@ -762,11 +763,11 @@ namespace FisherTagDemo
             }
         }
 
-        private void GetLocatorModeSub02()
+        private Locator_GetCurrentLocationBatchAck GetLocatorModeSub02()
         {
             if (!GetMds())
             {
-                return;
+                return null;
             }
             ShowMessage($"开始获取所有设备的状态和电量数据...");
             //获取设备数据
@@ -775,26 +776,26 @@ namespace FisherTagDemo
             {
                 ShowMessage($"批量获取设备数据结果为空,ret:{devRet}");
                 //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
-                return;
+                return null;
             }
             Locator_GetCurrentLocationBatchAck devInfo = JsonConvert.DeserializeObject<Locator_GetCurrentLocationBatchAck>(devRet) as Locator_GetCurrentLocationBatchAck;
             if (devInfo == null)
             {
                 ShowMessage($"批量获取设备数据转换为json失败,ret:{devRet}");
                 //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
-                return;
+                return null;
             }
             else if (devInfo.success != "true")
             {
                 ShowMessage($"批量获取设备数据，服务器返回失败,ret:{devRet}");
                 //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
-                return;
+                return null;
             }
             else if (devInfo.data == null || devInfo.data[0].deviceCount == 0)
             {
                 ShowMessage($"批量获取设备数据,获取到的设备数量为0,ret:{devRet}");
                 //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
-                return;
+                return null;
             }
             foreach (var dev in devInfo.data[0].records)
             {
@@ -811,6 +812,7 @@ namespace FisherTagDemo
                     }
                 }
             }
+            return devInfo;
         }
 
         private void btn_locating_Click(object sender, EventArgs e)
@@ -820,6 +822,52 @@ namespace FisherTagDemo
             {
                 ShowMessage($"dev:{item.Value.fullName} 立即定位指令  Send OK");
             }
+        }
+
+        private async void btn_getLocationBatch_Click(object sender, EventArgs e)
+        {
+
+            Locator_GetCurrentLocationBatchAck devInfos = GetLocatorModeSub02();
+            if (devInfos == null)
+            {
+                ShowMessage($"获取定位器当前位置失败，返回数据为null");
+                BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器当前位置失败，返回数据为null");
+            }
+            //webView_map.CoreWebView2.NavigateToString("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
+            //webBrowser_map.Url = new Uri("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
+
+            //double lng = devInfo.data[0].jingdu; // 经度（上海外滩）
+            //double lat = devInfo.data[0].weidu;  // 纬度
+
+            double[] lngs = new double[devInfos.data[0].deviceCount];
+            double[] lats = new double[devInfos.data[0].deviceCount];
+            string[] labels = new string[devInfos.data[0].deviceCount];
+            string[] timeStamps = new string[devInfos.data[0].deviceCount];
+            for (int i = 0; i < devInfos.data[0].deviceCount; i++)
+            {
+                try
+                {
+                    lngs[i] = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.jingdu]);
+                    lats[i] = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.weidu]);
+                    labels[i] = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
+                    timeStamps[i] = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+            }
+            string script = $@"
+    showLocations(
+        {JsonConvert.SerializeObject(lngs)},
+        {JsonConvert.SerializeObject(lats)},
+        {JsonConvert.SerializeObject(labels)},
+        {JsonConvert.SerializeObject(timeStamps)}
+    )";
+            await webView_map.CoreWebView2.ExecuteScriptAsync(script);
+            //await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat},'{"A00001"}')");
         }
     }
 }
