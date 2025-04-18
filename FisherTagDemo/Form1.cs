@@ -919,6 +919,7 @@ namespace FisherTagDemo
             {
                 Locator_GetCurrentLocationBatchAck devInfo = GetLocatorCurrentStatus();
                 AnalysisDevCurrentInfo(devInfo);
+                string message = "";
                 if (devInfo!=null)
                 {
                     foreach (var item in devInfo.data[0].records)
@@ -931,20 +932,23 @@ namespace FisherTagDemo
 
                             if (currentSysTime - currentHeartTime > 130000)//系统时间超前心跳时间130秒
                             {
+
                                 if (!_recordDevTimeList.Contains(user_name))//不存在则添加
                                 {
+                                    message= $"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime)}  ,  {currentHeartTime}  ,  OF";
                                     _recordDevTimeList.Add(user_name);//表示该id已离线
-                                    TextOperate.WriteToFile(user_name, $"{user_name} : OF");
-                                    ShowMessage($"{user_name} : OF");
+                                    TextOperate.WriteToFile(user_name, message);
+                                    ShowMessage($"{user_name},{message}");
                                 }
                             }
                             else//小于则表示在线
                             {
                                 if (_recordDevTimeList.Contains(user_name))//在线时如果字典内还存在该设备，表示设备之前已离线
                                 {
+                                    message = $"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime)}  ,  {currentHeartTime}  ,  ON";
                                     _recordDevTimeList.Remove(user_name);//表示该id已离线
-                                    TextOperate.WriteToFile(user_name, $"{user_name} : ON");
-                                    ShowMessage($"{user_name} : ON");
+                                    TextOperate.WriteToFile(user_name, message);
+                                    ShowMessage($"{user_name},{message}");
                                 }
                             }
                         }
