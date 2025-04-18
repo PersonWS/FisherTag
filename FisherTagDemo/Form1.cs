@@ -962,7 +962,8 @@ namespace FisherTagDemo
                             string[] stateSplits = item[devInfo.data[0].key.statenumber].ToString().Split(',');
                             if (stateSplits.Length>15)
                             {
-                                TextOperate.WriteToFile($"{user_name}_gsmLevel",$"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentSysTime)} ,gsmLevel:{stateSplits[7]} ,batteryPersents:{stateSplits[4]} ,batteryVoltage:{stateSplits[5]}" );
+                                TextOperate.WriteToFile($"{user_name}_gsmLevel",$"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentSysTime)} ,longiLati:{item[devInfo.data[0].key.jingdu]} | {item[devInfo.data[0].key.weidu]}" +
+                                    $" ,gsmLevel:{stateSplits[7]} ,batteryPersents:{stateSplits[4]} ,batteryVoltage:{stateSplits[5]}" );
                             }
                         }
                         catch (Exception ex)
