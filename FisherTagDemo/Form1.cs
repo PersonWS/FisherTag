@@ -752,17 +752,21 @@ namespace FisherTagDemo
                     Thread.Sleep(1000);
                     continue;
                 }
-                DataRow[] drs = _dt_locator.Select($"Macid='{item.Value.macid}'");
-                if (drs.Count() > 0)
+                lock (_dgvLock)
                 {
-                    Locator_ModeEntity entity = new Locator_ModeEntity(devInfo.data[0].ResponseMsg);
-                    drs[0]["WorkMode"] = entity.WorkModeEnum01;
-                    drs[0]["ReportInterval"] = entity.ReportInterval02;
-                    drs[0]["GPS"] = entity.GPS03;
-                    drs[0]["WIFI"] = entity.WIFI04;
-                    drs[0]["LBS"] = entity.LBS05;
-                    drs[0]["GPRS"] = entity.GPRS06;
+                    DataRow[] drs = _dt_locator.Select($"Macid='{item.Value.macid}'");
+                    if (drs.Count() > 0)
+                    {
+                        Locator_ModeEntity entity = new Locator_ModeEntity(devInfo.data[0].ResponseMsg);
+                        drs[0]["WorkMode"] = entity.WorkModeEnum01;
+                        drs[0]["ReportInterval"] = entity.ReportInterval02;
+                        drs[0]["GPS"] = entity.GPS03;
+                        drs[0]["WIFI"] = entity.WIFI04;
+                        drs[0]["LBS"] = entity.LBS05;
+                        drs[0]["GPRS"] = entity.GPRS06;
+                    }
                 }
+
             }
         }
         /// <summary>
@@ -806,7 +810,7 @@ namespace FisherTagDemo
           //  ShowMessage($"批量获取设备数据完成");
             return devInfo;
         }
-
+        private static readonly object _dgvLock=new object();
         private void AnalysisDevCurrentInfo(Locator_GetCurrentLocationBatchAck devInfo)
         {
             if (devInfo==null)
@@ -817,17 +821,20 @@ namespace FisherTagDemo
             {
                 if (dev != null)
                 {
-                    DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
-                    if (drs.Count() > 0)
+                    lock (_dgvLock)
                     {
-                        //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
-                        drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
-                        drs[0]["Battery"] = dev[devInfo.data[0].key.electric];
-                        drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
-                        drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
-                        //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
-                        drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
-                        drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                        DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
+                        if (drs.Count() > 0)
+                        {
+                            //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
+                            drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
+                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric];
+                            drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
+                            drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
+                            //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
+                            drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
+                            drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                        }
                     }
                 }
             }
