@@ -929,7 +929,7 @@ namespace FisherTagDemo
                             string user_name = item[devInfo.data[0].key.user_name].ToString();
                             long currentHeartTime = Convert.ToInt64(item[devInfo.data[0].key.heart_time]);
                             long currentSysTime = Convert.ToInt64(item[devInfo.data[0].key.server_time]);
-
+                            //验证是否离线
                             if (currentSysTime - currentHeartTime > 130000)//系统时间超前心跳时间130秒
                             {
 
@@ -950,6 +950,12 @@ namespace FisherTagDemo
                                     TextOperate.WriteToFile(user_name, message);
                                     ShowMessage($"{user_name},{message}");
                                 }
+                            }
+                            //记录信号强度
+                            string[] stateSplits = item[devInfo.data[0].key.statenumber].ToString().Split(',');
+                            if (stateSplits.Length>15)
+                            {
+                                TextOperate.WriteToFile($"{user_name}_gsmLevel",$"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentSysTime)} ,gsmLevel:{stateSplits[7]} ,batteryPersents:{stateSplits[4]} ,batteryVoltage:{stateSplits[5]}" );
                             }
                         }
                         catch (Exception ex)
