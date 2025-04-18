@@ -22,6 +22,8 @@ using System.Timers;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Schedule;
+using DevComponents.DotNetBar.Controls;
+using FormSet;
 
 namespace FisherTagDemo
 {
@@ -97,6 +99,7 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("Speed");
             _dt_locator.Columns.Add("Objectid");
             _dt_locator.Columns.Add("Server_time");
+            _dt_locator.Columns.Add("Heart_time");
             _dt_locator.Columns.Add("Updtime");
             _dt_locator.Columns.Add("Gpstime");
 
@@ -643,7 +646,7 @@ namespace FisherTagDemo
             try
             {
                 ShowMessage($"获取定位器模式信息开始！");
-                GetLocatorModeSub02();
+                AnalysisDevCurrentInfo(GetLocatorCurrentStatus());
                 GetLocatorModeSub01();
                 ShowMessage($"获取定位器模式信息完成！");
             }
@@ -710,7 +713,7 @@ namespace FisherTagDemo
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
             }
-            Thread.Sleep(2000);
+            Thread.Sleep(3000);
             //接下来获得结果
             //先获取MDS
             if (!GetMds())
@@ -727,25 +730,25 @@ namespace FisherTagDemo
                 Locator_GetCommandsResultAck devInfo = JsonConvert.DeserializeObject<Locator_GetCommandsResultAck>(devRet) as Locator_GetCommandsResultAck;
                 if (devInfo == null)
                 {
-                    ShowMessage($"定位器ID:{item.Value.macName},设备Mode数据转换失败,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Value.fullName},设备Mode数据转换失败,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.success != "true")
                 {
-                    ShowMessage($"定位器ID:{item.Value.macName},Mode数据异常,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Value.fullName},Mode数据异常,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.data == null || devInfo.data.Count == 0)
                 {
-                    ShowMessage($"定位器ID:{item.Value.macName},无Mode信息信息,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Value.fullName},无Mode信息信息,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                     continue;
                 }
                 else if (!devInfo.data[0].Status)
                 {
-                    ShowMessage($"定位器ID:{item.Value.macName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Value.fullName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
                     Thread.Sleep(1000);
                     continue;
                 }
@@ -762,14 +765,17 @@ namespace FisherTagDemo
                 }
             }
         }
-
-        private Locator_GetCurrentLocationBatchAck GetLocatorModeSub02()
+        /// <summary>
+        /// 获得定位当前状态
+        /// </summary>
+        /// <returns></returns>
+        private Locator_GetCurrentLocationBatchAck GetLocatorCurrentStatus()
         {
             if (!GetMds())
             {
                 return null;
             }
-            ShowMessage($"开始获取所有设备的状态和电量数据...");
+          //  ShowMessage($"批量获取设备数据开始...");
             //获取设备数据
             string devRet = _locatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds));
             if (devRet == null)
@@ -797,6 +803,16 @@ namespace FisherTagDemo
                 //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                 return null;
             }
+          //  ShowMessage($"批量获取设备数据完成");
+            return devInfo;
+        }
+
+        private void AnalysisDevCurrentInfo(Locator_GetCurrentLocationBatchAck devInfo)
+        {
+            if (devInfo==null)
+            {
+                return;
+            }
             foreach (var dev in devInfo.data[0].records)
             {
                 if (dev != null)
@@ -809,10 +825,12 @@ namespace FisherTagDemo
                         drs[0]["Battery"] = dev[devInfo.data[0].key.electric];
                         drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
                         drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
+                        //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
+                        drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
+                        drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
                     }
                 }
             }
-            return devInfo;
         }
 
         private void btn_locating_Click(object sender, EventArgs e)
@@ -827,12 +845,14 @@ namespace FisherTagDemo
         private async void btn_getLocationBatch_Click(object sender, EventArgs e)
         {
 
-            Locator_GetCurrentLocationBatchAck devInfos = GetLocatorModeSub02();
+            Locator_GetCurrentLocationBatchAck devInfos = GetLocatorCurrentStatus();
             if (devInfos == null)
             {
                 ShowMessage($"获取定位器当前位置失败，返回数据为null");
                 BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器当前位置失败，返回数据为null");
+                return;
             }
+            AnalysisDevCurrentInfo(devInfos);
             //webView_map.CoreWebView2.NavigateToString("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
             //webBrowser_map.Url = new Uri("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
 
@@ -852,10 +872,9 @@ namespace FisherTagDemo
                     labels[i] = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
                     timeStamps[i] = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-                    throw;
+                    BaseFrmControl.ShowErrorMessageBox(this, $"ex:{ex.ToString()}");
                 }
 
             }
@@ -868,6 +887,77 @@ namespace FisherTagDemo
     )";
             await webView_map.CoreWebView2.ExecuteScriptAsync(script);
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat},'{"A00001"}')");
+        }
+
+        private bool _isTraceSignalStrength = false;
+
+        Task _taskTraceSignalStrength;
+        private void btn_traceSignalStrength_Click(object sender, EventArgs e)
+        {
+            if (((ButtonX)sender).Text == "启动信号跟踪")
+            {
+                btn_getLocationBatch.Enabled = false;
+                _isTraceSignalStrength = true;
+                ((ButtonX)sender).Text = "启动信号跟踪中，点击停止";
+                _taskTraceSignalStrength = Task.Run(() => { RecordDevDSignalInfo(); });
+            }
+            else
+            {
+                btn_getLocationBatch.Enabled = true;
+                _isTraceSignalStrength = false;
+               _taskTraceSignalStrength.Wait();
+                ((ButtonX)sender).Text = "启动信号跟踪";
+            }
+
+        }
+        List<string> _recordDevTimeList;
+        private void RecordDevDSignalInfo()
+        {
+            ShowMessage("开始启动信号跟踪");
+            _recordDevTimeList = new List<string>();
+            while (_isTraceSignalStrength)
+            {
+                Locator_GetCurrentLocationBatchAck devInfo = GetLocatorCurrentStatus();
+                AnalysisDevCurrentInfo(devInfo);
+                if (devInfo!=null)
+                {
+                    foreach (var item in devInfo.data[0].records)
+                    {
+                        try
+                        {
+                            string user_name = item[devInfo.data[0].key.user_name].ToString();
+                            long currentHeartTime = Convert.ToInt64(item[devInfo.data[0].key.heart_time]);
+                            long currentSysTime = Convert.ToInt64(item[devInfo.data[0].key.server_time]);
+
+                            if (currentSysTime - currentHeartTime > 130000)//系统时间超前心跳时间130秒
+                            {
+                                if (!_recordDevTimeList.Contains(user_name))//不存在则添加
+                                {
+                                    _recordDevTimeList.Add(user_name);//表示该id已离线
+                                    TextOperate.WriteToFile(user_name, $"{user_name} : OF");
+                                    ShowMessage($"{user_name} : OF");
+                                }
+                            }
+                            else//小于则表示在线
+                            {
+                                if (_recordDevTimeList.Contains(user_name))//在线时如果字典内还存在该设备，表示设备之前已离线
+                                {
+                                    _recordDevTimeList.Remove(user_name);//表示该id已离线
+                                    TextOperate.WriteToFile(user_name, $"{user_name} : ON");
+                                    ShowMessage($"{user_name} : ON");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ShowMessage($"RecordDevDSignalInfo ex:{ex.ToString()}");
+                        }
+
+                    }
+                }
+                Thread.Sleep(3000);
+            }
+            ShowMessage("信号跟踪停止");
         }
     }
 }

@@ -26,6 +26,9 @@ namespace FisherTagDemo.Locator
 
     public class SignalKeyName
     {
+        /// <summary>
+        /// 设备定位时间
+        /// </summary>
         public int sys_time { get; set; }
         public int user_name { get; set; }
         public int jingdu { get; set; }
@@ -41,6 +44,9 @@ namespace FisherTagDemo.Locator
         public int user_id { get; set; }
         public int sale_type { get; set; }
         public int iconType { get; set; }
+        /// <summary>
+        /// 系统时间（当前时间）
+        /// </summary>
         public int server_time { get; set; }
         public int product_type { get; set; }
         public int expire_date { get; set; }
