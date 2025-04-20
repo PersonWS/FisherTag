@@ -947,6 +947,7 @@ namespace FisherTagDemo
                                     message= $"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime)}  ,  {currentHeartTime}  ,  OF";
                                     _recordDevTimeList.Add(user_name);//表示该id已离线
                                     TextOperate.WriteToFile(user_name, message);
+                                    _dBOperate.InsertLocatorOnlineState(user_name, TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime).ToString("yyyy-MM-dd HH:mm:ss.fff"), currentHeartTime, "offLine");
                                     ShowMessage($"{user_name},{message}");
                                 }
                             }
@@ -956,6 +957,7 @@ namespace FisherTagDemo
                                 {
                                     message = $"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime)}  ,  {currentHeartTime}  ,  ON";
                                     _recordDevTimeList.Remove(user_name);//表示该id已离线
+                                    _dBOperate.InsertLocatorOnlineState(user_name, TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentHeartTime).ToString("yyyy-MM-dd HH:mm:ss.fff"), currentHeartTime, "onLine");
                                     TextOperate.WriteToFile(user_name, message);
                                     ShowMessage($"{user_name},{message}");
                                 }
