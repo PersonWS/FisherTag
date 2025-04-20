@@ -919,6 +919,7 @@ namespace FisherTagDemo
             }
 
         }
+        private int _traceLocatorInterval = 30;
         List<string> _recordDevTimeList;
         private void RecordDevDSignalInfo()
         {
@@ -969,7 +970,6 @@ namespace FisherTagDemo
                                 TextOperate.WriteToFile($"{user_name}_gsmLevel",$"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentSysTime)} ,longiLati:{item[devInfo.data[0].key.jingdu]} | {item[devInfo.data[0].key.weidu]}" +
                                     $" ,gsmLevel:{stateSplits[7]} ,batteryPersents:{stateSplits[4]} ,batteryVoltage:{stateSplits[5]}" );
                             }
-                            _dBOperate.InsertLocatorRecord(devInfo);
                         }
                         catch (Exception ex)
                         {
@@ -977,10 +977,28 @@ namespace FisherTagDemo
                         }
 
                     }
+
+                    _dBOperate.InsertLocatorRecord(devInfo);
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(_traceLocatorInterval);
             }
             ShowMessage("信号跟踪停止");
         }
+
+        private void txt_traceInterval_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            BaseFrmControl.KeyPressWithDigital(this, sender, e);
+            if (e.KeyChar == '\r')
+            {
+                int interval = 60;
+                ;
+                if (!Int32.TryParse(txt_traceInterval.Text.Replace("\r","").Replace("\n", ""), out interval)) { return; }
+                if (interval < 3 || interval > 300)
+                {
+                    return;
+                }
+                this._traceLocatorInterval = interval * 1000;
+            }
+        }
     }
-}
+    }
