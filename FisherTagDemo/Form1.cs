@@ -919,7 +919,7 @@ namespace FisherTagDemo
             }
 
         }
-        private int _traceLocatorInterval = 30;
+        private int _traceLocatorInterval = 30000;
         List<string> _recordDevTimeList;
         private void RecordDevDSignalInfo()
         {
