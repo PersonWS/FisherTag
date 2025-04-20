@@ -899,6 +899,8 @@ namespace FisherTagDemo
         private bool _isTraceSignalStrength = false;
 
         Task _taskTraceSignalStrength;
+
+        DBOperate _dBOperate = new DBOperate();
         private void btn_traceSignalStrength_Click(object sender, EventArgs e)
         {
             if (((ButtonX)sender).Text == "启动信号跟踪")
@@ -965,6 +967,7 @@ namespace FisherTagDemo
                                 TextOperate.WriteToFile($"{user_name}_gsmLevel",$"{TimeDataConvert.GPS_DateConvertUTC8ToDateTime(currentSysTime)} ,longiLati:{item[devInfo.data[0].key.jingdu]} | {item[devInfo.data[0].key.weidu]}" +
                                     $" ,gsmLevel:{stateSplits[7]} ,batteryPersents:{stateSplits[4]} ,batteryVoltage:{stateSplits[5]}" );
                             }
+                            _dBOperate.InsertLocatorRecord(devInfo);
                         }
                         catch (Exception ex)
                         {

@@ -47,6 +47,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonDll\DevComponents.DotNetBar2.dll</HintPath>
     </Reference>
+    <Reference Include="IOTDBHepler">
+      <HintPath>..\CommonDll\IOTDBHepler.dll</HintPath>
+    </Reference>
     <Reference Include="LogHelper">
       <HintPath>..\CommonDll\LogHelper.dll</HintPath>
     </Reference>
@@ -79,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBOperate.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
