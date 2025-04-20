@@ -927,7 +927,7 @@ namespace FisherTagDemo
             while (_isTraceSignalStrength)
             {
                 Locator_GetCurrentLocationBatchAck devInfo = GetLocatorCurrentStatus();
-                AnalysisDevCurrentInfo(devInfo);
+               // AnalysisDevCurrentInfo(devInfo);
                 string message = "";
                 if (devInfo!=null)
                 {

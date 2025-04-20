@@ -99,8 +99,8 @@ namespace FisherTagDemo
                 //记录信号强度
                 string[] stateSplits = statenumber.Split(',');
                 gmsLevel = Convert.ToInt32(stateSplits[7]);
-                gmsLevel = Convert.ToInt32(stateSplits[7]);
-                gmsLevel = Convert.ToInt32(stateSplits[7]);
+                longitude = Convert.ToDouble(item[devInfo.key.jingdu]);
+                latitude = Convert.ToDouble(item[devInfo.key.weidu]);
                 batteryPersents = Convert.ToInt32(stateSplits[4]);
                 batteryVoltage = Convert.ToDouble(stateSplits[5]);
             }

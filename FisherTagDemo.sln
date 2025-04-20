@@ -5,8 +5,6 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FisherTagDemo", "FisherTagDemo\FisherTagDemo.csproj", "{D90EE5AF-4584-4C68-9D1B-609A9EA715F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketHelper", "..\Utility\SocketHelper\SocketHelper.csproj", "{9B0063B6-D0F1-40AD-A9E7-8439F09EBDEB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{D90EE5AF-4584-4C68-9D1B-609A9EA715F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D90EE5AF-4584-4C68-9D1B-609A9EA715F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D90EE5AF-4584-4C68-9D1B-609A9EA715F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B0063B6-D0F1-40AD-A9E7-8439F09EBDEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B0063B6-D0F1-40AD-A9E7-8439F09EBDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B0063B6-D0F1-40AD-A9E7-8439F09EBDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B0063B6-D0F1-40AD-A9E7-8439F09EBDEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
