@@ -27,8 +27,8 @@ namespace FisherTagDemo
                 for (int i = 0; i < item.deviceCount; i++)
                 {
                     LocatorRecord record = new LocatorRecord(item, i);
-                    string sql = $"INSERT INTO TB_LocatorRecord (userName, currentSysTemTime, currentHeartTime, longitude, latitude, gmsLevel, batteryPersents, batteryVoltage, status, Statenumber)" +
-                        $"VALUES('{record.UserName}', '{record.CurrentSysTimeString}', '{record.CurrentHeartTimeString}', {record.Longitude}, {record.Latitude}, {record.GmsLevel}, {record.BatteryPersents}, {record.BatteryPersents}, '{record.Status}', '{record.Statenumber}');";
+                    string sql = $"INSERT INTO TB_LocatorRecord (userName, currentSysTemTime, currentHeartTime, longitude, latitude,longiLati, gmsLevel, batteryPersents, batteryVoltage, status, Statenumber)" +
+                        $"VALUES('{record.UserName}', '{record.CurrentSysTimeString}', '{record.CurrentHeartTimeString}', {record.Longitude}, {record.Latitude},'{record.Longitude},{record.Latitude}',{record.GmsLevel}, {record.BatteryPersents}, {record.BatteryPersents}, '{record.Status}', '{record.Statenumber}');";
                     dB.ExecuteQueryStringWithNonQuery(sql, "InsertLocatorRecord", true);
                 }
             }
