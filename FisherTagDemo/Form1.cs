@@ -112,6 +112,8 @@ namespace FisherTagDemo
             _dt_rfid.Columns.Add("TagSignal");
             dT_InBegin.Value = DateTime.Now.AddDays(-1);
             dT_InEnd.Value = DateTime.Now;
+            this.webView_map.Parent = this.splitContainer_sub_right.Panel2;
+            this.webView_map.Dock = DockStyle.Fill;
 
             IniRfid_LocatorCorrespondInfo();
             // webBrowser_map.ScriptErrorsSuppressed = true;
