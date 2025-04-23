@@ -86,6 +86,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonResource.cs" />
     <Compile Include="DBOperate.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -97,6 +98,12 @@
     <Compile Include="FormSet\BaseFrmControl.cs" />
     <Compile Include="FormSet\SetFormStyle.cs" />
     <Compile Include="FormSet\TextOperate.cs" />
+    <Compile Include="Frm_locator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Frm_locator.Designer.cs">
+      <DependentUpon>Frm_locator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Frm_Template.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +144,9 @@
     <Compile Include="TimeDataConvert.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Frm_locator.resx">
+      <DependentUpon>Frm_locator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

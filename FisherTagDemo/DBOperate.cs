@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Schedule;
 using FisherTagDemo.Locator;
 using FormSet;
@@ -50,6 +52,53 @@ namespace FisherTagDemo
 
 
         }
+
+        /// <summary>
+        /// 查询信号点，根据信号的强度
+        /// </summary>
+        /// <param name="singnalThreshold"></param>
+        /// <param name="signalCountMethod"></param>
+        /// <param name="isShowLowlevel">true: 显示信号小于singnalThreshold这个值的数据，false:显示信号大于等于singnalThreshold这个值的数据</param>
+        /// <returns></returns>
+        public DataTable QuerySignalBySignalStrength(int singnalThreshold, string signalCountMethod,bool isShowLowlevel)
+        {
+            try
+            {
+                string filterString = "";
+                switch (signalCountMethod)
+                {
+                    case "MIN":
+                        filterString = "MIN (gmsLevel) as gmsLevel";
+                        break;
+                    case "MAX":
+                        filterString = "MAX (gmsLevel) as gmsLevel";
+                        break;
+                    default:
+                        filterString = "AVG (gmsLevel) as gmsLevel";
+                        break;
+                }
+                string signalLevel = "";
+                if (isShowLowlevel)
+                {
+                    signalLevel = $" gmsLevel < '{singnalThreshold }'";
+                }
+                else
+                {
+                    signalLevel = $" gmsLevel > '{singnalThreshold - 1}'";
+                }
+                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {filterString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where  {signalLevel} group by longiLati order by ID desc ";
+                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
+            }
+            catch (Exception ex)
+            {
+                Log.LogRecorder_runLog.Error($"QueryGoodSignal , ex:{ex.ToString()}");
+                return null;
+            }
+
+
+        }
+
+
 
     }
 

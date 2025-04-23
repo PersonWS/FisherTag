@@ -20,11 +20,18 @@ namespace FisherTagDemo.Locator
 
     internal class LocatoreHistoryLocation
     {
-        public LocatoreHistoryLocation(string longi,string lati,string utcStr) 
-        { 
+        public LocatoreHistoryLocation(string longi, string lati, Int64 utcTime)
+        {
             this.lng = longi;
             this.lat = lati;
-            this.utcTimeStr = utcStr;
+            this.utcTime = utcTime;
+        }
+
+        public LocatoreHistoryLocation(string longi, string lati, string timeString)
+        {
+            this.lng = longi;
+            this.lat = lati;
+            this.timeString = timeString;
         }
 
         public string lng;
@@ -32,27 +39,27 @@ namespace FisherTagDemo.Locator
         /// <summary>
         /// UTC的累计时间，是用long表示
         /// </summary>
-        public string utcTimeStr;
+        public Int64 utcTime = -1;
+
+        public string timeString = "";
+
         public string time
         {
             get
             {
                 DateTime dt1;
-                if (utcTimeStr == null)
+                if (utcTime >-1)
                 {
-                    dt1= new DateTime(0);
+                    dt1 = new DateTime(0);
+                }
+                else if (!string.IsNullOrEmpty(timeString))
+                {
+                    return timeString;
                 }
                 else
                 {
-                    Int64 t = 0;
-                    if (Int64.TryParse(utcTimeStr, out t))
-                    {
-                        dt1 = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(t);
-                    }
-                    else
-                    {
-                        dt1 = new DateTime(0);
-                    }
+                    dt1 = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(utcTime);
+
                 }
                 return TimeDataConvert.GetDateTimeString(dt1);
             }

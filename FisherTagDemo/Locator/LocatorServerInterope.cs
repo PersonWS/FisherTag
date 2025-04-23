@@ -11,7 +11,7 @@ using SocketHelper.USocket;
 
 namespace FisherTagDemo.Locator
 {
-    internal class LocatorServerInterope
+    public class LocatorServerInterope
     {
 
 

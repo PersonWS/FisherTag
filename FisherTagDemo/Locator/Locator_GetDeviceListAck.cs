@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FisherTagDemo.Locator
 {
-    internal class Locator_GetDeviceListAck:RestfulReturnMsgBase
+    public class Locator_GetDeviceListAck:RestfulReturnMsgBase
     {
       public  List<DeviceInfo> rows { get; set; }
     }

@@ -33,6 +33,7 @@
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.btn_locatorSignalStrengthQuery = new DevComponents.DotNetBar.ButtonX();
             this.labelX9 = new DevComponents.DotNetBar.LabelX();
             this.txt_traceInterval = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.btn_traceSignalStrength = new DevComponents.DotNetBar.ButtonX();
@@ -70,9 +71,9 @@
             this.txt_showMessage = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.splitContainer_sub_right = new System.Windows.Forms.SplitContainer();
             this.dgv_locatorList = new DevComponents.DotNetBar.Controls.DataGridViewX();
+            this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -94,12 +95,12 @@
             this.splitContainer_sub_right.Panel2.SuspendLayout();
             this.splitContainer_sub_right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.webView_map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.webView_map)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -117,7 +118,7 @@
             // 
             this.splitContainer_Main.Panel2.Controls.Add(this.splitContainer_sub_right);
             this.splitContainer_Main.Size = new System.Drawing.Size(1749, 1045);
-            this.splitContainer_Main.SplitterDistance = 845;
+            this.splitContainer_Main.SplitterDistance = 1006;
             this.splitContainer_Main.SplitterWidth = 7;
             this.splitContainer_Main.TabIndex = 9;
             this.splitContainer_Main.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Main_SplitterMoved);
@@ -138,7 +139,7 @@
             // splitContainer_Sub1.Panel2
             // 
             this.splitContainer_Sub1.Panel2.Controls.Add(this.splitContainer_subLeftDown);
-            this.splitContainer_Sub1.Size = new System.Drawing.Size(845, 1045);
+            this.splitContainer_Sub1.Size = new System.Drawing.Size(1006, 1045);
             this.splitContainer_Sub1.SplitterDistance = 665;
             this.splitContainer_Sub1.SplitterWidth = 7;
             this.splitContainer_Sub1.TabIndex = 18;
@@ -149,6 +150,7 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.btn_locatorSignalStrengthQuery);
             this.panel_operate.Controls.Add(this.labelX9);
             this.panel_operate.Controls.Add(this.txt_traceInterval);
             this.panel_operate.Controls.Add(this.btn_traceSignalStrength);
@@ -185,7 +187,7 @@
             this.panel_operate.Location = new System.Drawing.Point(0, 0);
             this.panel_operate.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.panel_operate.Name = "panel_operate";
-            this.panel_operate.Size = new System.Drawing.Size(845, 665);
+            this.panel_operate.Size = new System.Drawing.Size(1006, 665);
             this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -194,6 +196,19 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // btn_locatorSignalStrengthQuery
+            // 
+            this.btn_locatorSignalStrengthQuery.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_locatorSignalStrengthQuery.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_locatorSignalStrengthQuery.Location = new System.Drawing.Point(261, 544);
+            this.btn_locatorSignalStrengthQuery.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.btn_locatorSignalStrengthQuery.Name = "btn_locatorSignalStrengthQuery";
+            this.btn_locatorSignalStrengthQuery.Size = new System.Drawing.Size(188, 86);
+            this.btn_locatorSignalStrengthQuery.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_locatorSignalStrengthQuery.TabIndex = 34;
+            this.btn_locatorSignalStrengthQuery.Text = "定位器信号查询";
+            this.btn_locatorSignalStrengthQuery.Click += new System.EventHandler(this.btn_locatorSignalStrengthQuery_Click);
             // 
             // labelX9
             // 
@@ -715,7 +730,7 @@
             // splitContainer_subLeftDown.Panel2
             // 
             this.splitContainer_subLeftDown.Panel2.Controls.Add(this.txt_showMessage);
-            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(845, 373);
+            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(1006, 373);
             this.splitContainer_subLeftDown.SplitterDistance = 166;
             this.splitContainer_subLeftDown.SplitterWidth = 7;
             this.splitContainer_subLeftDown.TabIndex = 0;
@@ -742,7 +757,7 @@
             this.dgv_rfid.RowHeadersVisible = false;
             this.dgv_rfid.RowHeadersWidth = 82;
             this.dgv_rfid.RowTemplate.Height = 23;
-            this.dgv_rfid.Size = new System.Drawing.Size(845, 166);
+            this.dgv_rfid.Size = new System.Drawing.Size(1006, 166);
             this.dgv_rfid.TabIndex = 1;
             // 
             // txt_showMessage
@@ -758,7 +773,7 @@
             this.txt_showMessage.Multiline = true;
             this.txt_showMessage.Name = "txt_showMessage";
             this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(845, 200);
+            this.txt_showMessage.Size = new System.Drawing.Size(1006, 200);
             this.txt_showMessage.TabIndex = 0;
             // 
             // splitContainer_sub_right
@@ -776,7 +791,7 @@
             // splitContainer_sub_right.Panel2
             // 
             this.splitContainer_sub_right.Panel2.Controls.Add(this.webView_map);
-            this.splitContainer_sub_right.Size = new System.Drawing.Size(897, 1045);
+            this.splitContainer_sub_right.Size = new System.Drawing.Size(736, 1045);
             this.splitContainer_sub_right.SplitterDistance = 148;
             this.splitContainer_sub_right.SplitterWidth = 7;
             this.splitContainer_sub_right.TabIndex = 0;
@@ -802,9 +817,20 @@
             this.dgv_locatorList.RowHeadersVisible = false;
             this.dgv_locatorList.RowHeadersWidth = 82;
             this.dgv_locatorList.RowTemplate.Height = 23;
-            this.dgv_locatorList.Size = new System.Drawing.Size(897, 148);
+            this.dgv_locatorList.Size = new System.Drawing.Size(736, 148);
             this.dgv_locatorList.TabIndex = 0;
             this.dgv_locatorList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_locatorList_CellClick);
+            // 
+            // webView_map
+            // 
+            this.webView_map.AllowExternalDrop = true;
+            this.webView_map.CreationProperties = null;
+            this.webView_map.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView_map.Location = new System.Drawing.Point(27, 36);
+            this.webView_map.Name = "webView_map";
+            this.webView_map.Size = new System.Drawing.Size(525, 569);
+            this.webView_map.TabIndex = 0;
+            this.webView_map.ZoomFactor = 1D;
             // 
             // splitContainer2
             // 
@@ -827,17 +853,6 @@
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
-            // 
-            // webView_map
-            // 
-            this.webView_map.AllowExternalDrop = true;
-            this.webView_map.CreationProperties = null;
-            this.webView_map.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView_map.Location = new System.Drawing.Point(31, 41);
-            this.webView_map.Name = "webView_map";
-            this.webView_map.Size = new System.Drawing.Size(600, 650);
-            this.webView_map.TabIndex = 0;
-            this.webView_map.ZoomFactor = 1D;
             // 
             // Form1
             // 
@@ -872,12 +887,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_sub_right)).EndInit();
             this.splitContainer_sub_right.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_locatorList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.webView_map)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.webView_map)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -928,6 +943,7 @@
         private DevComponents.DotNetBar.Controls.TextBoxX txt_traceInterval;
         private DevComponents.DotNetBar.LabelX labelX9;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView_map;
+        private DevComponents.DotNetBar.ButtonX btn_locatorSignalStrengthQuery;
     }
 }
 

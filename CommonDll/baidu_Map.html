@@ -170,7 +170,7 @@
             // 创建一个标签
             var label = new BMap.Label(labelContent, {
                 position: point, // 设置标签位置
-                offset: new BMap.Size(-110, -135) // 设置标签偏移量（相对于点的位置）
+                offset: new BMap.Size(-120, -135) // 设置标签偏移量（相对于点的位置）
             });
 
             // 设置标签样式（可选）
@@ -293,52 +293,63 @@ function showLocations(longitudes, latitudes, labNames, timeStamps) {
     toggleLabels();
 }
 
-        // 绘制轨迹（独立函数，支持外部调用）
-        function drawTrajectory(data) {
-            if (!map) {
-                console.error("地图未初始化！");
-                return;
-            }
 
-            // 存储轨迹点数据
-            gpsData = data;
 
-            // 清除之前的覆盖物
-            map.clearOverlays();
 
-            // 清空标签数组
-            labels = [];
+/**
+ * 绘制轨迹（支持是否绘制轨迹线条的可选参数）
+ * @param {Array} data - 轨迹点数据数组
+ * @param {boolean} [drawPolyline=true] - 是否绘制轨迹线（默认true）
+ */
+function drawTrajectory(data, drawPolyline = true) {
+    if (!map) {
+        console.error("地图未初始化！");
+        return;
+    }
 
-            var points = [];
-            for (var i = 0; i < gpsData.length; i++) {
-                // 将字符串类型的经度和纬度转换为数字
-                var lng = parseFloat(gpsData[i].lng);
-                var lat = parseFloat(gpsData[i].lat);
-                var point = new BMap.Point(lng, lat);
-                points.push(point);
+    // 存储轨迹点数据
+    gpsData = data;
 
-                // 添加标记
-                addMarker(point, gpsData[i].time);
+    // 清除之前的覆盖物
+    map.clearOverlays();
 
-                // 添加日期和时间标签（不带箭头）
-                var label = addTraceLabel(point, gpsData[i].time);
-                labels.push(label); // 将标签保存到数组中
-            }
+    // 清空标签数组
+    labels = [];
 
-            // 绘制轨迹线
-            var polyline = new BMap.Polyline(points, {
-                strokeColor: "#3388FF", // 轨迹线颜色
-                strokeWeight: 3, // 轨迹线宽度
-                strokeOpacity: 0.8 // 轨迹线透明度
-            });
-            map.addOverlay(polyline);
+    var points = [];
+    for (var i = 0; i < gpsData.length; i++) {
+        // 将字符串类型的经度和纬度转换为数字
+        var lng = parseFloat(gpsData[i].lng);
+        var lat = parseFloat(gpsData[i].lat);
+        var point = new BMap.Point(lng, lat);
+        points.push(point);
 
-            // 调整地图视野以显示所有轨迹点
-            map.setViewport(points);
+        // 添加标记
+        addMarker(point, gpsData[i].time);
 
-            // 根据复选框状态初始化标签显示
-            toggleLabels();
-        }
+        // 添加日期和时间标签（不带箭头）
+        var label = addTraceLabel(point, gpsData[i].time);
+        labels.push(label); // 将标签保存到数组中
+    }
+
+    // 根据参数决定是否绘制轨迹线
+    if (drawPolyline) {
+        var polyline = new BMap.Polyline(points, {
+            strokeColor: "#3388FF", // 轨迹线颜色
+            strokeWeight: 3,        // 轨迹线宽度
+            strokeOpacity: 0.8      // 轨迹线透明度
+        });
+        map.addOverlay(polyline);
+    }
+
+    // 调整地图视野以显示所有轨迹点
+    map.setViewport(points);
+
+    // 根据复选框状态初始化标签显示
+    toggleLabels();
+}
+
+
 
         // 添加日期和时间标签（不带箭头）
         function addTraceLabel(point, time) {
