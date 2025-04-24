@@ -27,11 +27,12 @@ namespace FisherTagDemo.Locator
             this.utcTime = utcTime;
         }
 
-        public LocatoreHistoryLocation(string longi, string lati, string timeString)
+        public LocatoreHistoryLocation(string longi, string lati, string timeString, string gsmString)
         {
             this.lng = longi;
             this.lat = lati;
             this.timeString = timeString;
+            this.gsmString = gsmString;
         }
 
         public string lng;
@@ -43,26 +44,28 @@ namespace FisherTagDemo.Locator
 
         public string timeString = "";
 
+        public string gsmString = "";
+
         public string time
         {
             get
             {
-                DateTime dt1;
-                if (utcTime >-1)
+                if (utcTime > -1)
                 {
-                    dt1 = new DateTime(0);
+                    return TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(utcTime));
                 }
                 else if (!string.IsNullOrEmpty(timeString))
                 {
                     return timeString;
                 }
-                else
-                {
-                    dt1 = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(utcTime);
-
-                }
-                return TimeDataConvert.GetDateTimeString(dt1);
+                return TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(0));
             }
         }
+
+
+
+
+
+
     }
 }

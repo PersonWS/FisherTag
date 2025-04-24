@@ -60,33 +60,33 @@ namespace FisherTagDemo
         /// <param name="signalCountMethod"></param>
         /// <param name="isShowLowlevel">true: 显示信号小于singnalThreshold这个值的数据，false:显示信号大于等于singnalThreshold这个值的数据</param>
         /// <returns></returns>
-        public DataTable QuerySignalBySignalStrength(int singnalThreshold, string signalCountMethod,bool isShowLowlevel)
+        public DataTable QuerySignalBySignalStrength(int singnalThreshold, string signalCountMethod, bool isShowLowlevel)
         {
             try
             {
-                string filterString = "";
+                string gsmString = "";
                 switch (signalCountMethod)
                 {
                     case "MIN":
-                        filterString = "MIN (gmsLevel) as gmsLevel";
+                        gsmString = "MIN (gmsLevel) as gmsLevel";
                         break;
                     case "MAX":
-                        filterString = "MAX (gmsLevel) as gmsLevel";
+                        gsmString = "MAX (gmsLevel) as gmsLevel";
                         break;
                     default:
-                        filterString = "AVG (gmsLevel) as gmsLevel";
+                        gsmString = "AVG (gmsLevel) as gmsLevel";
                         break;
                 }
                 string signalLevel = "";
                 if (isShowLowlevel)
                 {
-                    signalLevel = $" gmsLevel < '{singnalThreshold }'";
+                    signalLevel = $" gmsLevel < '{singnalThreshold}'";
                 }
                 else
                 {
                     signalLevel = $" gmsLevel > '{singnalThreshold - 1}'";
                 }
-                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {filterString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where  {signalLevel} group by longiLati order by ID desc ";
+                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {gsmString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where  {signalLevel} group by longiLati order by ID desc ";
                 return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
             }
             catch (Exception ex)
@@ -97,6 +97,84 @@ namespace FisherTagDemo
 
 
         }
+
+        /// <summary>
+        /// 查询船组
+        /// </summary>
+        /// <returns></returns>
+        public DataTable QueryExistShip()
+        {
+            try
+            {
+                string sql = $"SELECT userName FROM TB_LocatorOfflineRecord group by userName";
+                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
+            }
+            catch (Exception ex)
+            {
+                Log.LogRecorder_runLog.Error($"QueryExistShip , ex:{ex.ToString()}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 查询船只离线记录
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public DataTable QueryOfflineRecord(string userName)
+        {
+            try
+            {
+                string sql = $"SELECT ID, userName, DateTimeString, DateTimeUTC, OnlineState FROM TB_LocatorOfflineRecord WHERE userName ='{userName}' ORDER by ID asc;";
+                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
+            }
+            catch (Exception ex)
+            {
+                Log.LogRecorder_runLog.Error($"QueryOfflineRecord , ex:{ex.ToString()}");
+                return null;
+            }
+        }
+        /// <summary>
+        /// 查询船只的定位数据，根据船只名称，起始结束数据
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="beginTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public DataTable QueryShipLocatorPosition(string userName, string beginTime, string endTime)
+        {
+            try
+            {
+                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude,MAX (gmsLevel) as gmsLevel ,batteryPersents, batteryVoltage, status, Statenumber, longiLati  " +
+                    $"FROM TB_LocatorRecord  where userName='{userName}' AND currentHeartTime>'{beginTime}' AND currentHeartTime<'{endTime}'   group by longiLati order by ID desc ";
+                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
+            }
+            catch (Exception ex)
+            {
+                Log.LogRecorder_runLog.Error($"QueryShipLocatorPosition , ex:{ex.ToString()}");
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

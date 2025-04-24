@@ -43,9 +43,14 @@
             this.labelX7 = new DevComponents.DotNetBar.LabelX();
             this.dT_InBegin = new DevComponents.Editors.DateTimeAdv.DateTimeInput();
             this.txt_showMessage = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.splitContainer_right = new System.Windows.Forms.SplitContainer();
             ((System.ComponentModel.ISupportInitialize)(this.webView_map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InBegin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_right)).BeginInit();
+            this.splitContainer_right.Panel1.SuspendLayout();
+            this.splitContainer_right.Panel2.SuspendLayout();
+            this.splitContainer_right.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmb_signalStrengthLevelCountMethod
@@ -78,12 +83,13 @@
             // 
             this.btn_querySignalNotExistArea.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_querySignalNotExistArea.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_querySignalNotExistArea.Location = new System.Drawing.Point(924, 10);
+            this.btn_querySignalNotExistArea.Location = new System.Drawing.Point(288, 23);
             this.btn_querySignalNotExistArea.Name = "btn_querySignalNotExistArea";
             this.btn_querySignalNotExistArea.Size = new System.Drawing.Size(132, 90);
             this.btn_querySignalNotExistArea.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_querySignalNotExistArea.TabIndex = 36;
             this.btn_querySignalNotExistArea.Text = "查询信号消失位置";
+            this.btn_querySignalNotExistArea.Click += new System.EventHandler(this.btn_querySignalNotExistArea_Click);
             // 
             // cmb_locatorSelect
             // 
@@ -115,7 +121,7 @@
             // 
             this.btn_querylowLevelSignal.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_querylowLevelSignal.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_querylowLevelSignal.Location = new System.Drawing.Point(786, 10);
+            this.btn_querylowLevelSignal.Location = new System.Drawing.Point(150, 23);
             this.btn_querylowLevelSignal.Name = "btn_querylowLevelSignal";
             this.btn_querylowLevelSignal.Size = new System.Drawing.Size(132, 90);
             this.btn_querylowLevelSignal.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -140,14 +146,12 @@
             // webView_map
             // 
             this.webView_map.AllowExternalDrop = true;
-            this.webView_map.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.webView_map.CreationProperties = null;
             this.webView_map.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView_map.Location = new System.Drawing.Point(648, 106);
+            this.webView_map.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webView_map.Location = new System.Drawing.Point(0, 0);
             this.webView_map.Name = "webView_map";
-            this.webView_map.Size = new System.Drawing.Size(951, 557);
+            this.webView_map.Size = new System.Drawing.Size(1123, 785);
             this.webView_map.TabIndex = 31;
             this.webView_map.ZoomFactor = 1D;
             // 
@@ -168,7 +172,7 @@
             // 
             this.btn_queryHighLevelSignal.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_queryHighLevelSignal.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_queryHighLevelSignal.Location = new System.Drawing.Point(648, 10);
+            this.btn_queryHighLevelSignal.Location = new System.Drawing.Point(12, 23);
             this.btn_queryHighLevelSignal.Name = "btn_queryHighLevelSignal";
             this.btn_queryHighLevelSignal.Size = new System.Drawing.Size(132, 90);
             this.btn_queryHighLevelSignal.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -307,40 +311,66 @@
             // 
             this.txt_showMessage.Border.Class = "TextBoxBorder";
             this.txt_showMessage.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_showMessage.Location = new System.Drawing.Point(0, 488);
+            this.txt_showMessage.Location = new System.Drawing.Point(0, 273);
             this.txt_showMessage.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.txt_showMessage.Multiline = true;
             this.txt_showMessage.Name = "txt_showMessage";
             this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(639, 175);
+            this.txt_showMessage.Size = new System.Drawing.Size(639, 709);
             this.txt_showMessage.TabIndex = 39;
+            // 
+            // splitContainer_right
+            // 
+            this.splitContainer_right.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer_right.Location = new System.Drawing.Point(671, 12);
+            this.splitContainer_right.Name = "splitContainer_right";
+            this.splitContainer_right.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer_right.Panel1
+            // 
+            this.splitContainer_right.Panel1.Controls.Add(this.btn_queryHighLevelSignal);
+            this.splitContainer_right.Panel1.Controls.Add(this.btn_querylowLevelSignal);
+            this.splitContainer_right.Panel1.Controls.Add(this.btn_querySignalNotExistArea);
+            // 
+            // splitContainer_right.Panel2
+            // 
+            this.splitContainer_right.Panel2.Controls.Add(this.webView_map);
+            this.splitContainer_right.Size = new System.Drawing.Size(1123, 970);
+            this.splitContainer_right.SplitterDistance = 181;
+            this.splitContainer_right.TabIndex = 40;
             // 
             // Frm_locator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1611, 675);
+            this.ClientSize = new System.Drawing.Size(1806, 983);
+            this.Controls.Add(this.splitContainer_right);
             this.Controls.Add(this.txt_showMessage);
             this.Controls.Add(this.cmb_signalStrengthLevelCountMethod);
             this.Controls.Add(this.labelX3);
-            this.Controls.Add(this.btn_querySignalNotExistArea);
             this.Controls.Add(this.cmb_locatorSelect);
             this.Controls.Add(this.labelX2);
-            this.Controls.Add(this.btn_querylowLevelSignal);
             this.Controls.Add(this.txt_signalThreshold);
-            this.Controls.Add(this.webView_map);
             this.Controls.Add(this.labelX1);
-            this.Controls.Add(this.btn_queryHighLevelSignal);
             this.Controls.Add(this.dT_InEnd);
             this.Controls.Add(this.labelX8);
             this.Controls.Add(this.labelX7);
             this.Controls.Add(this.dT_InBegin);
             this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "Frm_locator";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Frm_locator";
+            this.Load += new System.EventHandler(this.Frm_locator_Load);
             ((System.ComponentModel.ISupportInitialize)(this.webView_map)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InEnd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InBegin)).EndInit();
+            this.splitContainer_right.Panel1.ResumeLayout(false);
+            this.splitContainer_right.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_right)).EndInit();
+            this.splitContainer_right.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -362,5 +392,6 @@
         private DevComponents.DotNetBar.LabelX labelX3;
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmb_signalStrengthLevelCountMethod;
         private DevComponents.DotNetBar.Controls.TextBoxX txt_showMessage;
+        private System.Windows.Forms.SplitContainer splitContainer_right;
     }
 }

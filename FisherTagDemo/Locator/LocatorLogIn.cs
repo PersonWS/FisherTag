@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FisherTagDemo.Locator
 {
-    internal class LocatorLogIn :RestfulReturnMsgBase
+    public class LocatorLogIn :RestfulReturnMsgBase
     {
         public string id { get; set; } // id
 

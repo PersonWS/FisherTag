@@ -27,6 +27,11 @@ namespace FisherTagDemo
             return dt.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
+        public static long GPS_DateConvertDateTimeToUTC8(string dateTime)
+        {
+            DateTime dateTime1 = DateTime.Parse(dateTime);
+            return GPS_DateConvertDateTimeToUTC8(dateTime1);
+        }
         public static long GPS_DateConvertDateTimeToUTC8(DateTime dateTime)
         {
 

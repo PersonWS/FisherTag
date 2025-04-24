@@ -294,8 +294,6 @@ function showLocations(longitudes, latitudes, labNames, timeStamps) {
 }
 
 
-
-
 /**
  * 绘制轨迹（支持是否绘制轨迹线条的可选参数）
  * @param {Array} data - 轨迹点数据数组
@@ -327,9 +325,16 @@ function drawTrajectory(data, drawPolyline = true) {
         // 添加标记
         addMarker(point, gpsData[i].time);
 
+    if (drawPolyline) {
         // 添加日期和时间标签（不带箭头）
         var label = addTraceLabel(point, gpsData[i].time);
         labels.push(label); // 将标签保存到数组中
+		}
+		else
+		{
+		        var label = addTraceLabel(point, gpsData[i].gsmString);
+        labels.push(label); // 将标签保存到数组中
+		}
     }
 
     // 根据参数决定是否绘制轨迹线

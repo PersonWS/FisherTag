@@ -43,7 +43,7 @@ namespace FisherTagDemo
         /// </summary>
         DataTable _dt_rfid = new DataTable();
 
-        CommonResource _commonResource = new CommonResource();
+        CommonResource _commonResource ;
 
         /// <summary>
         /// HTTPserver
@@ -52,15 +52,13 @@ namespace FisherTagDemo
 
         System.Timers.Timer _timerGetGpsAlarms = null;
 
-        DateTime? _mdsDataTime = null;
-        /// <summary>
-        /// 登录信息
-        /// </summary>
-        LocatorLogIn _locatorLogIn;
+
         /// <summary>
         /// rfid和locator的对应关系  string:rfid序列号
         /// </summary>
         Dictionary<string, Rfid_LocatorCorrespond> _dic_locatorRfidCorrespond = new Dictionary<string, Rfid_LocatorCorrespond>();
+
+  
 
         public Form1()
         {
@@ -87,8 +85,6 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("WIFI");
             _dt_locator.Columns.Add("LBS");
             _dt_locator.Columns.Add("GPRS");
-
-
             //其他信息
 
             _dt_locator.Columns.Add("Speed");
@@ -271,12 +267,13 @@ namespace FisherTagDemo
                 return;
             }
             //先获取MDS
-            if (!GetMds())
+            if (!_commonResource.GetMds(out _getMdsString))
             {
+                ShowMessage(_getMdsString);
                 return;
             }
             //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceCurrentLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId_Obj.Text, _locatorLogIn.mds), chk_traceLog.Checked);
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceCurrentLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId_Obj.Text, _commonResource.LocatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},返回数据为空,ret:{devRet}");
@@ -328,17 +325,19 @@ namespace FisherTagDemo
             //webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat})");
 
         }
-
+        string _getMdsString = "";
         private void btn_GetDevList_Click(object sender, EventArgs e)
         {
-            _commonResource.LocatorServer = new LocatorServerInterope(this.txt_ShipLocatorURL.Text, 5);
+            IniCommonResource();
+
             //先获取MDS
-            if (!GetMds())
+            if (!_commonResource.GetMds(out _getMdsString))
             {
+                ShowMessage(_getMdsString);
                 return;
             }
             //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds), chk_traceLog.Checked);
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceListReq.GenerateGetAppendMsg(_commonResource.LocatorLogIn.id, _commonResource.LocatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据为null,ret:{devRet}");
@@ -373,6 +372,8 @@ namespace FisherTagDemo
                 }
                 dgv_locatorList.DataSource = _dt_locator;
                 dgv_locatorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+                CheckControlNames(this, "locator", true);
             }
             //启动定时器定时查询报警信息
             if (_timerGetGpsAlarms == null)
@@ -391,13 +392,13 @@ namespace FisherTagDemo
             {
                 _timerGetGpsAlarms.Stop();
                 //先获取MDS
-                if (!GetMds())
+                if (!_commonResource.GetMds(out _getMdsString))
                 {
-                    _timerGetGpsAlarms.Start();
+                    ShowMessage(_getMdsString);
                     return;
                 }
                 //获取设备数据
-                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetLocalAlarmInfoUtcReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds, _maxTime.ToString()), chk_traceLog.Checked);
+                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetLocalAlarmInfoUtcReq.GenerateGetAppendMsg(_commonResource.LocatorLogIn.id, _commonResource.LocatorLogIn.mds, _maxTime.ToString()), chk_traceLog.Checked);
                 if (devRet == null)
                 {
                     ShowMessage($"alarm,返回数据为空,ret:{devRet}");
@@ -443,43 +444,13 @@ namespace FisherTagDemo
 
         }
 
-        private bool GetMds()
-        {
-            if (_commonResource.LocatorServer == null)
-            {
-                ShowMessage($"获取定位器服务mds失败,请先获取定位器列表");
-                return false;
-            }
-            if (_mdsDataTime != null && ((DateTime.Now - _mdsDataTime).Value.TotalMinutes < 19 && _locatorLogIn != null))
-            {
-                return true;
-            }
-            ShowMessage("mds过期, 获取远程mds");
-            string mdsRet = _commonResource.LocatorServer.GetMessageByRestful(LocatorLogIn.GetLogInAppendMsg(txt_ShipLocatorUserName.Text, txt_ShipLocatorPassWord.Text), chk_traceLog.Checked);
-            if (string.IsNullOrEmpty(mdsRet))
-            {
-                //BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器服务mds失败!");
-                ShowMessage($"获取定位器服务mds失败!");
-                return false;
-            }
 
-            _locatorLogIn = Newtonsoft.Json.JsonConvert.DeserializeObject<LocatorLogIn>(mdsRet) as LocatorLogIn;
-            if (_locatorLogIn == null)
-            {
-                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器云端服务mds报文异常!,ret:{mdsRet}");
-                ShowMessage($"定位器云端服务mds报文异常!,ret:{mdsRet}");
-                return false;
-            }
-            if (_locatorLogIn.success.ToLower() != "true")
-            {
-                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器云端服务mds获取失败,ret:{mdsRet}");
-                ShowMessage($"定位器云端服务mds获取失败,ret:{mdsRet}");
-                return false;
-            }
-            ShowMessage($"mds获取成功,mds:{_locatorLogIn.mds}");
-            _mdsDataTime = DateTime.Now;
-            return true;
+        private void IniCommonResource()
+        {
+            _commonResource = new CommonResource(this.txt_ShipLocatorUserName.Text, this.txt_ShipLocatorPassWord.Text);
+            _commonResource.LocatorServer = new LocatorServerInterope(this.txt_ShipLocatorURL.Text, 5);
         }
+       
 
 
 
@@ -501,13 +472,14 @@ namespace FisherTagDemo
                 return;
             }
             //先获取MDS
-            if (!GetMds())
+            if (!_commonResource.GetMds(out _getMdsString))
             {
+                ShowMessage(_getMdsString);
                 return;
             }
             ShowMessage($"开始获取设备数据...");
             //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, _locatorLogIn.mds,
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, _commonResource.LocatorLogIn.mds,
                 TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
             if (devRet == null)
             {
@@ -604,7 +576,28 @@ namespace FisherTagDemo
         {
             //this.WindowState = FormWindowState.Maximized;
             InitializeWebView();
+
+            CheckControlNames(this, "locator", false);
         }
+
+        private void CheckControlNames(Control parentControl,string searchText, bool enable)
+        {
+            foreach (Control control in parentControl.Controls)
+            {
+                // 检查当前控件
+                if (control is ButtonX button &&
+                    ((ButtonX)button).Name.ToLower().Contains(searchText.ToLower()))
+                {
+                    button.Enabled= enable;
+                }
+                if (control.HasChildren)
+                {
+                    CheckControlNames(control, searchText,enable);
+                }
+            }
+        }
+
+
 
         private void btn_clearLog_Click(object sender, EventArgs e)
         {
@@ -668,16 +661,17 @@ namespace FisherTagDemo
         {
             Dictionary<string, DeviceInfo> devDic = null;
             //先获取MDS
-            if (!GetMds())
+            if (!_commonResource.GetMds(out _getMdsString))
             {
-                return null;
+                ShowMessage(_getMdsString);
+                return devDic;
             }
 
             devDic = new Dictionary<string, DeviceInfo>();
             foreach (var item in _commonResource.LocatorDeviceInfo.rows)
             {
                 //获取设备数据
-                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_SendCommandsReq.GenerateGetAppendMsg(item.macid, _locatorLogIn.mds,
+                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_SendCommandsReq.GenerateGetAppendMsg(item.macid, _commonResource.LocatorLogIn.mds,
                    LocatorEnum_SendCommand.PASSTHROUGHA.ToString(), Locator_ModeEntity.GenerateGetModeCommand()));
 
                 Locator_SendCommandsAck devInfo = JsonConvert.DeserializeObject<Locator_SendCommandsAck>(devRet) as Locator_SendCommandsAck;
@@ -715,15 +709,16 @@ namespace FisherTagDemo
             Thread.Sleep(3000);
             //接下来获得结果
             //先获取MDS
-            if (!GetMds() || devDic == null)
+            if (!_commonResource.GetMds(out _getMdsString))
             {
-                return;
+                ShowMessage(_getMdsString);
+                return ;
             }
             ShowMessage($"开始获取所有设备Mode数据结果...");
             foreach (var item in devDic)
             {
                 //获取设备数据
-                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Value.macid, _locatorLogIn.mds,
+                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Value.macid, _commonResource.LocatorLogIn.mds,
                    item.Key));
 
                 Locator_GetCommandsResultAck devInfo = JsonConvert.DeserializeObject<Locator_GetCommandsResultAck>(devRet) as Locator_GetCommandsResultAck;
@@ -774,13 +769,15 @@ namespace FisherTagDemo
         /// <returns></returns>
         private Locator_GetCurrentLocationBatchAck GetLocatorCurrentStatus()
         {
-            if (!GetMds())
+            //先获取MDS
+            if (!_commonResource.GetMds(out _getMdsString))
             {
+                ShowMessage(_getMdsString);
                 return null;
             }
             //  ShowMessage($"批量获取设备数据开始...");
             //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_locatorLogIn.id, _locatorLogIn.mds));
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_commonResource.LocatorLogIn.id, _commonResource.LocatorLogIn.mds));
             if (devRet == null)
             {
                 ShowMessage($"批量获取设备数据结果为空,ret:{devRet}");
@@ -904,14 +901,14 @@ namespace FisherTagDemo
         {
             if (((ButtonX)sender).Text == "启动信号跟踪")
             {
-                btn_getLocationBatch.Enabled = false;
+                btn_getLocatorBatch.Enabled = false;
                 _isTraceSignalStrength = true;
                 ((ButtonX)sender).Text = "启动信号跟踪中，点击停止";
                 _taskTraceSignalStrength = Task.Run(() => { RecordDevDSignalInfo(); });
             }
             else
             {
-                btn_getLocationBatch.Enabled = true;
+                btn_getLocatorBatch.Enabled = true;
                 _isTraceSignalStrength = false;
                 _taskTraceSignalStrength.Wait();
                 ((ButtonX)sender).Text = "启动信号跟踪";
