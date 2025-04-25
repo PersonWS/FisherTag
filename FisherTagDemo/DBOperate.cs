@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,11 +57,12 @@ namespace FisherTagDemo
         /// <summary>
         /// 查询信号点，根据信号的强度
         /// </summary>
+        /// <param name="userName">船名</param>
         /// <param name="singnalThreshold"></param>
         /// <param name="signalCountMethod"></param>
         /// <param name="isShowLowlevel">true: 显示信号小于singnalThreshold这个值的数据，false:显示信号大于等于singnalThreshold这个值的数据</param>
         /// <returns></returns>
-        public DataTable QuerySignalBySignalStrength(int singnalThreshold, string signalCountMethod, bool isShowLowlevel)
+        public DataTable QuerySignalBySignalStrength(string userName, int singnalThreshold, string signalCountMethod, bool isShowLowlevel)
         {
             try
             {
@@ -80,13 +82,20 @@ namespace FisherTagDemo
                 string signalLevel = "";
                 if (isShowLowlevel)
                 {
-                    signalLevel = $" gmsLevel < '{singnalThreshold}'";
+                    signalLevel = $"and gmsLevel < '{singnalThreshold}'";
                 }
                 else
                 {
-                    signalLevel = $" gmsLevel > '{singnalThreshold - 1}'";
+                    signalLevel = $"and gmsLevel > '{singnalThreshold - 1}'";
                 }
-                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {gsmString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where  {signalLevel} group by longiLati order by ID desc ";
+
+                string userNameString = "";
+                if (!string.IsNullOrEmpty(userName) && userName.ToLower() != "all")
+                {
+                    userNameString = $"and userName= '{userName}'";
+                }
+
+                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {gsmString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where 1=1 {userNameString}  {signalLevel} group by longiLati order by ID desc ";
                 return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
             }
             catch (Exception ex)

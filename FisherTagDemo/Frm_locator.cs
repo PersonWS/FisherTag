@@ -88,7 +88,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, "信号阈值不可为空");
                 return;
             }
-            DataTable dt = _commonResource.DBOperate.QuerySignalBySignalStrength(Convert.ToInt32(txt_signalThreshold.Text), cmb_signalStrengthLevelCountMethod.Text, false);
+            DataTable dt = _commonResource.DBOperate.QuerySignalBySignalStrength(cmb_locatorSelect.Text, Convert.ToInt32(txt_signalThreshold.Text), cmb_signalStrengthLevelCountMethod.Text, false);
             if (dt != null)
             {
                 GeneratePointAndShow(new List<DataTable>() { dt });
@@ -154,13 +154,14 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, "信号阈值不可为空");
                 return;
             }
-            DataTable dt = _commonResource.DBOperate.QuerySignalBySignalStrength(Convert.ToInt32(txt_signalThreshold.Text), cmb_signalStrengthLevelCountMethod.Text, true);
+            DataTable dt = _commonResource.DBOperate.QuerySignalBySignalStrength(cmb_locatorSelect.Text, Convert.ToInt32(txt_signalThreshold.Text), cmb_signalStrengthLevelCountMethod.Text, true);
             if (dt != null)
             {
                 GeneratePointAndShow(new List<DataTable>() { dt });
             }
             else
             {
+                GeneratePointAndShow(new List<DataTable>() {  });
                 ShowMessage("该时间区间查询到的信号数据为空");
             }
         }

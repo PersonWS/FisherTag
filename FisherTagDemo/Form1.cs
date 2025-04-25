@@ -32,6 +32,11 @@ namespace FisherTagDemo
         SocketHelper.USocket.SocketServerClass _socketServer = null;
         LogHelper.ILogEntity _log = LogHelper.EasyLogger.GetDefaultLoggerInstance();
 
+        /// <summary>
+        /// 控件是否正在展示地图
+        /// </summary>
+        private bool _isShowPositionIng = false;
+
         private object _lockReceive = new object();
         /// <summary>
         /// 定位器datatable
@@ -43,7 +48,7 @@ namespace FisherTagDemo
         /// </summary>
         DataTable _dt_rfid = new DataTable();
 
-        CommonResource _commonResource ;
+        CommonResource _commonResource;
 
         /// <summary>
         /// HTTPserver
@@ -58,7 +63,7 @@ namespace FisherTagDemo
         /// </summary>
         Dictionary<string, Rfid_LocatorCorrespond> _dic_locatorRfidCorrespond = new Dictionary<string, Rfid_LocatorCorrespond>();
 
-  
+
 
         public Form1()
         {
@@ -261,6 +266,11 @@ namespace FisherTagDemo
 
         private async void btn_getLocation_Click(object sender, EventArgs e)
         {
+            if (_isShowPositionIng)
+            {
+                FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
+                return;
+            }
             if (string.IsNullOrEmpty(txt_ShipLocatorId.Text))
             {
                 BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器！");
@@ -298,9 +308,11 @@ namespace FisherTagDemo
 
             double lng = Convert.ToDouble(devInfo.data[0].records[0][devInfo.data[0].key.jingdu]); // 经度（上海外滩）
             double lat = Convert.ToDouble(devInfo.data[0].records[0][devInfo.data[0].key.weidu]);  // 纬度
+            _isShowPositionIng = true;
             await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat}," +
                 $"'{devInfo.data[0].records[0][devInfo.data[0].key.user_name].ToString()}',{devInfo.data[0].records[0][devInfo.data[0].key.datetime]})");
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat},'{"A00001"}')");
+            _isShowPositionIng = false;
 
         }
         private async void InitializeWebView()
@@ -343,7 +355,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"定位器设备返回数据为null,ret:{devRet}");
                 return;
             }
-           _commonResource.LocatorDeviceInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Locator_GetDeviceListAck>(devRet) as Locator_GetDeviceListAck;
+            _commonResource.LocatorDeviceInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Locator_GetDeviceListAck>(devRet) as Locator_GetDeviceListAck;
 
             if (_commonResource.LocatorDeviceInfo == null)
             {
@@ -372,7 +384,7 @@ namespace FisherTagDemo
                 }
                 dgv_locatorList.DataSource = _dt_locator;
                 dgv_locatorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
+                dgv_locatorList.RowHeadersWidth = 20;
                 CheckControlNames(this, "locator", true);
             }
             //启动定时器定时查询报警信息
@@ -450,7 +462,7 @@ namespace FisherTagDemo
             _commonResource = new CommonResource(this.txt_ShipLocatorUserName.Text, this.txt_ShipLocatorPassWord.Text);
             _commonResource.LocatorServer = new LocatorServerInterope(this.txt_ShipLocatorURL.Text, 5);
         }
-       
+
 
 
 
@@ -466,72 +478,97 @@ namespace FisherTagDemo
 
         private async void btn_getHistoryPath_Click(object sender, EventArgs e)
         {
+            if (_isShowPositionIng)
+            {
+                FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
+                return;
+            }
             if (string.IsNullOrEmpty(txt_ShipLocatorId.Text))
             {
                 BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器！");
                 return;
             }
-            //先获取MDS
-            if (!_commonResource.GetMds(out _getMdsString))
-            {
-                ShowMessage(_getMdsString);
-                return;
-            }
-            ShowMessage($"开始获取设备数据...");
-            //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(txt_ShipLocatorId.Text, _commonResource.LocatorLogIn.mds,
-                TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
-            if (devRet == null)
-            {
-                ShowMessage($"定位器ID:{txt_ShipLocatorId},设备数据为null ,ret:{devRet}");
-                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据为null");
-                return;
-            }
-            Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
-            if (devInfo == null)
-            {
-                ShowMessage($"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
-                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
-                return;
-            }
-            else if (devInfo.success != "true")
-            {
-                ShowMessage($"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
-                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
-                return;
-            }
-            else if (devInfo.data == null || devInfo.data.Count == 0 || string.IsNullOrEmpty(devInfo.data[0].point))
-            {
-                ShowMessage($"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
-                BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
-                return;
-            }
+            GetLocatorHistoryPathByShipNames(new List<string>() { txt_ShipLocatorId.Text });
 
-            //处理point数据
-            string[] points = devInfo.data[0].point.Split(';');
-            List<LocatoreHistoryLocation> data = new List<LocatoreHistoryLocation>();
-            for (int i = 0; i < points.Length; i++)
+
+        }
+
+        private async void GetLocatorHistoryPathByShipNames(List<string> shipIDs)
+        {
+            List<LocatoreHistoryLocation> locatorHistoryData = new List<LocatoreHistoryLocation>();
+            ShowMessage($"开始获取设备数据...");
+            foreach (string shipID in shipIDs)
             {
-                string[] pointsData = points[i].Split(',');
-                if (pointsData.Length < 3)
+                //先获取MDS
+                if (!_commonResource.GetMds(out _getMdsString))
                 {
-                    _log.Warn($"pointsData:{points[i]}数据异常");
+                    ShowMessage(_getMdsString);
                     continue;
                 }
-                Int64 utcTime = 0;
-             Int64.TryParse(   pointsData[2].ToString(), out utcTime );
-                LocatoreHistoryLocation his = new LocatoreHistoryLocation(pointsData[0], pointsData[1], utcTime);
-                data.Add(his);
-            }
+                //获取设备数据
+                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(shipID, _commonResource.LocatorLogIn.mds,
+                    TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
+                if (devRet == null)
+                {
+                    ShowMessage($"定位器ID:{shipID},设备数据为null ,ret:{devRet}");
+                    //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据为null");
+                    continue;
+                }
+                Locator_GetDeviceHistoryLocationAck devInfo = JsonConvert.DeserializeObject<Locator_GetDeviceHistoryLocationAck>(devRet) as Locator_GetDeviceHistoryLocationAck;
+                if (devInfo == null)
+                {
+                    ShowMessage($"定位器ID:{shipID},设备数据转换失败,ret:{devRet}");
+                    //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
+                    continue;
+                }
+                else if (devInfo.success != "true")
+                {
+                    ShowMessage($"定位器ID:{shipID},数据异常,ret:{devRet}");
+                    // BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
+                    continue;
+                }
+                else if (devInfo.data == null || devInfo.data.Count == 0 || string.IsNullOrEmpty(devInfo.data[0].point))
+                {
+                    ShowMessage($"定位器ID:{shipID},无历史轨迹信息,ret:{devRet}");
+                    // BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
+                    continue;
+                }
 
+                //处理point数据
+                string[] points = devInfo.data[0].point.Split(';');
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    string[] pointsData = points[i].Split(',');
+                    if (pointsData.Length < 3)
+                    {
+                        _log.Warn($"pointsData:{points[i]}数据异常");
+                        continue;
+                    }
+                    Int64 utcTime = 0;
+                    Int64.TryParse(pointsData[2].ToString(), out utcTime);
+                    LocatoreHistoryLocation his = new LocatoreHistoryLocation(pointsData[0], pointsData[1], utcTime);
+                    locatorHistoryData.Add(his);
+                }
+            }
             //获得经纬度速度
-            string locationStr = JsonConvert.SerializeObject(data);
+            string locationStr = JsonConvert.SerializeObject(locatorHistoryData);
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory('{locationStr}'" );.
             // 调用 JavaScript 函数，传入 JSON 字符串
-            ShowMessage($"await webView_map.CoreWebView2.ExecuteScriptAsync($\"drawTrajectory(JSON.parse('{{locationStr}}'))\")");
-            await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
+            _isShowPositionIng = true;
 
-
+            ShowMessage($"开始执行地图显示数据绘制！");
+            if (shipIDs.Count == 1)
+            {
+                //await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'))");
+                await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'), true)");
+            }
+            else
+            {
+                await webView_map.CoreWebView2.ExecuteScriptAsync($"drawTrajectory(JSON.parse('{locationStr}'), false)");
+            }
+            _isShowPositionIng = false;
+            ShowMessage($"地图显示数据绘制完成");
         }
 
         private void splitContainer_Main_Panel1_SizeChanged(object sender, EventArgs e)
@@ -578,9 +615,10 @@ namespace FisherTagDemo
             InitializeWebView();
 
             CheckControlNames(this, "locator", false);
+
         }
 
-        private void CheckControlNames(Control parentControl,string searchText, bool enable)
+        private void CheckControlNames(Control parentControl, string searchText, bool enable)
         {
             foreach (Control control in parentControl.Controls)
             {
@@ -588,11 +626,11 @@ namespace FisherTagDemo
                 if (control is ButtonX button &&
                     ((ButtonX)button).Name.ToLower().Contains(searchText.ToLower()))
                 {
-                    button.Enabled= enable;
+                    button.Enabled = enable;
                 }
                 if (control.HasChildren)
                 {
-                    CheckControlNames(control, searchText,enable);
+                    CheckControlNames(control, searchText, enable);
                 }
             }
         }
@@ -712,7 +750,7 @@ namespace FisherTagDemo
             if (!_commonResource.GetMds(out _getMdsString))
             {
                 ShowMessage(_getMdsString);
-                return ;
+                return;
             }
             ShowMessage($"开始获取所有设备Mode数据结果...");
             foreach (var item in devDic)
@@ -1001,6 +1039,30 @@ namespace FisherTagDemo
         {
             Frm_locator frm_Locator = new Frm_locator(_commonResource);
             frm_Locator.ShowDialog();
+        }
+
+        private void btn_getSelectedLocatorHistoryPath_Click(object sender, EventArgs e)
+        {
+            if (_isShowPositionIng)
+            {
+                FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
+                return;
+            }
+            if (dgv_locatorList.SelectedRows.Count > 0)
+            {
+                List<string> shipNames = new List<string>();
+                foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
+                {
+                    shipNames.Add(item.Cells["Macid"].Value.ToString());
+                }
+                GetLocatorHistoryPathByShipNames(shipNames);
+            }
+            else
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器整行，用行头选择，可多选！");
+                return;
+            }
+
         }
     }
 }
