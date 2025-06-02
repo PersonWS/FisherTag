@@ -675,10 +675,12 @@ namespace FisherTagDemo
         {
             try
             {
-                ShowMessage($"获取定位器模式信息开始！");
+                ShowMessage($"获取定位器[状态]信息开始！");
                 AnalysisDevCurrentInfo(GetLocatorCurrentStatus());
+                ShowMessage($"获取定位器[状态]信息完成！");
+                ShowMessage($"获取定位器【模式】信息开始！");
                 GetLocatorModeSub01();
-                ShowMessage($"获取定位器模式信息完成！");
+                ShowMessage($"获取定位器【模式】信息完成！");
             }
             catch (Exception ex)
             {
@@ -695,9 +697,9 @@ namespace FisherTagDemo
         /// </summary>
         /// <param name="param"></param>
         /// <returns>string : id    DeviceInfo:设备信息</returns>
-        private Dictionary<string, DeviceInfo> SendMessageToLocatorBySendCommand(string param)
+        private Dictionary< DeviceInfo, string> SendMessageToLocatorBySendCommand(string param)
         {
-            Dictionary<string, DeviceInfo> devDic = null;
+            Dictionary<DeviceInfo, string> devDic = null;
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
             {
@@ -705,7 +707,7 @@ namespace FisherTagDemo
                 return devDic;
             }
 
-            devDic = new Dictionary<string, DeviceInfo>();
+            devDic = new Dictionary<DeviceInfo, string>();
             foreach (var item in _commonResource.LocatorDeviceInfo.rows)
             {
                 //获取设备数据
@@ -731,7 +733,16 @@ namespace FisherTagDemo
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                     continue;
                 }
-                devDic.Add(devInfo.Data[0].CmdNo, item);
+                if (!devDic.Keys.Contains(item))
+                {
+                    devDic.Add(item, devInfo.Data[0].CmdNo);
+                }
+                else
+                {
+                    devDic[item]=devInfo.Data[0].CmdNo;
+                    ShowMessage($"定位器ID:{item.macName},已存在cmdNo,更新为:{devInfo.Data[0].CmdNo}");
+                }
+
             }
             return devDic;
         }
@@ -739,12 +750,12 @@ namespace FisherTagDemo
         private void GetLocatorModeSub01()
         {
             ShowMessage($"开始获取所有设备Mode数据回执...");
-            Dictionary<string, DeviceInfo> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand());
+            Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand());
             if (devDic == null || devDic.Count == 0)
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
             }
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             //接下来获得结果
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
@@ -756,37 +767,37 @@ namespace FisherTagDemo
             foreach (var item in devDic)
             {
                 //获取设备数据
-                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Value.macid, _commonResource.LocatorLogIn.mds,
-                   item.Key));
+                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Key.macid, _commonResource.LocatorLogIn.mds,
+                   item.Value));
 
                 Locator_GetCommandsResultAck devInfo = JsonConvert.DeserializeObject<Locator_GetCommandsResultAck>(devRet) as Locator_GetCommandsResultAck;
                 if (devInfo == null)
                 {
-                    ShowMessage($"定位器ID:{item.Value.fullName},设备Mode数据转换失败,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Key.fullName},设备Mode数据转换失败,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.success != "true")
                 {
-                    ShowMessage($"定位器ID:{item.Value.fullName},Mode数据异常,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Key.fullName},Mode数据异常,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
                     continue;
                 }
                 else if (devInfo.data == null || devInfo.data.Count == 0)
                 {
-                    ShowMessage($"定位器ID:{item.Value.fullName},无Mode信息信息,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Key.fullName},无Mode信息信息,ret:{devRet}");
                     //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
                     continue;
                 }
                 else if (!devInfo.data[0].Status)
                 {
-                    ShowMessage($"定位器ID:{item.Value.fullName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
+                    ShowMessage($"定位器ID:{item.Key.fullName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
                     Thread.Sleep(1000);
                     continue;
                 }
                 lock (_dgvLock)
                 {
-                    DataRow[] drs = _dt_locator.Select($"Macid='{item.Value.macid}'");
+                    DataRow[] drs = _dt_locator.Select($"Macid='{item.Key.macid}'");
                     if (drs.Count() > 0)
                     {
                         Locator_ModeEntity entity = new Locator_ModeEntity(devInfo.data[0].ResponseMsg);
@@ -876,10 +887,10 @@ namespace FisherTagDemo
 
         private void btn_locating_Click(object sender, EventArgs e)
         {
-            Dictionary<string, DeviceInfo> devDic = SendMessageToLocatorBySendCommand("LJDW%23");
+            Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand("LJDW%23");
             foreach (var item in devDic)
             {
-                ShowMessage($"dev:{item.Value.fullName} 立即定位指令  Send OK");
+                ShowMessage($"dev:{item.Key.fullName} 立即定位指令  Send OK");
             }
         }
 
