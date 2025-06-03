@@ -665,6 +665,20 @@ namespace FisherTagDemo
                 return;
             }
             _isLocatorModeProcessing = true;
+            ShowMessage($"清理历史数据开始！");
+            foreach (DataRow item in ((DataTable)dgv_locatorList.DataSource).Rows)
+            {
+                item["Charge"] = "";
+                item["Battery"] = "";
+                item["longitude"] = "";
+                item["latitude"] = "";
+                item["WorkMode"] = "";
+                item["ReportInterval"] = "";
+                item["GPS"] = "";
+                item["WIFI"] = "";
+                item["LBS"] = "";
+                item["GPRS"] = "";
+            }
 
             Task.Run(() =>
              {
@@ -755,7 +769,7 @@ namespace FisherTagDemo
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
             }
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
             //接下来获得结果
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
