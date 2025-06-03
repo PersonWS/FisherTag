@@ -47,9 +47,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CommonDll\DevComponents.DotNetBar2.dll</HintPath>
     </Reference>
-    <Reference Include="IOTDBHepler">
-      <HintPath>..\CommonDll\IOTDBHepler.dll</HintPath>
-    </Reference>
     <Reference Include="LogHelper">
       <HintPath>..\CommonDll\LogHelper.dll</HintPath>
     </Reference>
@@ -64,9 +61,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\CommonDll\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PLCDataConvert">
-      <HintPath>..\CommonDll\PLCDataConvert.dll</HintPath>
     </Reference>
     <Reference Include="SocketHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

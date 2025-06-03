@@ -30,33 +30,35 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
+            this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
+            this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.btn_connectRfid = new DevComponents.DotNetBar.ButtonX();
+            this.labelX1 = new DevComponents.DotNetBar.LabelX();
+            this.txt_RFID_ServerPort = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.btn_disConnect = new DevComponents.DotNetBar.ButtonX();
+            this.txt_RFID_ServerIP = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.txt_showMessage = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.dgv_rfid = new DevComponents.DotNetBar.Controls.DataGridViewX();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.txt_showMessage = new DevComponents.DotNetBar.Controls.TextBoxX();
-            this.panel_operate = new DevComponents.DotNetBar.PanelEx();
-            this.labelX2 = new DevComponents.DotNetBar.LabelX();
-            this.txt_RFID_ServerIP = new DevComponents.DotNetBar.Controls.TextBoxX();
-            this.btn_disConnect = new DevComponents.DotNetBar.ButtonX();
-            this.txt_RFID_ServerPort = new DevComponents.DotNetBar.Controls.TextBoxX();
-            this.labelX1 = new DevComponents.DotNetBar.LabelX();
-            this.btn_connectRfid = new DevComponents.DotNetBar.ButtonX();
-            this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
+            this.labelX3 = new DevComponents.DotNetBar.LabelX();
+            this.txt_filter = new DevComponents.DotNetBar.Controls.TextBoxX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
             this.splitContainer_Main.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Sub1)).BeginInit();
+            this.splitContainer_Sub1.Panel1.SuspendLayout();
+            this.splitContainer_Sub1.Panel2.SuspendLayout();
+            this.splitContainer_Sub1.SuspendLayout();
+            this.panel_operate.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_rfid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.panel_operate.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Sub1)).BeginInit();
-            this.splitContainer_Sub1.Panel1.SuspendLayout();
-            this.splitContainer_Sub1.Panel2.SuspendLayout();
-            this.splitContainer_Sub1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer_Main
@@ -79,6 +81,151 @@
             this.splitContainer_Main.TabIndex = 9;
             this.splitContainer_Main.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Main_SplitterMoved);
             // 
+            // splitContainer_Sub1
+            // 
+            this.splitContainer_Sub1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer_Sub1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer_Sub1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.splitContainer_Sub1.Name = "splitContainer_Sub1";
+            this.splitContainer_Sub1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer_Sub1.Panel1
+            // 
+            this.splitContainer_Sub1.Panel1.Controls.Add(this.panel_operate);
+            this.splitContainer_Sub1.Panel1.SizeChanged += new System.EventHandler(this.splitContainer_Main_Panel1_SizeChanged);
+            // 
+            // splitContainer_Sub1.Panel2
+            // 
+            this.splitContainer_Sub1.Panel2.Controls.Add(this.txt_showMessage);
+            this.splitContainer_Sub1.Size = new System.Drawing.Size(1056, 941);
+            this.splitContainer_Sub1.SplitterDistance = 188;
+            this.splitContainer_Sub1.SplitterWidth = 8;
+            this.splitContainer_Sub1.TabIndex = 18;
+            this.splitContainer_Sub1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Sub1_SplitterMoved);
+            // 
+            // panel_operate
+            // 
+            this.panel_operate.AutoScroll = true;
+            this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
+            this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.txt_filter);
+            this.panel_operate.Controls.Add(this.labelX3);
+            this.panel_operate.Controls.Add(this.btn_connectRfid);
+            this.panel_operate.Controls.Add(this.labelX1);
+            this.panel_operate.Controls.Add(this.txt_RFID_ServerPort);
+            this.panel_operate.Controls.Add(this.btn_disConnect);
+            this.panel_operate.Controls.Add(this.txt_RFID_ServerIP);
+            this.panel_operate.Controls.Add(this.labelX2);
+            this.panel_operate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_operate.Location = new System.Drawing.Point(0, 0);
+            this.panel_operate.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.panel_operate.Name = "panel_operate";
+            this.panel_operate.Size = new System.Drawing.Size(1056, 188);
+            this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
+            this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
+            this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
+            this.panel_operate.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine;
+            this.panel_operate.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder;
+            this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
+            this.panel_operate.Style.GradientAngle = 90;
+            this.panel_operate.TabIndex = 20;
+            // 
+            // btn_connectRfid
+            // 
+            this.btn_connectRfid.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_connectRfid.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_connectRfid.Location = new System.Drawing.Point(502, 18);
+            this.btn_connectRfid.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_connectRfid.Name = "btn_connectRfid";
+            this.btn_connectRfid.Size = new System.Drawing.Size(206, 98);
+            this.btn_connectRfid.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_connectRfid.TabIndex = 4;
+            this.btn_connectRfid.Text = "启动RFID监听服务";
+            this.btn_connectRfid.Click += new System.EventHandler(this.btn_connect_Click);
+            // 
+            // labelX1
+            // 
+            // 
+            // 
+            // 
+            this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX1.Location = new System.Drawing.Point(17, 21);
+            this.labelX1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX1.Name = "labelX1";
+            this.labelX1.Size = new System.Drawing.Size(196, 46);
+            this.labelX1.TabIndex = 0;
+            this.labelX1.Text = "RFID_ServerIP:";
+            // 
+            // txt_RFID_ServerPort
+            // 
+            // 
+            // 
+            // 
+            this.txt_RFID_ServerPort.Border.Class = "TextBoxBorder";
+            this.txt_RFID_ServerPort.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_RFID_ServerPort.Location = new System.Drawing.Point(226, 75);
+            this.txt_RFID_ServerPort.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_RFID_ServerPort.Name = "txt_RFID_ServerPort";
+            this.txt_RFID_ServerPort.Size = new System.Drawing.Size(264, 35);
+            this.txt_RFID_ServerPort.TabIndex = 3;
+            this.txt_RFID_ServerPort.Text = "2000";
+            // 
+            // btn_disConnect
+            // 
+            this.btn_disConnect.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_disConnect.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_disConnect.Location = new System.Drawing.Point(720, 21);
+            this.btn_disConnect.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_disConnect.Name = "btn_disConnect";
+            this.btn_disConnect.Size = new System.Drawing.Size(206, 98);
+            this.btn_disConnect.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_disConnect.TabIndex = 7;
+            this.btn_disConnect.Text = "停止RFID监听服务";
+            this.btn_disConnect.Click += new System.EventHandler(this.btn_disConnect_Click);
+            // 
+            // txt_RFID_ServerIP
+            // 
+            // 
+            // 
+            // 
+            this.txt_RFID_ServerIP.Border.Class = "TextBoxBorder";
+            this.txt_RFID_ServerIP.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_RFID_ServerIP.Location = new System.Drawing.Point(226, 21);
+            this.txt_RFID_ServerIP.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_RFID_ServerIP.Name = "txt_RFID_ServerIP";
+            this.txt_RFID_ServerIP.Size = new System.Drawing.Size(264, 35);
+            this.txt_RFID_ServerIP.TabIndex = 1;
+            this.txt_RFID_ServerIP.Text = "0.0.0.0";
+            // 
+            // labelX2
+            // 
+            // 
+            // 
+            // 
+            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX2.Location = new System.Drawing.Point(16, 75);
+            this.labelX2.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX2.Name = "labelX2";
+            this.labelX2.Size = new System.Drawing.Size(196, 46);
+            this.labelX2.TabIndex = 2;
+            this.labelX2.Text = "RFID_ServerPort:";
+            // 
+            // txt_showMessage
+            // 
+            // 
+            // 
+            // 
+            this.txt_showMessage.Border.Class = "TextBoxBorder";
+            this.txt_showMessage.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_showMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txt_showMessage.Location = new System.Drawing.Point(0, 0);
+            this.txt_showMessage.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_showMessage.Multiline = true;
+            this.txt_showMessage.Name = "txt_showMessage";
+            this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txt_showMessage.Size = new System.Drawing.Size(1056, 745);
+            this.txt_showMessage.TabIndex = 0;
+            // 
             // dgv_rfid
             // 
             this.dgv_rfid.AllowUserToAddRows = false;
@@ -86,7 +233,7 @@
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
@@ -126,148 +273,31 @@
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
             // 
-            // txt_showMessage
+            // labelX3
             // 
             // 
             // 
             // 
-            this.txt_showMessage.Border.Class = "TextBoxBorder";
-            this.txt_showMessage.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_showMessage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_showMessage.Location = new System.Drawing.Point(0, 0);
-            this.txt_showMessage.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.txt_showMessage.Multiline = true;
-            this.txt_showMessage.Name = "txt_showMessage";
-            this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(1056, 745);
-            this.txt_showMessage.TabIndex = 0;
+            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX3.Location = new System.Drawing.Point(16, 124);
+            this.labelX3.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX3.Name = "labelX3";
+            this.labelX3.Size = new System.Drawing.Size(196, 46);
+            this.labelX3.TabIndex = 8;
+            this.labelX3.Text = "Filter:";
             // 
-            // panel_operate
-            // 
-            this.panel_operate.AutoScroll = true;
-            this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
-            this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.panel_operate.Controls.Add(this.btn_connectRfid);
-            this.panel_operate.Controls.Add(this.labelX1);
-            this.panel_operate.Controls.Add(this.txt_RFID_ServerPort);
-            this.panel_operate.Controls.Add(this.btn_disConnect);
-            this.panel_operate.Controls.Add(this.txt_RFID_ServerIP);
-            this.panel_operate.Controls.Add(this.labelX2);
-            this.panel_operate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_operate.Location = new System.Drawing.Point(0, 0);
-            this.panel_operate.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.panel_operate.Name = "panel_operate";
-            this.panel_operate.Size = new System.Drawing.Size(1056, 188);
-            this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
-            this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
-            this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
-            this.panel_operate.Style.Border = DevComponents.DotNetBar.eBorderType.SingleLine;
-            this.panel_operate.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBorder;
-            this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
-            this.panel_operate.Style.GradientAngle = 90;
-            this.panel_operate.TabIndex = 20;
-            // 
-            // labelX2
+            // txt_filter
             // 
             // 
             // 
             // 
-            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.Location = new System.Drawing.Point(16, 75);
-            this.labelX2.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.labelX2.Name = "labelX2";
-            this.labelX2.Size = new System.Drawing.Size(196, 46);
-            this.labelX2.TabIndex = 2;
-            this.labelX2.Text = "RFID_ServerPort:";
-            // 
-            // txt_RFID_ServerIP
-            // 
-            // 
-            // 
-            // 
-            this.txt_RFID_ServerIP.Border.Class = "TextBoxBorder";
-            this.txt_RFID_ServerIP.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_RFID_ServerIP.Location = new System.Drawing.Point(226, 21);
-            this.txt_RFID_ServerIP.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.txt_RFID_ServerIP.Name = "txt_RFID_ServerIP";
-            this.txt_RFID_ServerIP.Size = new System.Drawing.Size(264, 35);
-            this.txt_RFID_ServerIP.TabIndex = 1;
-            this.txt_RFID_ServerIP.Text = "0.0.0.0";
-            // 
-            // btn_disConnect
-            // 
-            this.btn_disConnect.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btn_disConnect.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_disConnect.Location = new System.Drawing.Point(720, 21);
-            this.btn_disConnect.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.btn_disConnect.Name = "btn_disConnect";
-            this.btn_disConnect.Size = new System.Drawing.Size(206, 98);
-            this.btn_disConnect.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btn_disConnect.TabIndex = 7;
-            this.btn_disConnect.Text = "停止RFID监听服务";
-            this.btn_disConnect.Click += new System.EventHandler(this.btn_disConnect_Click);
-            // 
-            // txt_RFID_ServerPort
-            // 
-            // 
-            // 
-            // 
-            this.txt_RFID_ServerPort.Border.Class = "TextBoxBorder";
-            this.txt_RFID_ServerPort.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_RFID_ServerPort.Location = new System.Drawing.Point(226, 75);
-            this.txt_RFID_ServerPort.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.txt_RFID_ServerPort.Name = "txt_RFID_ServerPort";
-            this.txt_RFID_ServerPort.Size = new System.Drawing.Size(264, 35);
-            this.txt_RFID_ServerPort.TabIndex = 3;
-            this.txt_RFID_ServerPort.Text = "2000";
-            // 
-            // labelX1
-            // 
-            // 
-            // 
-            // 
-            this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX1.Location = new System.Drawing.Point(17, 21);
-            this.labelX1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.labelX1.Name = "labelX1";
-            this.labelX1.Size = new System.Drawing.Size(196, 46);
-            this.labelX1.TabIndex = 0;
-            this.labelX1.Text = "RFID_ServerIP:";
-            // 
-            // btn_connectRfid
-            // 
-            this.btn_connectRfid.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btn_connectRfid.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_connectRfid.Location = new System.Drawing.Point(502, 18);
-            this.btn_connectRfid.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.btn_connectRfid.Name = "btn_connectRfid";
-            this.btn_connectRfid.Size = new System.Drawing.Size(206, 98);
-            this.btn_connectRfid.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btn_connectRfid.TabIndex = 4;
-            this.btn_connectRfid.Text = "启动RFID监听服务";
-            this.btn_connectRfid.Click += new System.EventHandler(this.btn_connect_Click);
-            // 
-            // splitContainer_Sub1
-            // 
-            this.splitContainer_Sub1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer_Sub1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer_Sub1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.splitContainer_Sub1.Name = "splitContainer_Sub1";
-            this.splitContainer_Sub1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer_Sub1.Panel1
-            // 
-            this.splitContainer_Sub1.Panel1.Controls.Add(this.panel_operate);
-            this.splitContainer_Sub1.Panel1.SizeChanged += new System.EventHandler(this.splitContainer_Main_Panel1_SizeChanged);
-            // 
-            // splitContainer_Sub1.Panel2
-            // 
-            this.splitContainer_Sub1.Panel2.Controls.Add(this.txt_showMessage);
-            this.splitContainer_Sub1.Size = new System.Drawing.Size(1056, 941);
-            this.splitContainer_Sub1.SplitterDistance = 188;
-            this.splitContainer_Sub1.SplitterWidth = 8;
-            this.splitContainer_Sub1.TabIndex = 18;
-            this.splitContainer_Sub1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Sub1_SplitterMoved);
+            this.txt_filter.Border.Class = "TextBoxBorder";
+            this.txt_filter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_filter.Location = new System.Drawing.Point(226, 135);
+            this.txt_filter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_filter.Name = "txt_filter";
+            this.txt_filter.Size = new System.Drawing.Size(264, 35);
+            this.txt_filter.TabIndex = 9;
             // 
             // Form1
             // 
@@ -285,17 +315,17 @@
             this.splitContainer_Main.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).EndInit();
             this.splitContainer_Main.ResumeLayout(false);
+            this.splitContainer_Sub1.Panel1.ResumeLayout(false);
+            this.splitContainer_Sub1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Sub1)).EndInit();
+            this.splitContainer_Sub1.ResumeLayout(false);
+            this.panel_operate.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_rfid)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.panel_operate.ResumeLayout(false);
-            this.splitContainer_Sub1.Panel1.ResumeLayout(false);
-            this.splitContainer_Sub1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Sub1)).EndInit();
-            this.splitContainer_Sub1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -316,6 +346,8 @@
         private DevComponents.DotNetBar.Controls.TextBoxX txt_RFID_ServerIP;
         private DevComponents.DotNetBar.LabelX labelX2;
         private DevComponents.DotNetBar.Controls.TextBoxX txt_showMessage;
+        private DevComponents.DotNetBar.Controls.TextBoxX txt_filter;
+        private DevComponents.DotNetBar.LabelX labelX3;
     }
 }
 

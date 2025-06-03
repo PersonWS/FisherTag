@@ -1,6 +1,5 @@
 ﻿using FisherTagDemo.Locator;
 using FormSet;
-using IOTDBHepler;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using System;
@@ -133,7 +132,7 @@ namespace FisherTagDemo
         private void ShowMessage(string msg)
         {
             FormSet.BaseFrmControl.ShowMessageOnTextBox(this, txt_showMessage, msg, true);
-            Log.LogRecorder_business.Info(msg);
+
         }
 
         private void txt_signalThreshold_KeyPress(object sender, KeyPressEventArgs e)
@@ -345,7 +344,6 @@ namespace FisherTagDemo
                 string[] pointsData = points[i].Split(',');
                 if (pointsData.Length < 3)
                 {
-                    Log.LogRecorder_business.Error($"pointsData:{points[i]}数据异常");
                     continue;
                 }
                 Int64 utcTime = 0;

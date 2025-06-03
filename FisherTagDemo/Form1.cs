@@ -24,6 +24,7 @@ using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Schedule;
 using DevComponents.DotNetBar.Controls;
 using FormSet;
+using System.Timers;
 
 namespace FisherTagDemo
 {
@@ -103,7 +104,7 @@ namespace FisherTagDemo
             _dt_rfid.Columns.Add("ShipName_船牌号");
             _dt_rfid.Columns.Add("TagSerialNum");
             _dt_rfid.Columns.Add("TimeStamp");
-
+            _dt_rfid.PrimaryKey = new DataColumn[] { _dt_rfid.Columns["TagSerialNum"] };
             _dt_rfid.Columns.Add("TagFunction");
             _dt_rfid.Columns.Add("TagSignal");
 
@@ -155,6 +156,7 @@ namespace FisherTagDemo
 
         private void ShowMessage(string msg)
         {
+
             FormSet.BaseFrmControl.ShowMessageOnTextBox(this, txt_showMessage, msg, true);
             _log.Info(msg);
         }
@@ -163,6 +165,13 @@ namespace FisherTagDemo
         {
             _dt_rfid.Rows.Clear();
             _socketServer = new SocketServerClass(txt_RFID_ServerIP.Text, Convert.ToInt32(txt_RFID_ServerPort.Text));
+            if (_rfidTimer == null)
+            {
+                _rfidTimer = new System.Timers.Timer();
+                _rfidTimer.Interval = 1000;
+                _rfidTimer.Elapsed += RfidElapsedEventHandler;
+                _rfidTimer.Start();
+            }
             _socketServer.StartServer();
             _socketServer.receiveMessageEvent += RfidSocketMessageReceived;
             //ConnectRFIDServer("",0);
@@ -182,31 +191,61 @@ namespace FisherTagDemo
 
         private void RfidSocketMessageReceived(SocketModule s)
         {
-
             _log.Debug($"SocketMessageReceived，client:{s.RemoteEndPoint.ToString()}, ASCII:{Encoding.UTF8.GetString(s.receiveBuffer)}");
-            RfidSocketMessageReceived_sub(s.receiveBuffer);
+            lock (_lockRfidQueue)
+            {
+                _rfidReceiveQueue.Enqueue(s.receiveBuffer);
+                // RfidSocketMessageReceived_sub(s.receiveBuffer);
+            }
         }
-
+        private static readonly object _lockRfidQueue = new object();
+        private static readonly object _lockRfid = new object();
+        private Queue<byte[]> _rfidReceiveQueue = new Queue<byte[]>();
+        private System.Timers.Timer _rfidTimer;
+        private void RfidElapsedEventHandler(object sender, ElapsedEventArgs e)
+        {
+            List<byte[]> bytes = null;
+            lock (_lockRfidQueue)
+            {
+                if (_rfidReceiveQueue.Count > 0)
+                {
+                    bytes = _rfidReceiveQueue.ToList();
+                    _rfidReceiveQueue.Clear();
+                }
+            }
+            if (bytes != null && bytes.Count > 0)
+            {
+                foreach (var item in bytes)
+                {
+                    RfidSocketMessageReceived_sub(item);
+                }
+                this.Invoke(new Action(() =>
+                {
+                    dgv_rfid.DataSource = _dt_rfid.Copy();
+                    dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    dgv_rfid.Refresh();
+                }));
+            }
+        }
         private void RfidSocketMessageReceived_sub(byte[] bytes)
         {
-            lock (this)
+            lock (_lockRfid)
             {
                 RFID_DataAnalysis rFID_Data = new RFID_DataAnalysis(bytes);
                 rFID_Data.Analysis();
                 bool isNewRfid = true;
                 if (Convert.ToInt64(rFID_Data.RfidTagSerialNum) == 0)
                 { return; }
-                foreach (DataRow item in _dt_rfid.Rows)
+                // 通过主键查找行
+                DataRow foundRow = _dt_rfid.Rows.Find(rFID_Data.RfidTagSerialNum);
+                if (foundRow != null)
                 {
-                    if (item["TagSerialNum"].ToString() == rFID_Data.RfidTagSerialNum)
-                    {
-                        item["TagFunction"] = rFID_Data.RfidTagFunction;
-                        item["TagSignal"] = rFID_Data.TagSignalStrength;
-                        item["TimeStamp"] = rFID_Data.TimeStamp;
-                        isNewRfid = false; break;
-                    }
+                    foundRow["TagFunction"] = rFID_Data.RfidTagFunction;
+                    foundRow["TagSignal"] = rFID_Data.TagSignalStrength;
+                    foundRow["TimeStamp"] = rFID_Data.TimeStamp;
+
                 }
-                if (isNewRfid)
+                else
                 {
                     DataRow dr = _dt_rfid.NewRow();
                     dr["seq"] = _dt_rfid.Rows.Count + 1;
@@ -223,12 +262,7 @@ namespace FisherTagDemo
                     dr["TimeStamp"] = rFID_Data.TimeStamp;
                     _dt_rfid.Rows.Add(dr);
                 }
-                this.Invoke(new Action(() =>
-                {
-                    dgv_rfid.DataSource = _dt_rfid;
-                    dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                    dgv_rfid.Refresh();
-                }));
+
 
                 string append = "";
                 if (rFID_Data.RfidTagFunction.ToLower() == "b")
@@ -313,7 +347,7 @@ namespace FisherTagDemo
                 return;
             }
 
- 
+
             if (_commonResource.LocatorDeviceInfo.rows.Count > 0)
             {
                 _dt_locator.Rows.Clear();
@@ -412,8 +446,8 @@ namespace FisherTagDemo
                     ShowMessage(_getMdsString);
                     continue;
                 }
-              
-             
+
+
             }
             //获得经纬度速度
             string locationStr = JsonConvert.SerializeObject(locatorHistoryData);

@@ -9,17 +9,14 @@ using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Schedule;
 using FisherTagDemo.Locator;
 using FormSet;
-using IOTDBHepler;
 
 namespace FisherTagDemo
 {
     public class DBOperate
     {
-        static IOTDBHepler.DB_Main dB = new DB_Main();
 
         public DBOperate()
         {
-            dB.ConnectSqlLite(@"database\FishDB.db", true);
 
         }
 
@@ -27,29 +24,12 @@ namespace FisherTagDemo
         {
             foreach (var item in devInfo.data)
             {
-                for (int i = 0; i < item.deviceCount; i++)
-                {
-                    LocatorRecord record = new LocatorRecord(item, i);
-                    string sql = $"INSERT INTO TB_LocatorRecord (userName, currentSysTemTime, currentHeartTime, longitude, latitude,longiLati, gmsLevel, batteryPersents, batteryVoltage, status, Statenumber)" +
-                        $"VALUES('{record.UserName}', '{record.CurrentSysTimeString}', '{record.CurrentHeartTimeString}', {record.Longitude}, {record.Latitude},'{record.Longitude},{record.Latitude}',{record.GmsLevel}, {record.BatteryPersents}, {record.BatteryPersents}, '{record.Status}', '{record.Statenumber}');";
-                    dB.ExecuteQueryStringWithNonQuery(sql, "InsertLocatorRecord", true);
-                }
             }
 
         }
 
         public void InsertLocatorOnlineState(string userName, string dateTime, Int64 utcTime, string state)
         {
-            try
-            {
-                string sql = $"INSERT INTO TB_LocatorOfflineRecord " +
-    $"(userName, DateTimeString, DateTimeUTC, OnlineState) VALUES('{userName}', '{dateTime}', {utcTime}, '{state}');";
-                dB.ExecuteQueryStringWithNonQuery(sql, "InsertLocatorRecord", true);
-            }
-            catch (Exception ex)
-            {
-                Log.LogRecorder_runLog.Error($"InsertLocatorOnlineState , ex:{ex.ToString()}");
-            }
 
 
         }
@@ -64,8 +44,7 @@ namespace FisherTagDemo
         /// <returns></returns>
         public DataTable QuerySignalBySignalStrength(string userName, int singnalThreshold, string signalCountMethod, bool isShowLowlevel)
         {
-            try
-            {
+
                 string gsmString = "";
                 switch (signalCountMethod)
                 {
@@ -89,20 +68,7 @@ namespace FisherTagDemo
                     signalLevel = $"and gmsLevel > '{singnalThreshold - 1}'";
                 }
 
-                string userNameString = "";
-                if (!string.IsNullOrEmpty(userName) && userName.ToLower() != "all")
-                {
-                    userNameString = $"and userName= '{userName}'";
-                }
-
-                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude, {gsmString} ,batteryPersents, batteryVoltage, status, Statenumber, longiLati\r\nFROM TB_LocatorRecord  where 1=1 {userNameString}  {signalLevel} group by longiLati order by ID desc ";
-                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
-            }
-            catch (Exception ex)
-            {
-                Log.LogRecorder_runLog.Error($"QueryGoodSignal , ex:{ex.ToString()}");
                 return null;
-            }
 
 
         }
@@ -113,16 +79,8 @@ namespace FisherTagDemo
         /// <returns></returns>
         public DataTable QueryExistShip()
         {
-            try
-            {
-                string sql = $"SELECT userName FROM TB_LocatorOfflineRecord group by userName";
-                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
-            }
-            catch (Exception ex)
-            {
-                Log.LogRecorder_runLog.Error($"QueryExistShip , ex:{ex.ToString()}");
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -132,16 +90,7 @@ namespace FisherTagDemo
         /// <returns></returns>
         public DataTable QueryOfflineRecord(string userName)
         {
-            try
-            {
-                string sql = $"SELECT ID, userName, DateTimeString, DateTimeUTC, OnlineState FROM TB_LocatorOfflineRecord WHERE userName ='{userName}' ORDER by ID asc;";
-                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
-            }
-            catch (Exception ex)
-            {
-                Log.LogRecorder_runLog.Error($"QueryOfflineRecord , ex:{ex.ToString()}");
-                return null;
-            }
+            return null;
         }
         /// <summary>
         /// 查询船只的定位数据，根据船只名称，起始结束数据
@@ -152,17 +101,7 @@ namespace FisherTagDemo
         /// <returns></returns>
         public DataTable QueryShipLocatorPosition(string userName, string beginTime, string endTime)
         {
-            try
-            {
-                string sql = $"SELECT ID, userName, currentSysTemTime, currentHeartTime as timeStamp, longitude, latitude,MAX (gmsLevel) as gmsLevel ,batteryPersents, batteryVoltage, status, Statenumber, longiLati  " +
-                    $"FROM TB_LocatorRecord  where userName='{userName}' AND currentHeartTime>'{beginTime}' AND currentHeartTime<'{endTime}'   group by longiLati order by ID desc ";
-                return dB.ExecuteQueryStringWithDataTableReturn(sql, true);
-            }
-            catch (Exception ex)
-            {
-                Log.LogRecorder_runLog.Error($"QueryShipLocatorPosition , ex:{ex.ToString()}");
-                return null;
-            }
+            return null;
         }
 
 
@@ -242,7 +181,7 @@ namespace FisherTagDemo
             }
             catch (Exception ex)
             {
-                Log.LogRecorder_runLog.Error($"LocatorRecord_Analysis , ex:{ex.ToString()}");
+
             }
         }
         public LocatorRecord(long dateTime, double longitude, double latitude, int gmsLevel, int batteryPersents, double batteryVoltage)
