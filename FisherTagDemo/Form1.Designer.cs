@@ -32,6 +32,8 @@
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.txt_filter = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.labelX3 = new DevComponents.DotNetBar.LabelX();
             this.btn_connectRfid = new DevComponents.DotNetBar.ButtonX();
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.txt_RFID_ServerPort = new DevComponents.DotNetBar.Controls.TextBoxX();
@@ -42,8 +44,7 @@
             this.dgv_rfid = new DevComponents.DotNetBar.Controls.DataGridViewX();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.labelX3 = new DevComponents.DotNetBar.LabelX();
-            this.txt_filter = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.btn_clearShowMsg = new DevComponents.DotNetBar.ButtonX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -98,7 +99,7 @@
             // 
             this.splitContainer_Sub1.Panel2.Controls.Add(this.txt_showMessage);
             this.splitContainer_Sub1.Size = new System.Drawing.Size(1056, 941);
-            this.splitContainer_Sub1.SplitterDistance = 188;
+            this.splitContainer_Sub1.SplitterDistance = 236;
             this.splitContainer_Sub1.SplitterWidth = 8;
             this.splitContainer_Sub1.TabIndex = 18;
             this.splitContainer_Sub1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Sub1_SplitterMoved);
@@ -108,6 +109,7 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.btn_clearShowMsg);
             this.panel_operate.Controls.Add(this.txt_filter);
             this.panel_operate.Controls.Add(this.labelX3);
             this.panel_operate.Controls.Add(this.btn_connectRfid);
@@ -120,7 +122,7 @@
             this.panel_operate.Location = new System.Drawing.Point(0, 0);
             this.panel_operate.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.panel_operate.Name = "panel_operate";
-            this.panel_operate.Size = new System.Drawing.Size(1056, 188);
+            this.panel_operate.Size = new System.Drawing.Size(1056, 236);
             this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -129,6 +131,32 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // txt_filter
+            // 
+            // 
+            // 
+            // 
+            this.txt_filter.Border.Class = "TextBoxBorder";
+            this.txt_filter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_filter.Location = new System.Drawing.Point(226, 135);
+            this.txt_filter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_filter.Name = "txt_filter";
+            this.txt_filter.Size = new System.Drawing.Size(264, 35);
+            this.txt_filter.TabIndex = 9;
+            // 
+            // labelX3
+            // 
+            // 
+            // 
+            // 
+            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX3.Location = new System.Drawing.Point(16, 124);
+            this.labelX3.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX3.Name = "labelX3";
+            this.labelX3.Size = new System.Drawing.Size(196, 46);
+            this.labelX3.TabIndex = 8;
+            this.labelX3.Text = "Filter:";
             // 
             // btn_connectRfid
             // 
@@ -223,7 +251,7 @@
             this.txt_showMessage.Multiline = true;
             this.txt_showMessage.Name = "txt_showMessage";
             this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(1056, 745);
+            this.txt_showMessage.Size = new System.Drawing.Size(1056, 697);
             this.txt_showMessage.TabIndex = 0;
             // 
             // dgv_rfid
@@ -250,6 +278,7 @@
             this.dgv_rfid.RowTemplate.Height = 23;
             this.dgv_rfid.Size = new System.Drawing.Size(779, 941);
             this.dgv_rfid.TabIndex = 1;
+            this.dgv_rfid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgv_rfid_Scroll);
             // 
             // splitContainer2
             // 
@@ -273,31 +302,18 @@
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
             // 
-            // labelX3
+            // btn_clearShowMsg
             // 
-            // 
-            // 
-            // 
-            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX3.Location = new System.Drawing.Point(16, 124);
-            this.labelX3.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.labelX3.Name = "labelX3";
-            this.labelX3.Size = new System.Drawing.Size(196, 46);
-            this.labelX3.TabIndex = 8;
-            this.labelX3.Text = "Filter:";
-            // 
-            // txt_filter
-            // 
-            // 
-            // 
-            // 
-            this.txt_filter.Border.Class = "TextBoxBorder";
-            this.txt_filter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_filter.Location = new System.Drawing.Point(226, 135);
-            this.txt_filter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.txt_filter.Name = "txt_filter";
-            this.txt_filter.Size = new System.Drawing.Size(264, 35);
-            this.txt_filter.TabIndex = 9;
+            this.btn_clearShowMsg.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_clearShowMsg.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_clearShowMsg.Location = new System.Drawing.Point(500, 124);
+            this.btn_clearShowMsg.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_clearShowMsg.Name = "btn_clearShowMsg";
+            this.btn_clearShowMsg.Size = new System.Drawing.Size(206, 98);
+            this.btn_clearShowMsg.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_clearShowMsg.TabIndex = 10;
+            this.btn_clearShowMsg.Text = "清除信息";
+            this.btn_clearShowMsg.Click += new System.EventHandler(this.btn_clearShowMsg_Click);
             // 
             // Form1
             // 
@@ -348,6 +364,7 @@
         private DevComponents.DotNetBar.Controls.TextBoxX txt_showMessage;
         private DevComponents.DotNetBar.Controls.TextBoxX txt_filter;
         private DevComponents.DotNetBar.LabelX labelX3;
+        private DevComponents.DotNetBar.ButtonX btn_clearShowMsg;
     }
 }
 

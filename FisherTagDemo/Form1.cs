@@ -64,7 +64,9 @@ namespace FisherTagDemo
         /// </summary>
         Dictionary<string, Rfid_LocatorCorrespond> _dic_locatorRfidCorrespond = new Dictionary<string, Rfid_LocatorCorrespond>();
 
-
+        #region
+        int[] dgv_rfidPosition = new int[2] { -1, -1 };
+        #endregion
 
         public Form1()
         {
@@ -221,9 +223,21 @@ namespace FisherTagDemo
                 }
                 this.Invoke(new Action(() =>
                 {
+                    //this.dgv_rfidPosition[1] = dgv_rfid.FirstDisplayedScrollingRowIndex;
+                    //this.dgv_rfidPosition[0] = dgv_rfid.FirstDisplayedScrollingColumnIndex;
                     dgv_rfid.DataSource = _dt_rfid.Copy();
                     dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dgv_rfid.Refresh();
+                    if (this.dgv_rfidPosition[1] > -1)
+                    {
+                        dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
+                    }
+                    if (this.dgv_rfidPosition[0] > -1)
+                    {
+                        dgv_rfid.FirstDisplayedScrollingColumnIndex = this.dgv_rfidPosition[0];
+                    }
+
+
                 }));
             }
         }
@@ -263,7 +277,15 @@ namespace FisherTagDemo
                     _dt_rfid.Rows.Add(dr);
                 }
 
-
+                //判定筛选条件,如果存在条件则判断
+                string filter = txt_filter.Text.Replace(" ", "");
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    if (!rFID_Data.RfidTagSerialNum.Contains(filter))
+                    {
+                        return;
+                    }
+                }
                 string append = "";
                 if (rFID_Data.RfidTagFunction.ToLower() == "b")
                 {
@@ -922,6 +944,23 @@ namespace FisherTagDemo
                 return;
             }
 
+        }
+
+        private void dgv_rfid_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                this.dgv_rfidPosition[1] = dgv_rfid.FirstDisplayedScrollingRowIndex;
+            }
+            else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                this.dgv_rfidPosition[0] = dgv_rfid.HorizontalScrollingOffset;
+            }
+        }
+
+        private void btn_clearShowMsg_Click(object sender, EventArgs e)
+        {
+            txt_showMessage.Text = "";
         }
     }
 }
