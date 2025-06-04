@@ -33,6 +33,7 @@
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.btn_getSelectedLocatorHistoryPath = new DevComponents.DotNetBar.ButtonX();
             this.btn_locatorSignalStrengthQuery = new DevComponents.DotNetBar.ButtonX();
             this.labelX9 = new DevComponents.DotNetBar.LabelX();
             this.txt_traceInterval = new DevComponents.DotNetBar.Controls.TextBoxX();
@@ -74,7 +75,8 @@
             this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btn_getSelectedLocatorHistoryPath = new DevComponents.DotNetBar.ButtonX();
+            this.labelX10 = new DevComponents.DotNetBar.LabelX();
+            this.txt_filter = new DevComponents.DotNetBar.Controls.TextBoxX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -151,6 +153,8 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.txt_filter);
+            this.panel_operate.Controls.Add(this.labelX10);
             this.panel_operate.Controls.Add(this.btn_getSelectedLocatorHistoryPath);
             this.panel_operate.Controls.Add(this.btn_locatorSignalStrengthQuery);
             this.panel_operate.Controls.Add(this.labelX9);
@@ -198,6 +202,19 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // btn_getSelectedLocatorHistoryPath
+            // 
+            this.btn_getSelectedLocatorHistoryPath.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_getSelectedLocatorHistoryPath.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_getSelectedLocatorHistoryPath.Location = new System.Drawing.Point(720, 468);
+            this.btn_getSelectedLocatorHistoryPath.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_getSelectedLocatorHistoryPath.Name = "btn_getSelectedLocatorHistoryPath";
+            this.btn_getSelectedLocatorHistoryPath.Size = new System.Drawing.Size(206, 98);
+            this.btn_getSelectedLocatorHistoryPath.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_getSelectedLocatorHistoryPath.TabIndex = 35;
+            this.btn_getSelectedLocatorHistoryPath.Text = "获取【选中】    定位器历史位置";
+            this.btn_getSelectedLocatorHistoryPath.Click += new System.EventHandler(this.btn_getSelectedLocatorHistoryPath_Click);
             // 
             // btn_locatorSignalStrengthQuery
             // 
@@ -744,7 +761,7 @@
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
@@ -761,6 +778,7 @@
             this.dgv_rfid.RowTemplate.Height = 23;
             this.dgv_rfid.Size = new System.Drawing.Size(1054, 192);
             this.dgv_rfid.TabIndex = 1;
+            this.dgv_rfid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgv_rfid_Scroll);
             // 
             // txt_showMessage
             // 
@@ -804,7 +822,7 @@
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
@@ -855,18 +873,32 @@
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
             // 
-            // btn_getSelectedLocatorHistoryPath
+            // labelX10
             // 
-            this.btn_getSelectedLocatorHistoryPath.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btn_getSelectedLocatorHistoryPath.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getSelectedLocatorHistoryPath.Location = new System.Drawing.Point(720, 468);
-            this.btn_getSelectedLocatorHistoryPath.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.btn_getSelectedLocatorHistoryPath.Name = "btn_getSelectedLocatorHistoryPath";
-            this.btn_getSelectedLocatorHistoryPath.Size = new System.Drawing.Size(206, 98);
-            this.btn_getSelectedLocatorHistoryPath.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btn_getSelectedLocatorHistoryPath.TabIndex = 35;
-            this.btn_getSelectedLocatorHistoryPath.Text = "获取【选中】    定位器历史位置";
-            this.btn_getSelectedLocatorHistoryPath.Click += new System.EventHandler(this.btn_getSelectedLocatorHistoryPath_Click);
+            // 
+            // 
+            // 
+            this.labelX10.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX10.Location = new System.Drawing.Point(8, 718);
+            this.labelX10.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX10.Name = "labelX10";
+            this.labelX10.Size = new System.Drawing.Size(209, 46);
+            this.labelX10.TabIndex = 36;
+            this.labelX10.Text = "RFID_filter:";
+            // 
+            // txt_filter
+            // 
+            // 
+            // 
+            // 
+            this.txt_filter.Border.Class = "TextBoxBorder";
+            this.txt_filter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_filter.Enabled = false;
+            this.txt_filter.Location = new System.Drawing.Point(205, 727);
+            this.txt_filter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_filter.Name = "txt_filter";
+            this.txt_filter.Size = new System.Drawing.Size(482, 35);
+            this.txt_filter.TabIndex = 37;
             // 
             // Form1
             // 
@@ -959,6 +991,8 @@
         private Microsoft.Web.WebView2.WinForms.WebView2 webView_map;
         private DevComponents.DotNetBar.ButtonX btn_locatorSignalStrengthQuery;
         private DevComponents.DotNetBar.ButtonX btn_getSelectedLocatorHistoryPath;
+        private DevComponents.DotNetBar.Controls.TextBoxX txt_filter;
+        private DevComponents.DotNetBar.LabelX labelX10;
     }
 }
 
