@@ -1337,5 +1337,28 @@ namespace FisherTagDemo
             _currentMouseClickedDGV = sender as DataGridViewX;
             contextStrip_CellMouseClick(sender, e);
         }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            Task.Run(new Action(() =>
+            {
+
+                splitChang12();
+            }));
+        }
+
+        private void splitChang12()//强制split动作，解决地图控件本身的BUG
+        {
+            if (!this.IsHandleCreated)
+            { return; }
+            Thread.Sleep(500);
+            this.Invoke(new Action(() =>
+            {
+
+                splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance+1 ;
+                splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance -1;
+            }));
+        }
+
     }
 }
