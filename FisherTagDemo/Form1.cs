@@ -24,6 +24,7 @@ using DevComponents.DotNetBar;
 using DevComponents.DotNetBar.Schedule;
 using DevComponents.DotNetBar.Controls;
 using FormSet;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FisherTagDemo
 {
@@ -100,6 +101,7 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("Heart_time");
             _dt_locator.Columns.Add("Updtime");
             _dt_locator.Columns.Add("Gpstime");
+            _dt_locator.PrimaryKey = new DataColumn[] { _dt_locator.Columns["seq"], _dt_locator.Columns["Macid"] };
 
             _dt_rfid.Columns.Add("seq");
             _dt_rfid.Columns.Add("ShipName_船牌号");
@@ -282,7 +284,7 @@ namespace FisherTagDemo
                 }
 
                 //判定筛选条件,如果存在条件则判断
-                string filter = txt_filter.Text.Replace(" ", "");
+                string filter = txt_rfidFilter.Text.Replace(" ", "");
                 if (!string.IsNullOrEmpty(filter))
                 {
                     if (!rFID_Data.RfidTagSerialNum.Contains(filter))
@@ -656,9 +658,9 @@ namespace FisherTagDemo
 
         private void splitContainer_Sub1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            if (((SplitContainer)sender).SplitterDistance > 400)
+            if (((SplitContainer)sender).SplitterDistance > 450)
             {
-                ((SplitContainer)sender).SplitterDistance = 400;
+                ((SplitContainer)sender).SplitterDistance = 450;
             }
         }
 
@@ -719,7 +721,7 @@ namespace FisherTagDemo
         {
             if (_isLocatorModeProcessing)
             {
-                BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
+                BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器设定信息，请等待！");
                 return;
             }
             _isLocatorModeProcessing = true;
@@ -740,16 +742,33 @@ namespace FisherTagDemo
 
             Task.Run(() =>
              {
-                 GetLocatorMode();
+                 GetLocatorState();
              });
+
         }
-        private void GetLocatorMode()
+        private void GetLocatorState()
         {
             try
             {
                 ShowMessage($"获取定位器[状态]信息开始！");
                 AnalysisDevCurrentInfo(GetLocatorCurrentStatus());
                 ShowMessage($"获取定位器[状态]信息完成！");
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"GetLocatorMode 出现异常 ex:{ex.ToString()}");
+            }
+            finally
+            {
+
+                _isLocatorModeProcessing = false;
+            }
+        }
+
+        private void GetLocatorMode()
+        {
+            try
+            {
                 ShowMessage($"获取定位器【模式】信息开始！");
                 GetLocatorModeSub01();
                 ShowMessage($"获取定位器【模式】信息完成！");
@@ -760,8 +779,11 @@ namespace FisherTagDemo
             }
             finally
             {
-
                 _isLocatorModeProcessing = false;
+                this.Invoke(new Action(() =>
+                {
+                    btn_getLocatorMode.Text = "获取定位器       MODE(耗时)";
+                }));
             }
         }
         /// <summary>
@@ -827,7 +849,7 @@ namespace FisherTagDemo
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
             }
-            Thread.Sleep(3000);
+            Thread.Sleep(5000);
             //接下来获得结果
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
@@ -836,54 +858,66 @@ namespace FisherTagDemo
                 return;
             }
             ShowMessage($"开始获取所有设备Mode数据结果...");
+            // CommonUtility.TaskManager.Task_AsyncExecuteBase<bool> statusTask=new CommonUtility.TaskManager.Task_AsyncExecuteBase<bool>();
+
             foreach (var item in devDic)
             {
-                //获取设备数据
-                string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Key.macid, _commonResource.LocatorLogIn.mds,
-                   item.Value));
+                GetLocatorModeSub02(item);
+                //statusTask.Run(new Action(() =>
+                //{
 
-                Locator_GetCommandsResultAck devInfo = JsonConvert.DeserializeObject<Locator_GetCommandsResultAck>(devRet) as Locator_GetCommandsResultAck;
-                if (devInfo == null)
-                {
-                    ShowMessage($"定位器ID:{item.Key.fullName},设备Mode数据转换失败,ret:{devRet}");
-                    //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
-                    continue;
-                }
-                else if (devInfo.success != "true")
-                {
-                    ShowMessage($"定位器ID:{item.Key.fullName},Mode数据异常,ret:{devRet}");
-                    //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
-                    continue;
-                }
-                else if (devInfo.data == null || devInfo.data.Count == 0)
-                {
-                    ShowMessage($"定位器ID:{item.Key.fullName},无Mode信息信息,ret:{devRet}");
-                    //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
-                    continue;
-                }
-                else if (!devInfo.data[0].Status)
-                {
-                    ShowMessage($"定位器ID:{item.Key.fullName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
-                    Thread.Sleep(1000);
-                    continue;
-                }
-                lock (_dgvLock)
-                {
-                    DataRow[] drs = _dt_locator.Select($"Macid='{item.Key.macid}'");
-                    if (drs.Count() > 0)
-                    {
-                        Locator_ModeEntity entity = new Locator_ModeEntity(devInfo.data[0].ResponseMsg);
-                        drs[0]["WorkMode"] = entity.WorkModeEnum01;
-                        drs[0]["ReportInterval"] = entity.ReportInterval02;
-                        drs[0]["GPS"] = entity.GPS03;
-                        drs[0]["WIFI"] = entity.WIFI04;
-                        drs[0]["LBS"] = entity.LBS05;
-                        drs[0]["GPRS"] = entity.GPRS06;
-                    }
-                }
+                //}));
+            }
+            //statusTask.WaitTaskRunResult_FunctionReturn();
+            ShowMessage($"开始获取所有设备Mode数据结果完成");
+        }
 
+        private void GetLocatorModeSub02(KeyValuePair<DeviceInfo, string> item)
+        {
+            //获取设备数据
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCommandsResultReq.GenerateGetAppendMsg(item.Key.macid, _commonResource.LocatorLogIn.mds,
+               item.Value));
+
+            Locator_GetCommandsResultAck devInfo = JsonConvert.DeserializeObject<Locator_GetCommandsResultAck>(devRet) as Locator_GetCommandsResultAck;
+            if (devInfo == null)
+            {
+                ShowMessage($"定位器ID:{item.Key.fullName},设备Mode数据转换失败,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},设备数据转换失败,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.success != "true")
+            {
+                ShowMessage($"定位器ID:{item.Key.fullName},Mode数据异常,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},数据异常,ret:{devRet}");
+                return;
+            }
+            else if (devInfo.data == null || devInfo.data.Count == 0)
+            {
+                ShowMessage($"定位器ID:{item.Key.fullName},无Mode信息信息,ret:{devRet}");
+                //BaseFrmControl.ShowErrorMessageBox(this, $"定位器ID:{txt_ShipLocatorId},无历史轨迹信息,ret:{devRet}");
+                return;
+            }
+            else if (!devInfo.data[0].Status)
+            {
+                ShowMessage($"定位器ID:{item.Key.fullName},Mode获取失败，远程尚未处理完成,ret:{devRet}");
+                return;
+            }
+            lock (_dgvLock)
+            {
+                DataRow[] drs = _dt_locator.Select($"Macid='{item.Key.macid}'");
+                if (drs.Count() > 0)
+                {
+                    Locator_ModeEntity entity = new Locator_ModeEntity(devInfo.data[0].ResponseMsg);
+                    drs[0]["WorkMode"] = entity.WorkModeEnum01;
+                    drs[0]["ReportInterval"] = entity.ReportInterval02;
+                    drs[0]["GPS"] = entity.GPS03;
+                    drs[0]["WIFI"] = entity.WIFI04;
+                    drs[0]["LBS"] = entity.LBS05;
+                    drs[0]["GPRS"] = entity.GPRS06;
+                }
             }
         }
+
         /// <summary>
         /// 获得定位当前状态
         /// </summary>
@@ -1160,5 +1194,64 @@ namespace FisherTagDemo
             }
 
         }
+
+        private void btn_getLocatorMode_Click_1(object sender, EventArgs e)
+        {
+            if (_isLocatorModeProcessing)
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
+                return;
+            }
+            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dr == DialogResult.Cancel)
+            {
+                return;
+            }
+            _isLocatorModeProcessing = true;
+            Task.Run(() =>
+            {
+                GetLocatorMode();
+            });
+            btn_getLocatorMode.Text = "获取定位器模式中...";
+        }
+
+        private void btn_QueryLocator_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txt_locatorFilter.Text))
+            {
+                dgv_locatorList.DataSource = _dt_locator;
+            }
+            else
+            {
+                DataTable dt=_dt_locator.Clone();
+                lock (_dgvLock)
+                {
+                    DataRow[] drs = _dt_locator.Select($"Macid like '%{txt_locatorFilter.Text}%'");
+
+                    foreach (DataRow dr in drs) { 
+                    dt.Rows.Add(dr.ItemArray);
+                    }
+                    if (dt.Rows.Count > 0)
+                    {
+                        dgv_locatorList.DataSource = dt;
+                    }
+                    else
+                    { FormSet.BaseFrmControl.ShowDefalutMessageBox(this, "未搜索到指定id的定位器");  }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

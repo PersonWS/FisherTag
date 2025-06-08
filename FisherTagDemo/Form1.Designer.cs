@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.txt_rfidFilter = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.labelX10 = new DevComponents.DotNetBar.LabelX();
             this.btn_getSelectedLocatorHistoryPath = new DevComponents.DotNetBar.ButtonX();
             this.btn_locatorSignalStrengthQuery = new DevComponents.DotNetBar.ButtonX();
             this.labelX9 = new DevComponents.DotNetBar.LabelX();
@@ -41,7 +43,7 @@
             this.btn_getLocatorBatch = new DevComponents.DotNetBar.ButtonX();
             this.btn_locatorLocating = new DevComponents.DotNetBar.ButtonX();
             this.buttonX1 = new DevComponents.DotNetBar.ButtonX();
-            this.btn_getLocatorMode = new DevComponents.DotNetBar.ButtonX();
+            this.btn_getLocatorSetInfo = new DevComponents.DotNetBar.ButtonX();
             this.chk_traceLog = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.btnLog = new DevComponents.DotNetBar.ButtonX();
             this.dT_InEnd = new DevComponents.Editors.DateTimeAdv.DateTimeInput();
@@ -75,8 +77,10 @@
             this.webView_map = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.labelX10 = new DevComponents.DotNetBar.LabelX();
-            this.txt_filter = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.btn_getLocatorMode = new DevComponents.DotNetBar.ButtonX();
+            this.txt_locatorFilter = new DevComponents.DotNetBar.Controls.TextBoxX();
+            this.labelX11 = new DevComponents.DotNetBar.LabelX();
+            this.btn_QueryLocator = new DevComponents.DotNetBar.ButtonX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -143,7 +147,7 @@
             // 
             this.splitContainer_Sub1.Panel2.Controls.Add(this.splitContainer_subLeftDown);
             this.splitContainer_Sub1.Size = new System.Drawing.Size(1054, 1211);
-            this.splitContainer_Sub1.SplitterDistance = 768;
+            this.splitContainer_Sub1.SplitterDistance = 818;
             this.splitContainer_Sub1.SplitterWidth = 8;
             this.splitContainer_Sub1.TabIndex = 18;
             this.splitContainer_Sub1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer_Sub1_SplitterMoved);
@@ -153,7 +157,11 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.panel_operate.Controls.Add(this.txt_filter);
+            this.panel_operate.Controls.Add(this.btn_QueryLocator);
+            this.panel_operate.Controls.Add(this.txt_locatorFilter);
+            this.panel_operate.Controls.Add(this.labelX11);
+            this.panel_operate.Controls.Add(this.btn_getLocatorMode);
+            this.panel_operate.Controls.Add(this.txt_rfidFilter);
             this.panel_operate.Controls.Add(this.labelX10);
             this.panel_operate.Controls.Add(this.btn_getSelectedLocatorHistoryPath);
             this.panel_operate.Controls.Add(this.btn_locatorSignalStrengthQuery);
@@ -163,7 +171,7 @@
             this.panel_operate.Controls.Add(this.btn_getLocatorBatch);
             this.panel_operate.Controls.Add(this.btn_locatorLocating);
             this.panel_operate.Controls.Add(this.buttonX1);
-            this.panel_operate.Controls.Add(this.btn_getLocatorMode);
+            this.panel_operate.Controls.Add(this.btn_getLocatorSetInfo);
             this.panel_operate.Controls.Add(this.chk_traceLog);
             this.panel_operate.Controls.Add(this.btnLog);
             this.panel_operate.Controls.Add(this.dT_InEnd);
@@ -193,7 +201,7 @@
             this.panel_operate.Location = new System.Drawing.Point(0, 0);
             this.panel_operate.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.panel_operate.Name = "panel_operate";
-            this.panel_operate.Size = new System.Drawing.Size(1054, 768);
+            this.panel_operate.Size = new System.Drawing.Size(1054, 818);
             this.panel_operate.Style.Alignment = System.Drawing.StringAlignment.Center;
             this.panel_operate.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground;
             this.panel_operate.Style.BackColor2.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelBackground2;
@@ -202,6 +210,32 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // txt_rfidFilter
+            // 
+            // 
+            // 
+            // 
+            this.txt_rfidFilter.Border.Class = "TextBoxBorder";
+            this.txt_rfidFilter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_rfidFilter.Location = new System.Drawing.Point(206, 761);
+            this.txt_rfidFilter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_rfidFilter.Name = "txt_rfidFilter";
+            this.txt_rfidFilter.Size = new System.Drawing.Size(482, 35);
+            this.txt_rfidFilter.TabIndex = 37;
+            // 
+            // labelX10
+            // 
+            // 
+            // 
+            // 
+            this.labelX10.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX10.Location = new System.Drawing.Point(9, 752);
+            this.labelX10.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX10.Name = "labelX10";
+            this.labelX10.Size = new System.Drawing.Size(209, 46);
+            this.labelX10.TabIndex = 36;
+            this.labelX10.Text = "RFID_filter:";
             // 
             // btn_getSelectedLocatorHistoryPath
             // 
@@ -220,10 +254,10 @@
             // 
             this.btn_locatorSignalStrengthQuery.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_locatorSignalStrengthQuery.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_locatorSignalStrengthQuery.Location = new System.Drawing.Point(285, 622);
+            this.btn_locatorSignalStrengthQuery.Location = new System.Drawing.Point(277, 606);
             this.btn_locatorSignalStrengthQuery.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_locatorSignalStrengthQuery.Name = "btn_locatorSignalStrengthQuery";
-            this.btn_locatorSignalStrengthQuery.Size = new System.Drawing.Size(205, 98);
+            this.btn_locatorSignalStrengthQuery.Size = new System.Drawing.Size(120, 70);
             this.btn_locatorSignalStrengthQuery.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_locatorSignalStrengthQuery.TabIndex = 34;
             this.btn_locatorSignalStrengthQuery.Text = "定位器信号查询";
@@ -235,7 +269,7 @@
             // 
             // 
             this.labelX9.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX9.Location = new System.Drawing.Point(82, 667);
+            this.labelX9.Location = new System.Drawing.Point(81, 645);
             this.labelX9.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.labelX9.Name = "labelX9";
             this.labelX9.Size = new System.Drawing.Size(44, 46);
@@ -249,7 +283,7 @@
             // 
             this.txt_traceInterval.Border.Class = "TextBoxBorder";
             this.txt_traceInterval.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_traceInterval.Location = new System.Drawing.Point(20, 667);
+            this.txt_traceInterval.Location = new System.Drawing.Point(19, 645);
             this.txt_traceInterval.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.txt_traceInterval.Name = "txt_traceInterval";
             this.txt_traceInterval.Size = new System.Drawing.Size(65, 35);
@@ -261,10 +295,10 @@
             // 
             this.btn_traceLocatorSignalStrength.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_traceLocatorSignalStrength.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_traceLocatorSignalStrength.Location = new System.Drawing.Point(137, 622);
+            this.btn_traceLocatorSignalStrength.Location = new System.Drawing.Point(137, 606);
             this.btn_traceLocatorSignalStrength.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_traceLocatorSignalStrength.Name = "btn_traceLocatorSignalStrength";
-            this.btn_traceLocatorSignalStrength.Size = new System.Drawing.Size(134, 98);
+            this.btn_traceLocatorSignalStrength.Size = new System.Drawing.Size(126, 70);
             this.btn_traceLocatorSignalStrength.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_traceLocatorSignalStrength.TabIndex = 31;
             this.btn_traceLocatorSignalStrength.Text = "启动信号跟踪";
@@ -274,7 +308,7 @@
             // 
             this.btn_getLocatorBatch.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_getLocatorBatch.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getLocatorBatch.Location = new System.Drawing.Point(720, 622);
+            this.btn_getLocatorBatch.Location = new System.Drawing.Point(720, 578);
             this.btn_getLocatorBatch.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_getLocatorBatch.Name = "btn_getLocatorBatch";
             this.btn_getLocatorBatch.Size = new System.Drawing.Size(206, 98);
@@ -290,7 +324,7 @@
             this.btn_locatorLocating.Location = new System.Drawing.Point(137, 512);
             this.btn_locatorLocating.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_locatorLocating.Name = "btn_locatorLocating";
-            this.btn_locatorLocating.Size = new System.Drawing.Size(134, 98);
+            this.btn_locatorLocating.Size = new System.Drawing.Size(126, 76);
             this.btn_locatorLocating.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_locatorLocating.TabIndex = 29;
             this.btn_locatorLocating.Text = "立即定位";
@@ -300,27 +334,27 @@
             // 
             this.buttonX1.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.buttonX1.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.buttonX1.Location = new System.Drawing.Point(502, 512);
+            this.buttonX1.Location = new System.Drawing.Point(556, 512);
             this.buttonX1.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.buttonX1.Name = "buttonX1";
-            this.buttonX1.Size = new System.Drawing.Size(206, 98);
+            this.buttonX1.Size = new System.Drawing.Size(152, 76);
             this.buttonX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.buttonX1.TabIndex = 28;
             this.buttonX1.Text = "批量设置定位器定位信息";
             this.buttonX1.Visible = false;
             // 
-            // btn_getLocatorMode
+            // btn_getLocatorSetInfo
             // 
-            this.btn_getLocatorMode.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btn_getLocatorMode.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getLocatorMode.Location = new System.Drawing.Point(284, 512);
-            this.btn_getLocatorMode.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.btn_getLocatorMode.Name = "btn_getLocatorMode";
-            this.btn_getLocatorMode.Size = new System.Drawing.Size(206, 98);
-            this.btn_getLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btn_getLocatorMode.TabIndex = 27;
-            this.btn_getLocatorMode.Text = "获取定位器       设定信息";
-            this.btn_getLocatorMode.Click += new System.EventHandler(this.btn_getLocatorMode_Click);
+            this.btn_getLocatorSetInfo.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_getLocatorSetInfo.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_getLocatorSetInfo.Location = new System.Drawing.Point(277, 512);
+            this.btn_getLocatorSetInfo.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_getLocatorSetInfo.Name = "btn_getLocatorSetInfo";
+            this.btn_getLocatorSetInfo.Size = new System.Drawing.Size(121, 76);
+            this.btn_getLocatorSetInfo.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_getLocatorSetInfo.TabIndex = 27;
+            this.btn_getLocatorSetInfo.Text = "获取定位器       设定信息";
+            this.btn_getLocatorSetInfo.Click += new System.EventHandler(this.btn_getLocatorMode_Click);
             // 
             // chk_traceLog
             // 
@@ -331,7 +365,7 @@
             this.chk_traceLog.Checked = true;
             this.chk_traceLog.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk_traceLog.CheckValue = "Y";
-            this.chk_traceLog.Location = new System.Drawing.Point(17, 622);
+            this.chk_traceLog.Location = new System.Drawing.Point(16, 600);
             this.chk_traceLog.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.chk_traceLog.Name = "chk_traceLog";
             this.chk_traceLog.Size = new System.Drawing.Size(200, 46);
@@ -346,7 +380,7 @@
             this.btnLog.Location = new System.Drawing.Point(17, 512);
             this.btnLog.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btnLog.Name = "btnLog";
-            this.btnLog.Size = new System.Drawing.Size(108, 98);
+            this.btnLog.Size = new System.Drawing.Size(108, 76);
             this.btnLog.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btnLog.TabIndex = 25;
             this.btnLog.Text = "LOG";
@@ -480,10 +514,10 @@
             // 
             this.btn_clearLog.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_clearLog.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_clearLog.Location = new System.Drawing.Point(502, 622);
+            this.btn_clearLog.Location = new System.Drawing.Point(556, 606);
             this.btn_clearLog.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_clearLog.Name = "btn_clearLog";
-            this.btn_clearLog.Size = new System.Drawing.Size(206, 98);
+            this.btn_clearLog.Size = new System.Drawing.Size(152, 70);
             this.btn_clearLog.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_clearLog.TabIndex = 20;
             this.btn_clearLog.Text = "清除信息";
@@ -703,7 +737,6 @@
             this.txt_ShipLocatorUserName.Location = new System.Drawing.Point(284, 224);
             this.txt_ShipLocatorUserName.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.txt_ShipLocatorUserName.Name = "txt_ShipLocatorUserName";
-            this.txt_ShipLocatorUserName.PasswordChar = '#';
             this.txt_ShipLocatorUserName.Size = new System.Drawing.Size(424, 35);
             this.txt_ShipLocatorUserName.TabIndex = 14;
             this.txt_ShipLocatorUserName.Text = "贝尔数据科技（大连）有限公司";
@@ -749,8 +782,8 @@
             // splitContainer_subLeftDown.Panel2
             // 
             this.splitContainer_subLeftDown.Panel2.Controls.Add(this.txt_showMessage);
-            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(1054, 435);
-            this.splitContainer_subLeftDown.SplitterDistance = 192;
+            this.splitContainer_subLeftDown.Size = new System.Drawing.Size(1054, 385);
+            this.splitContainer_subLeftDown.SplitterDistance = 169;
             this.splitContainer_subLeftDown.SplitterWidth = 8;
             this.splitContainer_subLeftDown.TabIndex = 0;
             // 
@@ -759,14 +792,14 @@
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -776,7 +809,7 @@
             this.dgv_rfid.RowHeadersVisible = false;
             this.dgv_rfid.RowHeadersWidth = 82;
             this.dgv_rfid.RowTemplate.Height = 23;
-            this.dgv_rfid.Size = new System.Drawing.Size(1054, 192);
+            this.dgv_rfid.Size = new System.Drawing.Size(1054, 169);
             this.dgv_rfid.TabIndex = 1;
             this.dgv_rfid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgv_rfid_Scroll);
             // 
@@ -793,7 +826,7 @@
             this.txt_showMessage.Multiline = true;
             this.txt_showMessage.Name = "txt_showMessage";
             this.txt_showMessage.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txt_showMessage.Size = new System.Drawing.Size(1054, 235);
+            this.txt_showMessage.Size = new System.Drawing.Size(1054, 208);
             this.txt_showMessage.TabIndex = 0;
             // 
             // splitContainer_sub_right
@@ -820,14 +853,14 @@
             // 
             this.dgv_locatorList.AllowUserToAddRows = false;
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
@@ -873,32 +906,57 @@
             this.splitContainer1.Size = new System.Drawing.Size(150, 100);
             this.splitContainer1.TabIndex = 0;
             // 
-            // labelX10
+            // btn_getLocatorMode
+            // 
+            this.btn_getLocatorMode.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_getLocatorMode.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_getLocatorMode.Location = new System.Drawing.Point(412, 512);
+            this.btn_getLocatorMode.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_getLocatorMode.Name = "btn_getLocatorMode";
+            this.btn_getLocatorMode.Size = new System.Drawing.Size(129, 76);
+            this.btn_getLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_getLocatorMode.TabIndex = 38;
+            this.btn_getLocatorMode.Text = "获取定位器       MODE(耗时)";
+            this.btn_getLocatorMode.Click += new System.EventHandler(this.btn_getLocatorMode_Click_1);
+            // 
+            // txt_locatorFilter
             // 
             // 
             // 
             // 
-            this.labelX10.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX10.Location = new System.Drawing.Point(8, 718);
-            this.labelX10.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.labelX10.Name = "labelX10";
-            this.labelX10.Size = new System.Drawing.Size(209, 46);
-            this.labelX10.TabIndex = 36;
-            this.labelX10.Text = "RFID_filter:";
+            this.txt_locatorFilter.Border.Class = "TextBoxBorder";
+            this.txt_locatorFilter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.txt_locatorFilter.Location = new System.Drawing.Point(206, 705);
+            this.txt_locatorFilter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.txt_locatorFilter.Name = "txt_locatorFilter";
+            this.txt_locatorFilter.Size = new System.Drawing.Size(482, 35);
+            this.txt_locatorFilter.TabIndex = 40;
             // 
-            // txt_filter
-            // 
-            // 
+            // labelX11
             // 
             // 
-            this.txt_filter.Border.Class = "TextBoxBorder";
-            this.txt_filter.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_filter.Enabled = false;
-            this.txt_filter.Location = new System.Drawing.Point(205, 727);
-            this.txt_filter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.txt_filter.Name = "txt_filter";
-            this.txt_filter.Size = new System.Drawing.Size(482, 35);
-            this.txt_filter.TabIndex = 37;
+            // 
+            // 
+            this.labelX11.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX11.Location = new System.Drawing.Point(9, 696);
+            this.labelX11.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX11.Name = "labelX11";
+            this.labelX11.Size = new System.Drawing.Size(209, 46);
+            this.labelX11.TabIndex = 39;
+            this.labelX11.Text = "Locator_filter:";
+            // 
+            // btn_QueryLocator
+            // 
+            this.btn_QueryLocator.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_QueryLocator.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_QueryLocator.Location = new System.Drawing.Point(720, 688);
+            this.btn_QueryLocator.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_QueryLocator.Name = "btn_QueryLocator";
+            this.btn_QueryLocator.Size = new System.Drawing.Size(206, 65);
+            this.btn_QueryLocator.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_QueryLocator.TabIndex = 41;
+            this.btn_QueryLocator.Text = "查询指定定位器信息";
+            this.btn_QueryLocator.Click += new System.EventHandler(this.btn_QueryLocator_Click);
             // 
             // Form1
             // 
@@ -981,7 +1039,7 @@
         private DevComponents.Editors.DateTimeAdv.DateTimeInput dT_InBegin;
         private DevComponents.DotNetBar.ButtonX btnLog;
         private DevComponents.DotNetBar.Controls.CheckBoxX chk_traceLog;
-        private DevComponents.DotNetBar.ButtonX btn_getLocatorMode;
+        private DevComponents.DotNetBar.ButtonX btn_getLocatorSetInfo;
         private DevComponents.DotNetBar.ButtonX buttonX1;
         private DevComponents.DotNetBar.ButtonX btn_locatorLocating;
         private DevComponents.DotNetBar.ButtonX btn_getLocatorBatch;
@@ -991,8 +1049,12 @@
         private Microsoft.Web.WebView2.WinForms.WebView2 webView_map;
         private DevComponents.DotNetBar.ButtonX btn_locatorSignalStrengthQuery;
         private DevComponents.DotNetBar.ButtonX btn_getSelectedLocatorHistoryPath;
-        private DevComponents.DotNetBar.Controls.TextBoxX txt_filter;
+        private DevComponents.DotNetBar.Controls.TextBoxX txt_rfidFilter;
         private DevComponents.DotNetBar.LabelX labelX10;
+        private DevComponents.DotNetBar.ButtonX btn_getLocatorMode;
+        private DevComponents.DotNetBar.Controls.TextBoxX txt_locatorFilter;
+        private DevComponents.DotNetBar.LabelX labelX11;
+        private DevComponents.DotNetBar.ButtonX btn_QueryLocator;
     }
 }
 
