@@ -81,7 +81,36 @@ namespace FormSet
             }
         }
 
-        public static void AddToolStripMenuItem(Form f)
+        public static void AddToolStripMenuItemForListView(Form f)
+        {
+            System.Windows.Forms.ToolStripMenuItem menu_copy = new ToolStripMenuItem();
+            menu_copy.MouseUp += new MouseEventHandler((sender, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+                    switch (menuItem?.Text)
+                    {
+                        case "Copy":
+                            ListView.SelectedListViewItemCollection selected = ((ListView)sender).SelectedItems;
+                            StringBuilder sb = new StringBuilder();
+                            foreach (ListViewItem item in selected)
+                            {
+                                sb.Append(item.Text.PadRight(10));
+                                sb.Append(item.SubItems[1].Text);
+                                //sb.Append("\r\n");
+                            }
+                            Clipboard.SetText(sb.ToString());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+
+        }
+
+        public static void AddToolStripMenuItemForDataTable(Form f)
         {
             System.Windows.Forms.ToolStripMenuItem menu_copy = new ToolStripMenuItem();
             menu_copy.MouseUp += new MouseEventHandler((sender, e) =>

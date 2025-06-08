@@ -1241,17 +1241,48 @@ namespace FisherTagDemo
             }
         }
 
+        private void copyToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
+        {
 
+            if (e.Button == MouseButtons.Left)
+            {
+                ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+                switch (menuItem?.Text)
+                {
+                    case "Copy":
+                        object cellValue = dgv_locatorList.CurrentCell.Value;
+                        if (cellValue != null)
+                        {
+                            Clipboard.SetText(cellValue.ToString());
+                        }
 
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
+        private void dgv_locatorList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex < 0)
+                {
+                    return;
+                }
+                // 设置当前单元格为选中状态
+                ((DataGridView)sender).CurrentCell = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex];
+                ((DataGridView)sender)[e.ColumnIndex, e.RowIndex].Selected = true;
 
-
-
-
-
-
-
-
-
+                // 显示右键菜单
+                contextMenuStrip1.Show(Cursor.Position);
+                //// 获取右击位置
+                //DataGridViewRow r = ((DataGridView)sender).Rows[e.RowIndex];
+                //Point mousePos = ((DataGridView)sender).PointToClient(Cursor.Position);
+                //contextMenuStrip1.Show(((DataGridView)sender), mousePos);
+                ////_cellPosition = new int[] { e.RowIndex, e.ColumnIndex };
+            }
+        }
     }
 }
