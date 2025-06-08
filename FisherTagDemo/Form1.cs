@@ -64,6 +64,8 @@ namespace FisherTagDemo
         /// </summary>
         Dictionary<string, Rfid_LocatorCorrespond> _dic_locatorRfidCorrespond = new Dictionary<string, Rfid_LocatorCorrespond>();
 
+        DataGridViewX _currentMouseClickedDGV = null;
+
         #region
         int[] dgv_rfidPosition = new int[2] { -1, -1 };
         #endregion
@@ -209,6 +211,8 @@ namespace FisherTagDemo
         private static readonly object _lockRfid = new object();
         private Queue<byte[]> _rfidReceiveQueue = new Queue<byte[]>();
         private System.Timers.Timer _rfidTimer;
+
+        DataGridViewCell _currentRfidCell = null;
         private void RfidElapsedEventHandler(object sender, ElapsedEventArgs e)
         {
             List<byte[]> bytes = null;
@@ -226,11 +230,21 @@ namespace FisherTagDemo
                 {
                     RfidSocketMessageReceived_sub(item);
                 }
+                if (!string.IsNullOrEmpty( txt_rfidFilter.Text))//当有筛选条件时不去更新rfid的dgv显示
+                {
+                    return;
+                }
                 this.Invoke(new Action(() =>
                 {
                     //this.dgv_rfidPosition[1] = dgv_rfid.FirstDisplayedScrollingRowIndex;
                     //this.dgv_rfidPosition[0] = dgv_rfid.FirstDisplayedScrollingColumnIndex;
-                    dgv_rfid.DataSource = _dt_rfid.Copy();
+                    _currentRfidCell = dgv_rfid.CurrentCell;
+                    dgv_rfid.DataSource = _dt_rfid;
+                    if (_currentRfidCell != null&& _currentRfidCell.RowIndex>-1&& _currentRfidCell.ColumnIndex>-1
+                    && (_dt_rfid.Rows.Count >= _currentRfidCell.RowIndex + 1 && _dt_rfid.Columns.Count >= _currentRfidCell.ColumnIndex + 1))
+                    {
+                        dgv_rfid.CurrentCell = _currentRfidCell;
+                    }
                     dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dgv_rfid.Refresh();
                     if (this.dgv_rfidPosition[1] > -1)
@@ -254,7 +268,7 @@ namespace FisherTagDemo
                 RFID_DataAnalysis rFID_Data = new RFID_DataAnalysis(bytes);
                 rFID_Data.Analysis();
                 bool isNewRfid = true;
-                if (Convert.ToInt64(rFID_Data.RfidTagSerialNum) == 0)
+                if (string.IsNullOrEmpty(rFID_Data.RfidTagSerialNum) || Convert.ToInt64(rFID_Data.RfidTagSerialNum) == 0)
                 { return; }
                 // 通过主键查找行
                 DataRow foundRow = _dt_rfid.Rows.Find(rFID_Data.RfidTagSerialNum);
@@ -1223,39 +1237,39 @@ namespace FisherTagDemo
             }
             else
             {
-                DataTable dt=_dt_locator.Clone();
+                DataTable dt = _dt_locator.Clone();
                 lock (_dgvLock)
                 {
                     DataRow[] drs = _dt_locator.Select($"Macid like '%{txt_locatorFilter.Text}%'");
 
-                    foreach (DataRow dr in drs) { 
-                    dt.Rows.Add(dr.ItemArray);
+                    foreach (DataRow dr in drs)
+                    {
+                        dt.Rows.Add(dr.ItemArray);
                     }
                     if (dt.Rows.Count > 0)
                     {
                         dgv_locatorList.DataSource = dt;
                     }
                     else
-                    { FormSet.BaseFrmControl.ShowDefalutMessageBox(this, "未搜索到指定id的定位器");  }
+                    { FormSet.BaseFrmControl.ShowDefalutMessageBox(this, "未搜索到指定id的定位器"); }
                 }
             }
         }
 
         private void copyToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
         {
-
+            
             if (e.Button == MouseButtons.Left)
             {
                 ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
                 switch (menuItem?.Text)
                 {
                     case "Copy":
-                        object cellValue = dgv_locatorList.CurrentCell.Value;
+                        object cellValue = _currentMouseClickedDGV?.CurrentCell.Value;
                         if (cellValue != null)
                         {
                             Clipboard.SetText(cellValue.ToString());
                         }
-
                         break;
                     default:
                         break;
@@ -1265,14 +1279,20 @@ namespace FisherTagDemo
 
         private void dgv_locatorList_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            _currentMouseClickedDGV = sender as DataGridViewX;
+            contextStrip_CellMouseClick(sender, e);
+        }
+
+        private void contextStrip_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
             if (e.Button == MouseButtons.Right)
             {
                 if (e.RowIndex < 0)
                 {
                     return;
                 }
-                // 设置当前单元格为选中状态
-                ((DataGridView)sender).CurrentCell = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex];
+                   // 设置当前单元格为选中状态
+                   ((DataGridView)sender).CurrentCell = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex];
                 ((DataGridView)sender)[e.ColumnIndex, e.RowIndex].Selected = true;
 
                 // 显示右键菜单
@@ -1283,6 +1303,39 @@ namespace FisherTagDemo
                 //contextMenuStrip1.Show(((DataGridView)sender), mousePos);
                 ////_cellPosition = new int[] { e.RowIndex, e.ColumnIndex };
             }
+        }
+
+        private void btn_QueryRFID_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txt_rfidFilter.Text))
+            {
+                dgv_rfid.DataSource = _dt_rfid;
+            }
+            else
+            {
+                DataTable dt = _dt_rfid.Clone();
+                lock (_dgvLock)
+                {
+                    DataRow[] drs = _dt_rfid.Select($"TagSerialNum like '%{txt_rfidFilter.Text}%'");
+
+                    foreach (DataRow dr in drs)
+                    {
+                        dt.Rows.Add(dr.ItemArray);
+                    }
+                    if (dt.Rows.Count > 0)
+                    {
+                        dgv_rfid.DataSource = dt;
+                    }
+                    else
+                    { FormSet.BaseFrmControl.ShowDefalutMessageBox(this, "未搜索到指定id的rfid"); }
+                }
+            }
+        }
+
+        private void dgv_rfid_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            _currentMouseClickedDGV = sender as DataGridViewX;
+            contextStrip_CellMouseClick(sender, e);
         }
     }
 }
