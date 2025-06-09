@@ -251,7 +251,7 @@ namespace FisherTagDemo
                     {
                         dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
                     }
-                    if (this.dgv_rfidPosition[0] > -1)
+                    if (this.dgv_rfidPosition[0] > -1&& this.dgv_rfidPosition[0]< dgv_rfid.ColumnCount)
                     {
                         dgv_rfid.FirstDisplayedScrollingColumnIndex = this.dgv_rfidPosition[0];
                     }
@@ -296,7 +296,7 @@ namespace FisherTagDemo
                     dr["TimeStamp"] = rFID_Data.TimeStamp;
                     _dt_rfid.Rows.Add(dr);
                 }
-
+                /*  暂停使用信息显示
                 //判定筛选条件,如果存在条件则判断
                 string filter = txt_rfidFilter.Text.Replace(" ", "");
                 if (!string.IsNullOrEmpty(filter))
@@ -317,6 +317,7 @@ namespace FisherTagDemo
                   $"{Newtonsoft.Json.JsonConvert.SerializeObject(rFID_Data, Newtonsoft.Json.Formatting.Indented)}{append}"
 
                     );
+                */
             }
         }
 
@@ -746,12 +747,6 @@ namespace FisherTagDemo
                 item["Battery"] = "";
                 item["longitude"] = "";
                 item["latitude"] = "";
-                item["WorkMode"] = "";
-                item["ReportInterval"] = "";
-                item["GPS"] = "";
-                item["WIFI"] = "";
-                item["LBS"] = "";
-                item["GPRS"] = "";
             }
 
             Task.Run(() =>
@@ -1221,6 +1216,15 @@ namespace FisherTagDemo
             {
                 return;
             }
+            foreach (DataRow item in ((DataTable)dgv_locatorList.DataSource).Rows)
+            {
+                item["WorkMode"] = "";
+                item["ReportInterval"] = "";
+                item["GPS"] = "";
+                item["WIFI"] = "";
+                item["LBS"] = "";
+                item["GPRS"] = "";
+            }
             _isLocatorModeProcessing = true;
             Task.Run(() =>
             {
@@ -1231,6 +1235,11 @@ namespace FisherTagDemo
 
         private void btn_QueryLocator_Click(object sender, EventArgs e)
         {
+            QuerySpecialLocator("Macid");
+        }
+
+        private void QuerySpecialLocator(string filterString)
+        {
             if (string.IsNullOrEmpty(txt_locatorFilter.Text))
             {
                 dgv_locatorList.DataSource = _dt_locator;
@@ -1240,7 +1249,7 @@ namespace FisherTagDemo
                 DataTable dt = _dt_locator.Clone();
                 lock (_dgvLock)
                 {
-                    DataRow[] drs = _dt_locator.Select($"Macid like '%{txt_locatorFilter.Text}%'");
+                    DataRow[] drs = _dt_locator.Select($" {filterString} like '%{txt_locatorFilter.Text}'");
 
                     foreach (DataRow dr in drs)
                     {
@@ -1360,5 +1369,9 @@ namespace FisherTagDemo
             }));
         }
 
+        private void btn_btn_QueryLocator_FullName_Click(object sender, EventArgs e)
+        {
+            QuerySpecialLocator("FullName");
+        }
     }
 }
