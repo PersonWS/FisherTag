@@ -106,6 +106,12 @@
     <Compile Include="Frm_locator.Designer.cs">
       <DependentUpon>Frm_locator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Frm_SetLocatorMode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Frm_SetLocatorMode.Designer.cs">
+      <DependentUpon>Frm_SetLocatorMode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Frm_Template.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,6 +155,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Frm_locator.resx">
       <DependentUpon>Frm_locator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Frm_SetLocatorMode.resx">
+      <DependentUpon>Frm_SetLocatorMode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -24,6 +24,8 @@ namespace FisherTagDemo
         /// 控件是否正在展示地图
         /// </summary>
         private bool _isShowPositionIng = false;
+
+
         public Frm_locator(CommonResource commonResource)
         {
             InitializeComponent();

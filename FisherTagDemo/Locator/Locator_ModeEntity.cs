@@ -9,10 +9,33 @@ namespace FisherTagDemo.Locator
     /// <summary>
     /// 定位器当前的模式
     /// </summary>
-    internal class Locator_ModeEntity
+    public class Locator_ModeEntity
     {
+
+
         private static readonly string ModeCommandHeadString = "MODE";
         private static readonly string ModeCommandTailString = "%23";
+
+
+
+        /// <summary>
+        /// 工作模式
+        /// </summary>
+        public Locator_ModeEntity_WorkModeEnum WorkModeEnum01 { get; set; }
+        /// <summary>
+        /// 汇报间隔 单位：秒
+        /// </summary>
+        public int ReportInterval02 { get; set; }
+        /// <summary>
+        /// GPS 1:开启  0：关闭
+        /// </summary>
+        public int GPS03 { get; set; }
+        public int WIFI04 { get; set; }
+        /// <summary>
+        /// 基站定位
+        /// </summary>
+        public int LBS05 { get; set; }
+        public int GPRS06 { get; set; }
 
         public Locator_ModeEntity()
         {
@@ -57,25 +80,6 @@ namespace FisherTagDemo.Locator
 
         }
 
-
-        /// <summary>
-        /// 工作模式
-        /// </summary>
-        public Locator_ModeEntity_WorkModeEnum WorkModeEnum01 { get; set; }
-        /// <summary>
-        /// 汇报间隔 单位：秒
-        /// </summary>
-        public int ReportInterval02 { get; set; }
-        /// <summary>
-        /// GPS 1:开启  0：关闭
-        /// </summary>
-        public int GPS03 { get; set; }
-        public int WIFI04 { get; set; }
-        /// <summary>
-        /// 基站定位
-        /// </summary>
-        public int LBS05 { get; set; }
-        public int GPRS06 { get; set; }
 
         public static string GenerateGetModeCommand()
         {

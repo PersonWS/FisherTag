@@ -70,10 +70,17 @@ namespace FisherTagDemo
         int[] dgv_rfidPosition = new int[2] { -1, -1 };
         #endregion
 
+        Frm_SetLocatorMode _SetLocatorMode = new Frm_SetLocatorMode();
+        /// <summary>
+        /// 是否正在进行模式设置
+        /// </summary>
+        bool _isSetLocatorModing = false;
+
         public Form1()
         {
             InitializeComponent();
             this.EnableGlass = false;
+            _SetLocatorMode.ModeEntiyConfirm += ProcessLocatorModeSet;
             Ini();
         }
         private async void Ini()
@@ -230,7 +237,7 @@ namespace FisherTagDemo
                 {
                     RfidSocketMessageReceived_sub(item);
                 }
-                if (!string.IsNullOrEmpty( txt_rfidFilter.Text))//当有筛选条件时不去更新rfid的dgv显示
+                if (!string.IsNullOrEmpty(txt_rfidFilter.Text))//当有筛选条件时不去更新rfid的dgv显示
                 {
                     return;
                 }
@@ -240,7 +247,7 @@ namespace FisherTagDemo
                     //this.dgv_rfidPosition[0] = dgv_rfid.FirstDisplayedScrollingColumnIndex;
                     _currentRfidCell = dgv_rfid.CurrentCell;
                     dgv_rfid.DataSource = _dt_rfid;
-                    if (_currentRfidCell != null&& _currentRfidCell.RowIndex>-1&& _currentRfidCell.ColumnIndex>-1
+                    if (_currentRfidCell != null && _currentRfidCell.RowIndex > -1 && _currentRfidCell.ColumnIndex > -1
                     && (_dt_rfid.Rows.Count >= _currentRfidCell.RowIndex + 1 && _dt_rfid.Columns.Count >= _currentRfidCell.ColumnIndex + 1))
                     {
                         dgv_rfid.CurrentCell = _currentRfidCell;
@@ -251,7 +258,7 @@ namespace FisherTagDemo
                     {
                         dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
                     }
-                    if (this.dgv_rfidPosition[0] > -1&& this.dgv_rfidPosition[0]< dgv_rfid.ColumnCount)
+                    if (this.dgv_rfidPosition[0] > -1 && this.dgv_rfidPosition[0] < dgv_rfid.ColumnCount)
                     {
                         dgv_rfid.FirstDisplayedScrollingColumnIndex = this.dgv_rfidPosition[0];
                     }
@@ -665,9 +672,9 @@ namespace FisherTagDemo
 
         private void splitContainer_Main_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            if (((SplitContainer)sender).SplitterDistance > 500)
+            if (((SplitContainer)sender).SplitterDistance > 550)
             {
-                ((SplitContainer)sender).SplitterDistance = 500;
+                ((SplitContainer)sender).SplitterDistance = 550;
             }
         }
 
@@ -774,12 +781,12 @@ namespace FisherTagDemo
             }
         }
 
-        private void GetLocatorMode()
+        private void GetLocatorMode(List<string> filter_Macid = null)
         {
             try
             {
                 ShowMessage($"获取定位器【模式】信息开始！");
-                GetLocatorModeSub01();
+                GetLocatorModeSub01(filter_Macid);
                 ShowMessage($"获取定位器【模式】信息完成！");
             }
             catch (Exception ex)
@@ -791,7 +798,7 @@ namespace FisherTagDemo
                 _isLocatorModeProcessing = false;
                 this.Invoke(new Action(() =>
                 {
-                    btn_getLocatorMode.Text = "获取定位器       MODE(耗时)";
+                    btn_getAllLocatorMode.Text = "获取定位器       MODE(耗时)";
                 }));
             }
         }
@@ -800,7 +807,7 @@ namespace FisherTagDemo
         /// </summary>
         /// <param name="param"></param>
         /// <returns>string : id    DeviceInfo:设备信息</returns>
-        private Dictionary<DeviceInfo, string> SendMessageToLocatorBySendCommand(string param)
+        private Dictionary<DeviceInfo, string> SendMessageToLocatorBySendCommand(string param, List<string> filter_Macid = null)
         {
             Dictionary<DeviceInfo, string> devDic = null;
             //先获取MDS
@@ -811,11 +818,28 @@ namespace FisherTagDemo
             }
 
             devDic = new Dictionary<DeviceInfo, string>();
-            foreach (var item in _commonResource.LocatorDeviceInfo.rows)
+            //检查是否有过滤器
+            List<DeviceInfo> filterDevList;
+            if (filter_Macid == null || filter_Macid.Count == 0)
+            {
+                filterDevList = _commonResource.LocatorDeviceInfo.rows;
+            }
+            else
+            {
+                filterDevList = new List<DeviceInfo>();
+                foreach (var item in _commonResource.LocatorDeviceInfo.rows)
+                {
+                    if (filter_Macid.Contains(item.macid))
+                    {
+                        filterDevList.Add(item);
+                    }
+                }
+            }
+            foreach (var item in filterDevList)
             {
                 //获取设备数据
                 string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_SendCommandsReq.GenerateGetAppendMsg(item.macid, _commonResource.LocatorLogIn.mds,
-                   LocatorEnum_SendCommand.PASSTHROUGHA.ToString(), Locator_ModeEntity.GenerateGetModeCommand()));
+                   LocatorEnum_SendCommand.PASSTHROUGHA.ToString(), param));
 
                 Locator_SendCommandsAck devInfo = JsonConvert.DeserializeObject<Locator_SendCommandsAck>(devRet) as Locator_SendCommandsAck;
                 if (devInfo == null)
@@ -850,10 +874,10 @@ namespace FisherTagDemo
             return devDic;
         }
 
-        private void GetLocatorModeSub01()
+        private void GetLocatorModeSub01(List<string> filter_Macid = null)
         {
             ShowMessage($"开始获取所有设备Mode数据回执...");
-            Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand());
+            Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand(Locator_ModeEntity.GenerateGetModeCommand(), filter_Macid);
             if (devDic == null || devDic.Count == 0)
             {
                 ShowMessage($"获取所有设备Mode数据失败!");
@@ -1011,7 +1035,20 @@ namespace FisherTagDemo
 
         private async void btn_getLocationBatch_Click(object sender, EventArgs e)
         {
-
+            if (_isShowPositionIng)
+            {
+                FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
+                return;
+            }
+            _isShowPositionIng = true;
+            await GetLocatorCurrentPositionBatch();
+        }
+        /// <summary>
+        /// 批量获得定位器当前的位置
+        /// </summary>
+        /// <returns></returns>
+        private async Task GetLocatorCurrentPositionBatch(List<string> filter = null)
+        {
             Locator_GetCurrentLocationBatchAck devInfos = GetLocatorCurrentStatus();
             if (devInfos == null)
             {
@@ -1020,31 +1057,66 @@ namespace FisherTagDemo
                 return;
             }
             AnalysisDevCurrentInfo(devInfos);
-            //webView_map.CoreWebView2.NavigateToString("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
-            //webBrowser_map.Url = new Uri("file:///E:/GIT/FisherTagDemo/output/baidu_Map.html");
 
-            //double lng = devInfo.data[0].jingdu; // 经度（上海外滩）
-            //double lat = devInfo.data[0].weidu;  // 纬度
+            List<double> lngs = new List<double>();
+            List<double> lats = new List<double>();
+            List<string> labels = new List<string>();
+            List<string> timeStamps = new List<string>();
 
-            double[] lngs = new double[devInfos.data[0].deviceCount];
-            double[] lats = new double[devInfos.data[0].deviceCount];
-            string[] labels = new string[devInfos.data[0].deviceCount];
-            string[] timeStamps = new string[devInfos.data[0].deviceCount];
-            for (int i = 0; i < devInfos.data[0].deviceCount; i++)
+            //double[] lngs = new double[devInfos.data[0].deviceCount];
+            //double[] lats = new double[devInfos.data[0].deviceCount];
+            //string[] labels = new string[devInfos.data[0].deviceCount];
+            //string[] timeStamps = new string[devInfos.data[0].deviceCount];
+            double lng, lat; string label, timeStamp;
+            if (filter == null || filter.Count == 0)
             {
-                try
+                for (int i = 0; i < devInfos.data[0].deviceCount; i++)
                 {
-                    lngs[i] = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.jingdu]);
-                    lats[i] = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.weidu]);
-                    labels[i] = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
-                    timeStamps[i] = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                catch (Exception ex)
-                {
-                    BaseFrmControl.ShowErrorMessageBox(this, $"ex:{ex.ToString()}");
-                }
+                    try
+                    {
+                        lng = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.jingdu]);
+                        lat = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.weidu]);
+                        label = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
+                        timeStamp = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
+                        lngs.Add(lng);
+                        lats.Add(lat);
+                        labels.Add(label);
+                        timeStamps.Add(timeStamp);
+                    }
+                    catch (Exception ex)
+                    {
+                        BaseFrmControl.ShowErrorMessageBox(this, $"ex:{ex.ToString()}");
+                    }
 
+                }
             }
+            else
+            {
+                for (int i = 0; i < devInfos.data[0].deviceCount; i++)
+                {
+                    if (!filter.Contains(devInfos.data[0].records[i][devInfos.data[0].key.sim_id]))
+                    {
+                        continue;
+                    }
+                    try
+                    {
+                        lng = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.jingdu]);
+                        lat = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.weidu]);
+                        label = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
+                        timeStamp = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
+                        lngs.Add(lng);
+                        lats.Add(lat);
+                        labels.Add(label);
+                        timeStamps.Add(timeStamp);
+                    }
+                    catch (Exception ex)
+                    {
+                        BaseFrmControl.ShowErrorMessageBox(this, $"ex:{ex.ToString()}");
+                    }
+
+                }
+            }
+
             string script = $@"
     showLocations(
         {JsonConvert.SerializeObject(lngs)},
@@ -1054,6 +1126,7 @@ namespace FisherTagDemo
     )";
             await webView_map.CoreWebView2.ExecuteScriptAsync(script);
             //await webView_map.CoreWebView2.ExecuteScriptAsync($"showLocation({lng}, {lat},'{"A00001"}')");
+            _isShowPositionIng = false;
         }
 
         private bool _isTraceSignalStrength = false;
@@ -1065,14 +1138,14 @@ namespace FisherTagDemo
         {
             if (((ButtonX)sender).Text == "启动信号跟踪")
             {
-                btn_getLocatorBatch.Enabled = false;
+                btn_getAllLocatorCurrentPosition.Enabled = false;
                 _isTraceSignalStrength = true;
                 ((ButtonX)sender).Text = "启动信号跟踪中，点击停止";
                 _taskTraceSignalStrength = Task.Run(() => { RecordDevDSignalInfo(); });
             }
             else
             {
-                btn_getLocatorBatch.Enabled = true;
+                btn_getAllLocatorCurrentPosition.Enabled = true;
                 _isTraceSignalStrength = false;
                 _taskTraceSignalStrength.Wait();
                 ((ButtonX)sender).Text = "启动信号跟踪";
@@ -1174,6 +1247,7 @@ namespace FisherTagDemo
                 FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
                 return;
             }
+            _isLocatorModeProcessing = true;
             if (dgv_locatorList.SelectedRows.Count > 0)
             {
                 List<string> shipNames = new List<string>();
@@ -1230,7 +1304,7 @@ namespace FisherTagDemo
             {
                 GetLocatorMode();
             });
-            btn_getLocatorMode.Text = "获取定位器模式中...";
+            btn_getAllLocatorMode.Text = "获取定位器模式中...";
         }
 
         private void btn_QueryLocator_Click(object sender, EventArgs e)
@@ -1267,7 +1341,7 @@ namespace FisherTagDemo
 
         private void copyToolStripMenuItem_MouseUp(object sender, MouseEventArgs e)
         {
-            
+
             if (e.Button == MouseButtons.Left)
             {
                 ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
@@ -1296,7 +1370,7 @@ namespace FisherTagDemo
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (e.RowIndex < 0)
+                if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 {
                     return;
                 }
@@ -1363,9 +1437,18 @@ namespace FisherTagDemo
             Thread.Sleep(500);
             this.Invoke(new Action(() =>
             {
+                try
+                {
+                    if (splitContainer_sub_right.Width > splitContainer_sub_right.SplitterDistance)
+                    {
+                        splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance + 1;
+                        splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance - 1;
+                    }
+                }
+                catch (Exception)
+                {
+                }
 
-                splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance+1 ;
-                splitContainer_sub_right.SplitterDistance = splitContainer_sub_right.SplitterDistance -1;
             }));
         }
 
@@ -1373,5 +1456,138 @@ namespace FisherTagDemo
         {
             QuerySpecialLocator("FullName");
         }
+
+        private async void btn_getSelectedLocatorCurrentPosition_Click(object sender, EventArgs e)
+        {
+            if (_isShowPositionIng)
+            {
+                FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
+                return;
+            }
+
+            if (dgv_locatorList.SelectedRows.Count > 0)
+            {
+                List<string> shipNames = new List<string>();
+                foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
+                {
+                    shipNames.Add(item.Cells["Macid"].Value.ToString());
+                }
+                await GetLocatorCurrentPositionBatch(shipNames);
+                _isShowPositionIng = false;
+            }
+            else
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器整行，用行头选择，可多选！");
+                return;
+            }
+        }
+
+
+        private void btn_setSpecificLocatorMode_Click(object sender, EventArgs e)
+        {
+            if (dgv_locatorList.SelectedRows.Count > 0)
+            {
+                _SetLocatorMode.StartPosition = FormStartPosition.CenterParent;
+                _SetLocatorMode.ShowDialog();
+            }
+            else
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器整行，用行头选择，可多选！");
+                return;
+            }
+
+        }
+
+        private void ProcessLocatorModeSet(Locator_ModeEntity locator_ModeEntity)
+        {
+            this.Invoke(new Action(() =>
+            {
+                List<string> shipNames = new List<string>();
+                foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
+                {
+                    shipNames.Add(item.Cells["Macid"].Value.ToString());
+                }
+                string sendString = $"MODE,{(int)locator_ModeEntity.WorkModeEnum01},{locator_ModeEntity.ReportInterval02},{locator_ModeEntity.GPS03},{locator_ModeEntity.WIFI04},{locator_ModeEntity.LBS05},{locator_ModeEntity.GPRS06}%23";
+                //cmd=MESSAGETOUC&param=MODE,x,y,A,B,C,D%23
+                Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand(sendString, shipNames);
+                foreach (var item in devDic)
+                {
+                    ShowMessage($"dev:{item.Key.fullName} MODE 设定指令  Send OK");
+                }
+                _isShowPositionIng = false;
+
+            }));
+        }
+
+        private void btn_specificLocatorLocating_Click(object sender, EventArgs e)
+        {
+            if (dgv_locatorList.SelectedRows.Count > 0)
+            {
+                List<string> shipNames = new List<string>();
+                foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
+                {
+                    shipNames.Add(item.Cells["Macid"].Value.ToString());
+                }
+                Dictionary<DeviceInfo, string> devDic = SendMessageToLocatorBySendCommand("LJDW%23", shipNames);
+                foreach (var item in devDic)
+                {
+                    ShowMessage($"dev:{item.Key.fullName} 立即定位指令  Send OK");
+                }
+                _isShowPositionIng = false;
+            }
+            else
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器整行，用行头选择，可多选！");
+                return;
+            }
+        }
+
+        private void btn_getSpecificLocatorMode_Click(object sender, EventArgs e)
+        {
+            if (_isLocatorModeProcessing)
+            {
+                BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
+                return;
+            }
+            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dr == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            if (dgv_locatorList.SelectedRows.Count > 0)
+            {
+                List<string> shipNames = new List<string>();
+                foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
+                {
+                    shipNames.Add(item.Cells["Macid"].Value.ToString());
+                }
+                foreach (DataRow item in ((DataTable)dgv_locatorList.DataSource).Rows)
+                {
+                    if (shipNames.Contains(item["Macid"].ToString()))
+                    {
+                        continue;
+                    }
+                    item["WorkMode"] = "";
+                    item["ReportInterval"] = "";
+                    item["GPS"] = "";
+                    item["WIFI"] = "";
+                    item["LBS"] = "";
+                    item["GPRS"] = "";
+                }
+                _isLocatorModeProcessing = true;
+                Task.Run(() =>
+                {
+                    GetLocatorMode(shipNames);
+                });
+                btn_getAllLocatorMode.Text = "获取定位器模式中...";
+            }
+            else
+            {
+                BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器整行，用行头选择，可多选！");
+                return;
+            }
+        }
+
     }
 }
