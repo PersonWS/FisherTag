@@ -13,8 +13,11 @@ using System.Windows.Forms;
 
 namespace FisherTagDemo
 {
+
     public partial class Frm_SetLocatorMode : Frm_Template
     {
+        int _cmbIndex = 0;
+        int _reportInterval = 3600;
         public event Action<Locator_ModeEntity> ModeEntiyConfirm;
         public Frm_SetLocatorMode()
         {
@@ -23,11 +26,15 @@ namespace FisherTagDemo
 
         private void Frm_SetLocatorMode_Load(object sender, EventArgs e)
         {
-            foreach (var item in Enum.GetNames(typeof(Locator_ModeEntity_WorkModeEnum)))
+            if (cmb_mode.Items.Count==0)
             {
-                cmb_mode.Items.Add(item);
+                foreach (var item in Enum.GetNames(typeof(Locator_ModeEntity_WorkModeEnum)))
+                {
+                    cmb_mode.Items.Add(item);
+                }
+                cmb_mode.SelectedIndex = 0;
             }
-            cmb_mode.SelectedIndex = 0;
+
         }
 
         private void btn_SetOK_Click(object sender, EventArgs e)
