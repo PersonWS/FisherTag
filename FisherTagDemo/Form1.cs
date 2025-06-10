@@ -1285,7 +1285,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
                 return;
             }
-            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
             if (dr == DialogResult.Cancel)
             {
                 return;
@@ -1549,7 +1549,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowErrorMessageBox(this, $"正在获取定位器模式，请等待！");
                 return;
             }
-            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            DialogResult dr = MessageBoxEx.Show("获取定位器模式信息耗时很长，单个定位器耗时约2-3s,确认要执行吗", "警告信息", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
             if (dr == DialogResult.Cancel)
             {
                 return;
@@ -1564,7 +1564,7 @@ namespace FisherTagDemo
                 }
                 foreach (DataRow item in ((DataTable)dgv_locatorList.DataSource).Rows)
                 {
-                    if (shipNames.Contains(item["Macid"].ToString()))
+                    if (!shipNames.Contains(item["Macid"].ToString()))
                     {
                         continue;
                     }
@@ -1580,7 +1580,7 @@ namespace FisherTagDemo
                 {
                     GetLocatorMode(shipNames);
                 });
-                btn_getAllLocatorMode.Text = "获取定位器模式中...";
+                //btn_getAllLocatorMode.Text = "获取定位器模式中...";
             }
             else
             {
