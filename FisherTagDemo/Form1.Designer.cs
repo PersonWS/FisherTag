@@ -34,6 +34,7 @@
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.btn_getSpecificLocatorMode = new DevComponents.DotNetBar.ButtonX();
             this.btn_specificLocatorLocating = new DevComponents.DotNetBar.ButtonX();
             this.btn_getSelectedLocatorCurrentPosition = new DevComponents.DotNetBar.ButtonX();
             this.btn_btn_QueryLocator_FullName = new DevComponents.DotNetBar.ButtonX();
@@ -88,7 +89,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_getSpecificLocatorMode = new DevComponents.DotNetBar.ButtonX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -224,6 +224,19 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // btn_getSpecificLocatorMode
+            // 
+            this.btn_getSpecificLocatorMode.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.btn_getSpecificLocatorMode.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
+            this.btn_getSpecificLocatorMode.Location = new System.Drawing.Point(502, 524);
+            this.btn_getSpecificLocatorMode.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.btn_getSpecificLocatorMode.Name = "btn_getSpecificLocatorMode";
+            this.btn_getSpecificLocatorMode.Size = new System.Drawing.Size(168, 80);
+            this.btn_getSpecificLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.btn_getSpecificLocatorMode.TabIndex = 46;
+            this.btn_getSpecificLocatorMode.Text = "获取【选中】定位器MODE(耗时)";
+            this.btn_getSpecificLocatorMode.Click += new System.EventHandler(this.btn_getSpecificLocatorMode_Click);
             // 
             // btn_specificLocatorLocating
             // 
@@ -992,6 +1005,7 @@
             this.dgv_locatorList.TabIndex = 0;
             this.dgv_locatorList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_locatorList_CellClick);
             this.dgv_locatorList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_locatorList_CellMouseClick);
+            this.dgv_locatorList.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.dgv_locatorList_SortCompare);
             // 
             // webView_map
             // 
@@ -1040,19 +1054,6 @@
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(143, 38);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.copyToolStripMenuItem_MouseUp);
-            // 
-            // btn_getSpecificLocatorMode
-            // 
-            this.btn_getSpecificLocatorMode.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btn_getSpecificLocatorMode.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_getSpecificLocatorMode.Location = new System.Drawing.Point(502, 524);
-            this.btn_getSpecificLocatorMode.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.btn_getSpecificLocatorMode.Name = "btn_getSpecificLocatorMode";
-            this.btn_getSpecificLocatorMode.Size = new System.Drawing.Size(168, 80);
-            this.btn_getSpecificLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.btn_getSpecificLocatorMode.TabIndex = 46;
-            this.btn_getSpecificLocatorMode.Text = "获取【选中】定位器MODE(耗时)";
-            this.btn_getSpecificLocatorMode.Click += new System.EventHandler(this.btn_getSpecificLocatorMode_Click);
             // 
             // Form1
             // 

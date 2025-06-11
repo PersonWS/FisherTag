@@ -1012,7 +1012,7 @@ namespace FisherTagDemo
                         {
                             //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
                             drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
-                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric];
+                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3,'0');
                             drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
                             drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
                             //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
@@ -1589,5 +1589,12 @@ namespace FisherTagDemo
             }
         }
 
+        private void dgv_locatorList_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
+        {
+            if (_isLocatorModeProcessing || _isSetLocatorModing)
+            {
+                return;
+            }
+        }
     }
 }
