@@ -587,6 +587,8 @@ namespace FisherTagDemo
                     ShowMessage(_getMdsString);
                     continue;
                 }
+
+                Thread.Sleep(100);
                 //获取设备数据
                 string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(shipID, _commonResource.LocatorLogIn.mds,
                     TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
@@ -1247,9 +1249,9 @@ namespace FisherTagDemo
                 FormSet.BaseFrmControl.ShowErrorMessageBox(this, "有其他查询结果正在展示中，请稍后再试！");
                 return;
             }
-            _isLocatorModeProcessing = true;
             if (dgv_locatorList.SelectedRows.Count > 0)
             {
+                _isShowPositionIng = true;
                 List<string> shipNames = new List<string>();
                 foreach (DataGridViewRow item in dgv_locatorList.SelectedRows)
                 {
