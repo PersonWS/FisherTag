@@ -1003,18 +1003,19 @@ namespace FisherTagDemo
             {
                 return;
             }
-            foreach (var dev in devInfo.data[0].records)
+            lock (_dgvLock)
             {
-                if (dev != null)
+                foreach (var dev in devInfo.data[0].records)
                 {
-                    lock (_dgvLock)
+                    if (dev != null)
                     {
+
                         DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
                         if (drs.Count() > 0)
                         {
                             //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
                             drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
-                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3,'0');
+                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3, '0');
                             drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
                             drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
                             //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
