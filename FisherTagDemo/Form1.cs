@@ -554,8 +554,8 @@ namespace FisherTagDemo
             {
                 return;
             }
-            txt_ShipLocatorId.Text = _dt_locator.Rows[e.RowIndex]["Macid"].ToString();
-            txt_ShipLocatorId_Obj.Text = _dt_locator.Rows[e.RowIndex]["Objectid"].ToString();
+            txt_ShipLocatorId.Text =dgv_locatorList.Rows[e.RowIndex].Cells["Macid"].Value.ToString();
+            txt_ShipLocatorId_Obj.Text = dgv_locatorList.Rows[e.RowIndex].Cells["Objectid"].Value.ToString();
         }
 
         private async void btn_getHistoryPath_Click(object sender, EventArgs e)
