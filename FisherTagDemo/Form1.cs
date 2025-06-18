@@ -570,7 +570,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器！");
                 return;
             }
-            GetLocatorHistoryPathByShipNames(new List<string>() { txt_ShipLocatorId.Text });
+           GetLocatorHistoryPathByShipNames(new List<string>() { txt_ShipLocatorId.Text });
 
 
         }
