@@ -254,7 +254,7 @@ namespace FisherTagDemo
                     }
                     dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dgv_rfid.Refresh();
-                    if (this.dgv_rfidPosition[1] > -1)
+                    if (this.dgv_rfidPosition[1] > -1 && dgv_rfid.Rows.Count >0)
                     {
                         dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
                     }
@@ -1005,25 +1005,36 @@ namespace FisherTagDemo
             }
             lock (_dgvLock)
             {
-                foreach (var dev in devInfo.data[0].records)
+                try
                 {
-                    if (dev != null)
+                    _isSetLocatorModing = true;
+                    foreach (var dev in devInfo.data[0].records)
                     {
-
-                        DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
-                        if (drs.Count() > 0)
+                        if (dev != null)
                         {
-                            //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
-                            drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
-                            drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3, '0');
-                            drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
-                            drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
-                            //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
-                            drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
-                            drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                            DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
+                            if (drs.Count() > 0)
+                            {
+                                //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
+                                drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
+                                drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3, '0');
+                                drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
+                                drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
+                                //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
+                                drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
+                                drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                            }
                         }
                     }
                 }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                finally
+                { _isSetLocatorModing = false; }
+              
             }
         }
 
