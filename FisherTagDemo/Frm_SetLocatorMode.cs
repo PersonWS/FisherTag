@@ -46,7 +46,8 @@ namespace FisherTagDemo
             entity.GPS03 = chk_GPS.Checked ? 1 : 0;
             entity.WIFI04 = chk_wifi.Checked ? 1 : 0;
             entity.LBS05 = CHK_LBS.Checked ? 1 : 0;
-            entity.GPRS06 = CHK_GPRS.Checked ? 1 : 0;
+            //entity.GPRS06 = CHK_GPRS.Checked ? 1 : 0;
+            entity.GPRS06 = 1;
             if (DialogResult.Cancel == MessageBox.Show($"设定信息为：{JsonConvert.SerializeObject(entity)} \r\n 确定要进行设置吗？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
             {
                 return;
