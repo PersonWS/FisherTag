@@ -48,7 +48,7 @@ namespace FisherTagDemo
         /// rfid 的datatable
         /// </summary>
         DataTable _dt_rfid = new DataTable();
-
+        private static object _dt_rfid_Locker = new object();
         CommonResource _commonResource;
 
         /// <summary>
@@ -254,15 +254,17 @@ namespace FisherTagDemo
                     }
                     dgv_rfid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     dgv_rfid.Refresh();
-                    if (this.dgv_rfidPosition[1] > -1 && dgv_rfid.Rows.Count >0)
+                    lock (_dt_rfid_Locker)
                     {
-                        dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
+                        if (this.dgv_rfidPosition[1] > -1 && dgv_rfid.Rows.Count > 0)
+                        {
+                            dgv_rfid.FirstDisplayedScrollingRowIndex = this.dgv_rfidPosition[1];
+                        }
+                        if (this.dgv_rfidPosition[0] > -1 && this.dgv_rfidPosition[0] < dgv_rfid.ColumnCount)
+                        {
+                            dgv_rfid.FirstDisplayedScrollingColumnIndex = this.dgv_rfidPosition[0];
+                        }
                     }
-                    if (this.dgv_rfidPosition[0] > -1 && this.dgv_rfidPosition[0] < dgv_rfid.ColumnCount)
-                    {
-                        dgv_rfid.FirstDisplayedScrollingColumnIndex = this.dgv_rfidPosition[0];
-                    }
-
 
                 }));
             }
@@ -724,7 +726,11 @@ namespace FisherTagDemo
         private void btn_clearLog_Click(object sender, EventArgs e)
         {
             txt_showMessage.Text = "";
-            _dt_rfid.Rows.Clear();
+            lock (_dt_rfid_Locker)
+            {
+                _dt_rfid.Rows.Clear();
+            }
+
         }
 
         private void webView_map_Resize(object sender, EventArgs e)
