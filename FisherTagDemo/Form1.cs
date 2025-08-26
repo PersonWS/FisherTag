@@ -127,7 +127,7 @@ namespace FisherTagDemo
             IniRfid_LocatorCorrespondInfo();
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
-            MainHttp();
+           await  MainHttp();
 
         }
 
@@ -472,13 +472,13 @@ namespace FisherTagDemo
                 CheckControlNames(this, "locator", true);
             }
             //启动定时器定时查询报警信息
-            if (_timerGetGpsAlarms == null)
-            {
-                _timerGetGpsAlarms = new System.Timers.Timer();
-                _timerGetGpsAlarms.Elapsed += AlarmTimerCallback;
-                _timerGetGpsAlarms.Interval = 2000;
-                _timerGetGpsAlarms.Start();
-            }
+            //if (_timerGetGpsAlarms == null)
+            //{
+            //    _timerGetGpsAlarms = new System.Timers.Timer();
+            //    _timerGetGpsAlarms.Elapsed += AlarmTimerCallback;
+            //    _timerGetGpsAlarms.Interval = 2000;
+            //    _timerGetGpsAlarms.Start();
+            //}
         }
 
         long _maxTime = TimeDataConvert.GPS_DateConvertDateTimeToUTC8(DateTime.Now.AddDays(-1));
@@ -973,7 +973,7 @@ namespace FisherTagDemo
             }
             //  ShowMessage($"批量获取设备数据开始...");
             //获取设备数据
-            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_commonResource.LocatorLogIn.id, _commonResource.LocatorLogIn.mds));
+            string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetCurrentLocationBatchReq.GenerateGetAppendMsg(_commonResource.LocatorLogIn.id, _commonResource.LocatorLogIn.mds), chk_traceLog.Checked);
             if (devRet == null)
             {
                 ShowMessage($"批量获取设备数据结果为空,ret:{devRet}");
