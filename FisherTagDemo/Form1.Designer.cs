@@ -385,10 +385,10 @@
             // 
             this.btn_locatorSignalStrengthQuery.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btn_locatorSignalStrengthQuery.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btn_locatorSignalStrengthQuery.Location = new System.Drawing.Point(286, 524);
+            this.btn_locatorSignalStrengthQuery.Location = new System.Drawing.Point(322, 524);
             this.btn_locatorSignalStrengthQuery.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_locatorSignalStrengthQuery.Name = "btn_locatorSignalStrengthQuery";
-            this.btn_locatorSignalStrengthQuery.Size = new System.Drawing.Size(120, 70);
+            this.btn_locatorSignalStrengthQuery.Size = new System.Drawing.Size(168, 70);
             this.btn_locatorSignalStrengthQuery.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_locatorSignalStrengthQuery.TabIndex = 34;
             this.btn_locatorSignalStrengthQuery.Text = "定位器信号查询";
@@ -429,7 +429,7 @@
             this.btn_traceLocatorSignalStrength.Location = new System.Drawing.Point(146, 524);
             this.btn_traceLocatorSignalStrength.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_traceLocatorSignalStrength.Name = "btn_traceLocatorSignalStrength";
-            this.btn_traceLocatorSignalStrength.Size = new System.Drawing.Size(126, 70);
+            this.btn_traceLocatorSignalStrength.Size = new System.Drawing.Size(162, 70);
             this.btn_traceLocatorSignalStrength.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_traceLocatorSignalStrength.TabIndex = 31;
             this.btn_traceLocatorSignalStrength.Text = "启动信号跟踪";
@@ -468,7 +468,7 @@
             this.btn_setSpecificLocatorMode.Location = new System.Drawing.Point(146, 616);
             this.btn_setSpecificLocatorMode.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.btn_setSpecificLocatorMode.Name = "btn_setSpecificLocatorMode";
-            this.btn_setSpecificLocatorMode.Size = new System.Drawing.Size(260, 80);
+            this.btn_setSpecificLocatorMode.Size = new System.Drawing.Size(342, 80);
             this.btn_setSpecificLocatorMode.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btn_setSpecificLocatorMode.TabIndex = 28;
             this.btn_setSpecificLocatorMode.Text = "设置【选中】定位器Mode信息";
@@ -1046,12 +1046,12 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(144, 42);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 42);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(143, 38);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(147, 38);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.copyToolStripMenuItem_MouseUp);
             // 

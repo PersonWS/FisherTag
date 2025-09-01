@@ -1156,19 +1156,26 @@ namespace FisherTagDemo
 
         private void btn_traceSignalStrength_Click(object sender, EventArgs e)
         {
-            if (((ButtonX)sender).Text == "启动信号跟踪")
+            if (((ButtonX)sender).Text == "启动信号跟踪"&& ! _isTraceSignalStrength)
             {
                 btn_getAllLocatorCurrentPosition.Enabled = false;
                 _isTraceSignalStrength = true;
-                ((ButtonX)sender).Text = "启动信号跟踪中，点击停止";
+                ((ButtonX)sender).Text = "信号跟踪中,点击停止";
                 _taskTraceSignalStrength = Task.Run(() => { RecordDevDSignalInfo(); });
             }
-            else
+            else if (((ButtonX)sender).Text == "信号跟踪中,点击停止" && _isTraceSignalStrength)
             {
                 btn_getAllLocatorCurrentPosition.Enabled = true;
                 _isTraceSignalStrength = false;
-                _taskTraceSignalStrength.Wait();
-                ((ButtonX)sender).Text = "启动信号跟踪";
+                ((ButtonX)sender).Text = "停止中...不要重复点击";
+                Task.Run(() => { 
+                    _taskTraceSignalStrength.Wait();
+                    this.Invoke(new Action(() =>
+                    {
+                        ((ButtonX)sender).Text = "启动信号跟踪";
+                    }));
+                });
+
             }
 
         }
