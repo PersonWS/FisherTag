@@ -593,7 +593,7 @@ namespace FisherTagDemo
                 Thread.Sleep(100);
                 //获取设备数据
                 string devRet = _commonResource.LocatorServer.GetMessageByRestful(Locator_GetDeviceHistoryLocationReq.GenerateGetAppendMsg(shipID, _commonResource.LocatorLogIn.mds,
-                    TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
+                    TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InBegin.Value.Date).ToString(), TimeDataConvert.GPS_DateConvertDateTimeToUTC8(dT_InEnd.Value).ToString()), chk_traceLog.Checked);
                 if (devRet == null)
                 {
                     ShowMessage($"定位器ID:{shipID},设备数据为null ,ret:{devRet}");

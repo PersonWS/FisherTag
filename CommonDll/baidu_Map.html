@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>百度地图示例</title>
+    <title>百度地图示例 - 带测距功能</title>
     <link rel="icon" href="data:,"> <!-- 禁用 favicon.ico 请求 -->
     <style>
         html, body, #mapContainer {
@@ -29,6 +29,7 @@
         button {
             padding: 5px 10px;
             cursor: pointer;
+            margin-right: 5px;
         }
         /* 通用标签样式 */
         .custom-label {
@@ -74,12 +75,54 @@
         #showLabelsCheckbox {
             margin-left: 10px;
         }
+        
+        /* 测距功能样式 */
+        #measureResult {
+            position: absolute;
+            top: 60px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            max-width: 300px;
+        }
+        .measure-point {
+            color: #3388FF;
+            font-weight: bold;
+        }
+        .measure-total {
+            font-weight: bold;
+            color: #ff3300;
+            margin-top: 5px;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+        }
+        #measureControls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
     <script type="text/javascript">
         var map, geocoder;
         var gpsData = []; // 存储轨迹点数据
         var labels = []; // 存储所有标签对象
         var popupLabel = null; // 用于存储当前弹出的 Label
+        
+        // 测距功能相关变量
+        var isMeasuring = false; // 是否处于测距模式
+        var measurePoints = []; // 存储测距点
+        var measureLine = null; // 测距线
+        var measureMarkers = []; // 测距标记点
+        var measureResultDiv = null; // 测距结果展示区域
 
         // 加载百度地图脚本
         function loadBaiduMapScript() {
@@ -114,6 +157,29 @@
 
             // 默认选中复选框
             document.getElementById("showLabelsCheckbox").checked = true;
+            
+            // 初始化测距功能
+            initMeasureTool();
+            
+            // 添加地图点击事件监听
+            map.addEventListener("click", function(e) {
+                if (isMeasuring) {
+                    addMeasurePoint(e.point);
+                }
+            });
+        }
+
+        // 初始化测距功能
+        function initMeasureTool() {
+            // 创建测距结果展示区域
+            measureResultDiv = document.getElementById("measureResult");
+            
+            // 如果没有测距结果区域，则创建一个
+            if (!measureResultDiv) {
+                measureResultDiv = document.createElement("div");
+                measureResultDiv.id = "measureResult";
+                document.body.appendChild(measureResultDiv);
+            }
         }
 
         // 添加自由缩放的控件
@@ -430,6 +496,126 @@ function drawTrajectory(data, drawPolyline = true) {
                 console.warn("没有轨迹数据可供显示！");
             }
         }
+        
+        // 测距功能相关方法
+        function toggleMeasure() {
+            isMeasuring = !isMeasuring;
+            var measureBtn = document.getElementById("measureButton");
+            
+            if (isMeasuring) {
+                // 进入测距模式
+                measureBtn.textContent = "退出测距";
+                measureBtn.style.backgroundColor = "#ff3300";
+                measureBtn.style.color = "white";
+                measureResultDiv.style.display = "block";
+                measureResultDiv.innerHTML = "<div>测距模式已开启，请点击地图添加测量点</div>";
+                
+                // 清除可能存在的先前测量
+                clearMeasure();
+            } else {
+                // 退出测距模式
+                measureBtn.textContent = "距离测量";
+                measureBtn.style.backgroundColor = "";
+                measureBtn.style.color = "";
+                measureResultDiv.style.display = "none";
+                
+                // 清除测量
+                clearMeasure();
+            }
+        }
+        
+        function addMeasurePoint(point) {
+            if (!isMeasuring) return;
+            
+            // 添加测距点
+            measurePoints.push(point);
+            
+            // 创建测距点标记
+            var marker = new BMap.Marker(point, {
+                icon: new BMap.Icon('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="%233388FF" stroke="white" stroke-width="2"/></svg>', new BMap.Size(20, 20))
+            });
+            map.addOverlay(marker);
+            measureMarkers.push(marker);
+            
+            // 添加序号标签
+            var label = new BMap.Label(measurePoints.length.toString(), {
+                position: point,
+                offset: new BMap.Size(0, 0)
+            });
+            label.setStyle({
+                color: "white",
+                backgroundColor: "transparent",
+                border: "none",
+                fontSize: "12px",
+                fontWeight: "bold"
+            });
+            map.addOverlay(label);
+            measureMarkers.push(label);
+            
+            // 更新测距线和结果显示
+            updateMeasureResult();
+        }
+        
+        function updateMeasureResult() {
+            // 清除旧的测距线
+            if (measureLine) {
+                map.removeOverlay(measureLine);
+            }
+            
+            // 如果有两个或更多点，绘制测距线
+            if (measurePoints.length > 1) {
+                measureLine = new BMap.Polyline(measurePoints, {
+                    strokeColor: "#3388FF",
+                    strokeWeight: 2,
+                    strokeOpacity: 0.8
+                });
+                map.addOverlay(measureLine);
+            }
+            
+            // 更新测距结果展示
+            var resultHTML = "<div><strong>测距结果:</strong></div>";
+            var totalDistance = 0;
+            
+            for (var i = 0; i < measurePoints.length; i++) {
+                if (i > 0) {
+                    var distance = map.getDistance(measurePoints[i-1], measurePoints[i]);
+                    totalDistance += distance;
+                    resultHTML += `<div>段${i}: <span class="measure-point">${distance.toFixed(2)}</span> 米</div>`;
+                }
+                
+                resultHTML += `<div>点${i+1}: ${measurePoints[i].lng.toFixed(6)}, ${measurePoints[i].lat.toFixed(6)}</div>`;
+            }
+            
+            if (measurePoints.length > 1) {
+                resultHTML += `<div class="measure-total">总距离: ${totalDistance.toFixed(2)} 米 (约 ${(totalDistance/1000).toFixed(3)} 公里)</div>`;
+            }
+            
+            resultHTML += "<div><button onclick=\"clearMeasure()\">清除测量</button></div>";
+            measureResultDiv.innerHTML = resultHTML;
+        }
+        
+        function clearMeasure() {
+            // 清除所有测距覆盖物
+            for (var i = 0; i < measureMarkers.length; i++) {
+                map.removeOverlay(measureMarkers[i]);
+            }
+            
+            if (measureLine) {
+                map.removeOverlay(measureLine);
+                measureLine = null;
+            }
+            
+            // 重置测距点数组和标记数组
+            measurePoints = [];
+            measureMarkers = [];
+            
+            // 更新结果显示
+            if (isMeasuring) {
+                measureResultDiv.innerHTML = "<div>测距模式已开启，请点击地图添加测量点</div>";
+            } else {
+                measureResultDiv.style.display = "none";
+            }
+        }
 
         // 异步加载百度地图脚本
         loadBaiduMapScript();
@@ -444,6 +630,10 @@ function drawTrajectory(data, drawPolyline = true) {
             <input type="checkbox" id="showLabelsCheckbox" checked> 显示标签
         </label>
     </div>
+    <div id="measureControls">
+        <button id="measureButton" onclick="toggleMeasure()">距离测量</button>
+    </div>
+    <div id="measureResult"></div>
     <button id="resetButton">重置轨迹</button>
 </body>
 </html>
