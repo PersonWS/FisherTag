@@ -25,6 +25,7 @@ using DevComponents.DotNetBar.Schedule;
 using DevComponents.DotNetBar.Controls;
 using FormSet;
 using static System.Net.Mime.MediaTypeNames;
+using IOTDBHepler;
 
 namespace FisherTagDemo
 {
@@ -425,7 +426,7 @@ namespace FisherTagDemo
         private void btn_GetDevList_Click(object sender, EventArgs e)
         {
             IniCommonResource();
-
+            List<string> gps_LocatorFilter = ReadTextSimple.ReadText("GPS_LocatorFilter").Replace("\n","").Split('\r').ToList();
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
             {
@@ -451,7 +452,16 @@ namespace FisherTagDemo
                 _dt_locator.Rows.Clear();
                 for (int i = 0; i < _commonResource.LocatorDeviceInfo.rows.Count; i++)
                 {
+
                     DeviceInfo info = _commonResource.LocatorDeviceInfo.rows[i];
+                    if (chk_locatorFilter.Checked && gps_LocatorFilter?.Count > 0)
+                    {
+                        if (gps_LocatorFilter.Contains(info.macid))
+                        {
+                            ShowMessage($"检测到忽略的FullName:{info.fullName},macid:{info.macid},跳过");
+                            continue;
+                        }
+                    }
                     DataRow dr = _dt_locator.NewRow();
                     dr["seq"] = i + 1;
                     dr["Macid"] = info.macid;

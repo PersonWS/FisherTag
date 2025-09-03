@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
@@ -89,6 +89,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chk_locatorFilter = new DevComponents.DotNetBar.Controls.CheckBoxX();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -186,6 +187,7 @@
             this.panel_operate.Controls.Add(this.btn_AlllocatorLocating);
             this.panel_operate.Controls.Add(this.btn_setSpecificLocatorMode);
             this.panel_operate.Controls.Add(this.btn_getLocatorStateInfo);
+            this.panel_operate.Controls.Add(this.chk_locatorFilter);
             this.panel_operate.Controls.Add(this.chk_traceLog);
             this.panel_operate.Controls.Add(this.btnLog);
             this.panel_operate.Controls.Add(this.dT_InEnd);
@@ -923,14 +925,14 @@
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -985,14 +987,14 @@
             // 
             this.dgv_locatorList.AllowUserToAddRows = false;
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
@@ -1046,14 +1048,28 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(148, 42);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(144, 42);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(147, 38);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(143, 38);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.copyToolStripMenuItem_MouseUp);
+            // 
+            // chk_locatorFilter
+            // 
+            // 
+            // 
+            // 
+            this.chk_locatorFilter.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chk_locatorFilter.Location = new System.Drawing.Point(12, 183);
+            this.chk_locatorFilter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.chk_locatorFilter.Name = "chk_locatorFilter";
+            this.chk_locatorFilter.Size = new System.Drawing.Size(200, 46);
+            this.chk_locatorFilter.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chk_locatorFilter.TabIndex = 26;
+            this.chk_locatorFilter.Text = "LocatorFilter";
             // 
             // Form1
             // 
@@ -1161,6 +1177,7 @@
         private DevComponents.DotNetBar.ButtonX btn_getSelectedLocatorCurrentPosition;
         private DevComponents.DotNetBar.ButtonX btn_specificLocatorLocating;
         private DevComponents.DotNetBar.ButtonX btn_getSpecificLocatorMode;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chk_locatorFilter;
     }
 }
 
