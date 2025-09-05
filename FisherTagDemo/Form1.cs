@@ -128,7 +128,7 @@ namespace FisherTagDemo
             IniRfid_LocatorCorrespondInfo();
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
-           await  MainHttp();
+            await MainHttp();
 
         }
 
@@ -426,7 +426,8 @@ namespace FisherTagDemo
         private void btn_GetDevList_Click(object sender, EventArgs e)
         {
             IniCommonResource();
-            List<string> gps_LocatorFilter = ReadTextSimple.ReadText("GPS_LocatorFilter").Replace("\n","").Split('\r').ToList();
+            // dgv_locatorList.DataSource = null;
+            List<string> gps_LocatorFilter = ReadTextSimple.ReadText("GPS_LocatorFilter").Replace("\n", "").Split('\r').ToList();
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
             {
@@ -450,20 +451,37 @@ namespace FisherTagDemo
             if (_commonResource.LocatorDeviceInfo.rows.Count > 0)
             {
                 _dt_locator.Rows.Clear();
+                int seq = 1;
                 for (int i = 0; i < _commonResource.LocatorDeviceInfo.rows.Count; i++)
                 {
 
                     DeviceInfo info = _commonResource.LocatorDeviceInfo.rows[i];
-                    if (chk_locatorFilter.Checked && gps_LocatorFilter?.Count > 0)
+                    if (radio_BlackMode.Checked && gps_LocatorFilter?.Count > 0)//存在filter时检查怎么filter
                     {
                         if (gps_LocatorFilter.Contains(info.macid))
                         {
-                            ShowMessage($"检测到忽略的FullName:{info.fullName},macid:{info.macid},跳过");
+                            ShowMessage($"检测到黑名单中的FullName:{info.fullName},macid:{info.macid},跳过");
                             continue;
                         }
                     }
+                    else if (radio_WhiteMode.Checked)
+                    {
+                        if (gps_LocatorFilter?.Count > 0)
+                        {
+                            if (!gps_LocatorFilter.Contains(info.macid))
+                            {
+                                ShowMessage($"检测到不在白名单中的FullName:{info.fullName},macid:{info.macid},跳过");
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            ShowMessage($"检测到不在白名单中无数据，无法进行定位器列表匹配，请检查配置！");
+                            return;
+                        }
+                    }
                     DataRow dr = _dt_locator.NewRow();
-                    dr["seq"] = i + 1;
+                    dr["seq"] = seq++;
                     dr["Macid"] = info.macid;
                     dr["Objectid"] = info.objectid;
                     dr["FullName"] = info.fullName;
@@ -566,7 +584,7 @@ namespace FisherTagDemo
             {
                 return;
             }
-            txt_ShipLocatorId.Text =dgv_locatorList.Rows[e.RowIndex].Cells["Macid"].Value.ToString();
+            txt_ShipLocatorId.Text = dgv_locatorList.Rows[e.RowIndex].Cells["Macid"].Value.ToString();
             txt_ShipLocatorId_Obj.Text = dgv_locatorList.Rows[e.RowIndex].Cells["Objectid"].Value.ToString();
         }
 
@@ -582,7 +600,7 @@ namespace FisherTagDemo
                 BaseFrmControl.ShowDefalutMessageBox(this, $"请选择定位器！");
                 return;
             }
-           GetLocatorHistoryPathByShipNames(new List<string>() { txt_ShipLocatorId.Text });
+            GetLocatorHistoryPathByShipNames(new List<string>() { txt_ShipLocatorId.Text });
 
 
         }
@@ -1019,39 +1037,44 @@ namespace FisherTagDemo
             {
                 return;
             }
-            lock (_dgvLock)
+
+            try
             {
-                try
+                _isSetLocatorModing = true;
+                foreach (var dev in devInfo.data[0].records)
                 {
-                    _isSetLocatorModing = true;
-                    foreach (var dev in devInfo.data[0].records)
+                    Task.Run(() =>
                     {
                         if (dev != null)
                         {
                             DataRow[] drs = _dt_locator.Select($"Macid='{dev[devInfo.data[0].key.sim_id]}'");
                             if (drs.Count() > 0)
                             {
-                                //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
-                                drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
-                                drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3, '0');
-                                drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
-                                drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
-                                //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
-                                drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
-                                drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                                lock (_dgvLock)
+                                {
+                                    //Locator_Status locator_Status = new Locator_Status(dev[devInfo.data[0].key.status].ToString());
+                                    drs[0]["Charge"] = dev[devInfo.data[0].key.describe].ToString().Contains("未充电") ? 0 : 1;
+                                    drs[0]["Battery"] = dev[devInfo.data[0].key.electric].ToString().PadLeft(3, '0');
+                                    drs[0]["longitude"] = dev[devInfo.data[0].key.jingdu];
+                                    drs[0]["latitude"] = dev[devInfo.data[0].key.weidu];
+                                    //drs[0]["Heart_time"] = dev[devInfo.data[0].key.heart_time];
+                                    drs[0]["Heart_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.heart_time])));
+                                    drs[0]["Server_time"] = TimeDataConvert.GetDateTimeString(TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(dev[devInfo.data[0].key.server_time])));
+                                }
                             }
                         }
-                    }
+                    });
                 }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-                finally
-                { _isSetLocatorModing = false; }
-              
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            { _isSetLocatorModing = false; }
+
+
         }
 
         private void btn_locating_Click(object sender, EventArgs e)
@@ -1166,7 +1189,7 @@ namespace FisherTagDemo
 
         private void btn_traceSignalStrength_Click(object sender, EventArgs e)
         {
-            if (((ButtonX)sender).Text == "启动信号跟踪"&& ! _isTraceSignalStrength)
+            if (((ButtonX)sender).Text == "启动信号跟踪" && !_isTraceSignalStrength)
             {
                 btn_getAllLocatorCurrentPosition.Enabled = false;
                 _isTraceSignalStrength = true;
@@ -1178,7 +1201,8 @@ namespace FisherTagDemo
                 btn_getAllLocatorCurrentPosition.Enabled = true;
                 _isTraceSignalStrength = false;
                 ((ButtonX)sender).Text = "停止中...不要重复点击";
-                Task.Run(() => { 
+                Task.Run(() =>
+                {
                     _taskTraceSignalStrength.Wait();
                     this.Invoke(new Action(() =>
                     {

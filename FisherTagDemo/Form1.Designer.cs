@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
@@ -89,7 +89,10 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chk_locatorFilter = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.labelX12 = new DevComponents.DotNetBar.LabelX();
+            this.radio_all = new System.Windows.Forms.RadioButton();
+            this.radio_WhiteMode = new System.Windows.Forms.RadioButton();
+            this.radio_BlackMode = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -167,6 +170,10 @@
             this.panel_operate.AutoScroll = true;
             this.panel_operate.CanvasColor = System.Drawing.SystemColors.Control;
             this.panel_operate.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panel_operate.Controls.Add(this.radio_BlackMode);
+            this.panel_operate.Controls.Add(this.radio_WhiteMode);
+            this.panel_operate.Controls.Add(this.radio_all);
+            this.panel_operate.Controls.Add(this.labelX12);
             this.panel_operate.Controls.Add(this.btn_getSpecificLocatorMode);
             this.panel_operate.Controls.Add(this.btn_specificLocatorLocating);
             this.panel_operate.Controls.Add(this.btn_getSelectedLocatorCurrentPosition);
@@ -187,7 +194,6 @@
             this.panel_operate.Controls.Add(this.btn_AlllocatorLocating);
             this.panel_operate.Controls.Add(this.btn_setSpecificLocatorMode);
             this.panel_operate.Controls.Add(this.btn_getLocatorStateInfo);
-            this.panel_operate.Controls.Add(this.chk_locatorFilter);
             this.panel_operate.Controls.Add(this.chk_traceLog);
             this.panel_operate.Controls.Add(this.btnLog);
             this.panel_operate.Controls.Add(this.dT_InEnd);
@@ -770,7 +776,7 @@
             // 
             this.txt_ShipLocatorPassWord.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorPassWord.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorPassWord.Location = new System.Drawing.Point(284, 282);
+            this.txt_ShipLocatorPassWord.Location = new System.Drawing.Point(284, 300);
             this.txt_ShipLocatorPassWord.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.txt_ShipLocatorPassWord.Name = "txt_ShipLocatorPassWord";
             this.txt_ShipLocatorPassWord.PasswordChar = '*';
@@ -824,7 +830,7 @@
             // 
             // 
             this.labelX6.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX6.Location = new System.Drawing.Point(16, 278);
+            this.labelX6.Location = new System.Drawing.Point(16, 296);
             this.labelX6.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.labelX6.Name = "labelX6";
             this.labelX6.Size = new System.Drawing.Size(286, 46);
@@ -842,7 +848,7 @@
             this.txt_ShipLocatorURL.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.txt_ShipLocatorURL.Multiline = true;
             this.txt_ShipLocatorURL.Name = "txt_ShipLocatorURL";
-            this.txt_ShipLocatorURL.Size = new System.Drawing.Size(444, 64);
+            this.txt_ShipLocatorURL.Size = new System.Drawing.Size(444, 66);
             this.txt_ShipLocatorURL.TabIndex = 12;
             this.txt_ShipLocatorURL.Text = "http://openapi.18gps.net/GetDateServices.asmx";
             // 
@@ -867,7 +873,7 @@
             // 
             this.txt_ShipLocatorUserName.Border.Class = "TextBoxBorder";
             this.txt_ShipLocatorUserName.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txt_ShipLocatorUserName.Location = new System.Drawing.Point(284, 224);
+            this.txt_ShipLocatorUserName.Location = new System.Drawing.Point(284, 257);
             this.txt_ShipLocatorUserName.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.txt_ShipLocatorUserName.Name = "txt_ShipLocatorUserName";
             this.txt_ShipLocatorUserName.Size = new System.Drawing.Size(386, 35);
@@ -880,7 +886,7 @@
             // 
             // 
             this.labelX5.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX5.Location = new System.Drawing.Point(16, 216);
+            this.labelX5.Location = new System.Drawing.Point(16, 249);
             this.labelX5.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.labelX5.Name = "labelX5";
             this.labelX5.Size = new System.Drawing.Size(286, 46);
@@ -925,14 +931,14 @@
             this.dgv_rfid.AllowUserToAddRows = false;
             this.dgv_rfid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgv_rfid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_rfid.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgv_rfid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_rfid.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_rfid.Location = new System.Drawing.Point(0, 0);
@@ -987,14 +993,14 @@
             // 
             this.dgv_locatorList.AllowUserToAddRows = false;
             this.dgv_locatorList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgv_locatorList.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgv_locatorList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgv_locatorList.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.dgv_locatorList.Location = new System.Drawing.Point(0, 0);
@@ -1057,19 +1063,51 @@
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.copyToolStripMenuItem_MouseUp);
             // 
-            // chk_locatorFilter
+            // labelX12
             // 
             // 
             // 
             // 
-            this.chk_locatorFilter.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chk_locatorFilter.Location = new System.Drawing.Point(12, 183);
-            this.chk_locatorFilter.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.chk_locatorFilter.Name = "chk_locatorFilter";
-            this.chk_locatorFilter.Size = new System.Drawing.Size(200, 46);
-            this.chk_locatorFilter.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.chk_locatorFilter.TabIndex = 26;
-            this.chk_locatorFilter.Text = "LocatorFilter";
+            this.labelX12.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX12.Location = new System.Drawing.Point(16, 203);
+            this.labelX12.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX12.Name = "labelX12";
+            this.labelX12.Size = new System.Drawing.Size(286, 46);
+            this.labelX12.TabIndex = 47;
+            this.labelX12.Text = "FilterMode:";
+            // 
+            // radio_all
+            // 
+            this.radio_all.AutoSize = true;
+            this.radio_all.Location = new System.Drawing.Point(206, 215);
+            this.radio_all.Name = "radio_all";
+            this.radio_all.Size = new System.Drawing.Size(137, 28);
+            this.radio_all.TabIndex = 48;
+            this.radio_all.TabStop = true;
+            this.radio_all.Text = "NoFilter";
+            this.radio_all.UseVisualStyleBackColor = true;
+            // 
+            // radio_WhiteMode
+            // 
+            this.radio_WhiteMode.AutoSize = true;
+            this.radio_WhiteMode.Location = new System.Drawing.Point(364, 215);
+            this.radio_WhiteMode.Name = "radio_WhiteMode";
+            this.radio_WhiteMode.Size = new System.Drawing.Size(149, 28);
+            this.radio_WhiteMode.TabIndex = 49;
+            this.radio_WhiteMode.TabStop = true;
+            this.radio_WhiteMode.Text = "WhiteMode";
+            this.radio_WhiteMode.UseVisualStyleBackColor = true;
+            // 
+            // radio_BlackMode
+            // 
+            this.radio_BlackMode.AutoSize = true;
+            this.radio_BlackMode.Location = new System.Drawing.Point(530, 217);
+            this.radio_BlackMode.Name = "radio_BlackMode";
+            this.radio_BlackMode.Size = new System.Drawing.Size(149, 28);
+            this.radio_BlackMode.TabIndex = 50;
+            this.radio_BlackMode.TabStop = true;
+            this.radio_BlackMode.Text = "BlackMode";
+            this.radio_BlackMode.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1093,6 +1131,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Sub1)).EndInit();
             this.splitContainer_Sub1.ResumeLayout(false);
             this.panel_operate.ResumeLayout(false);
+            this.panel_operate.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InEnd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dT_InBegin)).EndInit();
             this.splitContainer_subLeftDown.Panel1.ResumeLayout(false);
@@ -1177,7 +1216,10 @@
         private DevComponents.DotNetBar.ButtonX btn_getSelectedLocatorCurrentPosition;
         private DevComponents.DotNetBar.ButtonX btn_specificLocatorLocating;
         private DevComponents.DotNetBar.ButtonX btn_getSpecificLocatorMode;
-        private DevComponents.DotNetBar.Controls.CheckBoxX chk_locatorFilter;
+        private System.Windows.Forms.RadioButton radio_BlackMode;
+        private System.Windows.Forms.RadioButton radio_WhiteMode;
+        private System.Windows.Forms.RadioButton radio_all;
+        private DevComponents.DotNetBar.LabelX labelX12;
     }
 }
 
