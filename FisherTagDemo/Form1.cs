@@ -76,6 +76,11 @@ namespace FisherTagDemo
         /// 是否正在进行模式设置
         /// </summary>
         bool _isSetLocatorModing = false;
+        /// <summary>
+        /// 定位器的筛选名单的集合
+        /// </summary>
+        List<string> _gps_LocatorFilter;
+
 
         public Form1()
         {
@@ -126,6 +131,8 @@ namespace FisherTagDemo
             this.webView_map.Dock = DockStyle.Fill;
 
             IniRfid_LocatorCorrespondInfo();
+
+            _gps_LocatorFilter = ReadTextSimple.ReadText("GPS_LocatorFilter").Replace("\n", "").Split('\r').ToList();
             // webBrowser_map.ScriptErrorsSuppressed = true;
             // webView_map.CoreWebView2.NavigateToString("https://map.baidu.com/");
             await MainHttp();
@@ -427,7 +434,7 @@ namespace FisherTagDemo
         {
             IniCommonResource();
             // dgv_locatorList.DataSource = null;
-            List<string> gps_LocatorFilter = ReadTextSimple.ReadText("GPS_LocatorFilter").Replace("\n", "").Split('\r').ToList();
+
             //先获取MDS
             if (!_commonResource.GetMds(out _getMdsString))
             {
@@ -456,9 +463,9 @@ namespace FisherTagDemo
                 {
 
                     DeviceInfo info = _commonResource.LocatorDeviceInfo.rows[i];
-                    if (radio_BlackMode.Checked && gps_LocatorFilter?.Count > 0)//存在filter时检查怎么filter
+                    if (radio_BlackMode.Checked && _gps_LocatorFilter?.Count > 0)//存在filter时检查怎么filter
                     {
-                        if (gps_LocatorFilter.Contains(info.macid))
+                        if (_gps_LocatorFilter.Contains(info.macid))
                         {
                             ShowMessage($"检测到黑名单中的FullName:{info.fullName},macid:{info.macid},跳过");
                             continue;
@@ -466,9 +473,9 @@ namespace FisherTagDemo
                     }
                     else if (radio_WhiteMode.Checked)
                     {
-                        if (gps_LocatorFilter?.Count > 0)
+                        if (_gps_LocatorFilter?.Count > 0)
                         {
-                            if (!gps_LocatorFilter.Contains(info.macid))
+                            if (!_gps_LocatorFilter.Contains(info.macid))
                             {
                                 ShowMessage($"检测到不在白名单中的FullName:{info.fullName},macid:{info.macid},跳过");
                                 continue;
@@ -1066,10 +1073,9 @@ namespace FisherTagDemo
                     });
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                ShowMessage(e.ToString());
             }
             finally
             { _isSetLocatorModing = false; }
@@ -1094,7 +1100,26 @@ namespace FisherTagDemo
                 return;
             }
             _isShowPositionIng = true;
-            await GetLocatorCurrentPositionBatch();
+            //确认筛选器的内容
+            List<string> filter=new List<string>();
+            if (radio_BlackMode.Checked && _gps_LocatorFilter?.Count > 0)//存在filter时检查怎么filter
+            {
+                if (_gps_LocatorFilter?.Count > 0)
+                {
+                    foreach (DataRow item in _dt_locator.Rows)
+                    {
+                        if (!_gps_LocatorFilter.Contains(item["Macid"].ToString()))
+                        {
+                            filter.Add(item["Macid"].ToString());
+                        }
+                    }
+                }
+            }
+            else if (radio_WhiteMode.Checked)
+            {
+                filter = _gps_LocatorFilter;
+            }
+            await GetLocatorCurrentPositionBatch(filter);
         }
         /// <summary>
         /// 批量获得定位器当前的位置
@@ -1121,33 +1146,9 @@ namespace FisherTagDemo
             //string[] labels = new string[devInfos.data[0].deviceCount];
             //string[] timeStamps = new string[devInfos.data[0].deviceCount];
             double lng, lat; string label, timeStamp;
-            if (filter == null || filter.Count == 0)
-            {
                 for (int i = 0; i < devInfos.data[0].deviceCount; i++)
                 {
-                    try
-                    {
-                        lng = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.jingdu]);
-                        lat = Convert.ToDouble(devInfos.data[0].records[i][devInfos.data[0].key.weidu]);
-                        label = devInfos.data[0].records[i][devInfos.data[0].key.user_name].ToString();
-                        timeStamp = TimeDataConvert.GPS_DateConvertUTC8ToDateTime(Convert.ToInt64(devInfos.data[0].records[i][devInfos.data[0].key.heart_time].ToString())).ToString("yyyy-MM-dd HH:mm:ss");
-                        lngs.Add(lng);
-                        lats.Add(lat);
-                        labels.Add(label);
-                        timeStamps.Add(timeStamp);
-                    }
-                    catch (Exception ex)
-                    {
-                        BaseFrmControl.ShowErrorMessageBox(this, $"ex:{ex.ToString()}");
-                    }
-
-                }
-            }
-            else
-            {
-                for (int i = 0; i < devInfos.data[0].deviceCount; i++)
-                {
-                    if (!filter.Contains(devInfos.data[0].records[i][devInfos.data[0].key.sim_id]))
+                    if (filter?.Count>0&&!filter.Contains(devInfos.data[0].records[i][devInfos.data[0].key.sim_id]))
                     {
                         continue;
                     }
@@ -1168,8 +1169,6 @@ namespace FisherTagDemo
                     }
 
                 }
-            }
-
             string script = $@"
     showLocations(
         {JsonConvert.SerializeObject(lngs)},
