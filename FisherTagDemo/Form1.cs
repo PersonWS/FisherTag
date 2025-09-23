@@ -488,7 +488,7 @@ namespace FisherTagDemo
                         }
                     }
                     DataRow dr = _dt_locator.NewRow();
-                    dr["seq"] = seq++;
+                    dr["seq"] = seq++.ToString("000");
                     dr["Macid"] = info.macid;
                     dr["Objectid"] = info.objectid;
                     dr["FullName"] = info.fullName;
@@ -1655,6 +1655,16 @@ namespace FisherTagDemo
             {
                 return;
             }
+        }
+
+        private void dgv_locatorList_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            int i = 0;
+            foreach (DataGridViewRow item in ((DataGridView)sender).Rows)
+            {
+                item.Cells["seq"].Value = (++i).ToString("000");
+            }
+
         }
     }
 }

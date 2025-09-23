@@ -34,6 +34,10 @@
             this.splitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.splitContainer_Sub1 = new System.Windows.Forms.SplitContainer();
             this.panel_operate = new DevComponents.DotNetBar.PanelEx();
+            this.radio_BlackMode = new System.Windows.Forms.RadioButton();
+            this.radio_WhiteMode = new System.Windows.Forms.RadioButton();
+            this.radio_all = new System.Windows.Forms.RadioButton();
+            this.labelX12 = new DevComponents.DotNetBar.LabelX();
             this.btn_getSpecificLocatorMode = new DevComponents.DotNetBar.ButtonX();
             this.btn_specificLocatorLocating = new DevComponents.DotNetBar.ButtonX();
             this.btn_getSelectedLocatorCurrentPosition = new DevComponents.DotNetBar.ButtonX();
@@ -89,10 +93,6 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelX12 = new DevComponents.DotNetBar.LabelX();
-            this.radio_all = new System.Windows.Forms.RadioButton();
-            this.radio_WhiteMode = new System.Windows.Forms.RadioButton();
-            this.radio_BlackMode = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Main)).BeginInit();
             this.splitContainer_Main.Panel1.SuspendLayout();
             this.splitContainer_Main.Panel2.SuspendLayout();
@@ -232,6 +232,52 @@
             this.panel_operate.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.PanelText;
             this.panel_operate.Style.GradientAngle = 90;
             this.panel_operate.TabIndex = 20;
+            // 
+            // radio_BlackMode
+            // 
+            this.radio_BlackMode.AutoSize = true;
+            this.radio_BlackMode.Location = new System.Drawing.Point(530, 217);
+            this.radio_BlackMode.Name = "radio_BlackMode";
+            this.radio_BlackMode.Size = new System.Drawing.Size(149, 28);
+            this.radio_BlackMode.TabIndex = 50;
+            this.radio_BlackMode.TabStop = true;
+            this.radio_BlackMode.Text = "BlackMode";
+            this.radio_BlackMode.UseVisualStyleBackColor = true;
+            // 
+            // radio_WhiteMode
+            // 
+            this.radio_WhiteMode.AutoSize = true;
+            this.radio_WhiteMode.Location = new System.Drawing.Point(364, 215);
+            this.radio_WhiteMode.Name = "radio_WhiteMode";
+            this.radio_WhiteMode.Size = new System.Drawing.Size(149, 28);
+            this.radio_WhiteMode.TabIndex = 49;
+            this.radio_WhiteMode.TabStop = true;
+            this.radio_WhiteMode.Text = "WhiteMode";
+            this.radio_WhiteMode.UseVisualStyleBackColor = true;
+            // 
+            // radio_all
+            // 
+            this.radio_all.AutoSize = true;
+            this.radio_all.Location = new System.Drawing.Point(206, 215);
+            this.radio_all.Name = "radio_all";
+            this.radio_all.Size = new System.Drawing.Size(137, 28);
+            this.radio_all.TabIndex = 48;
+            this.radio_all.TabStop = true;
+            this.radio_all.Text = "NoFilter";
+            this.radio_all.UseVisualStyleBackColor = true;
+            // 
+            // labelX12
+            // 
+            // 
+            // 
+            // 
+            this.labelX12.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX12.Location = new System.Drawing.Point(16, 203);
+            this.labelX12.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
+            this.labelX12.Name = "labelX12";
+            this.labelX12.Size = new System.Drawing.Size(286, 46);
+            this.labelX12.TabIndex = 47;
+            this.labelX12.Text = "FilterMode:";
             // 
             // btn_getSpecificLocatorMode
             // 
@@ -1013,6 +1059,7 @@
             this.dgv_locatorList.TabIndex = 0;
             this.dgv_locatorList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_locatorList_CellClick);
             this.dgv_locatorList.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_locatorList_CellMouseClick);
+            this.dgv_locatorList.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_locatorList_ColumnHeaderMouseClick);
             this.dgv_locatorList.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.dgv_locatorList_SortCompare);
             // 
             // webView_map
@@ -1062,52 +1109,6 @@
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(143, 38);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.MouseUp += new System.Windows.Forms.MouseEventHandler(this.copyToolStripMenuItem_MouseUp);
-            // 
-            // labelX12
-            // 
-            // 
-            // 
-            // 
-            this.labelX12.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX12.Location = new System.Drawing.Point(16, 203);
-            this.labelX12.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
-            this.labelX12.Name = "labelX12";
-            this.labelX12.Size = new System.Drawing.Size(286, 46);
-            this.labelX12.TabIndex = 47;
-            this.labelX12.Text = "FilterMode:";
-            // 
-            // radio_all
-            // 
-            this.radio_all.AutoSize = true;
-            this.radio_all.Location = new System.Drawing.Point(206, 215);
-            this.radio_all.Name = "radio_all";
-            this.radio_all.Size = new System.Drawing.Size(137, 28);
-            this.radio_all.TabIndex = 48;
-            this.radio_all.TabStop = true;
-            this.radio_all.Text = "NoFilter";
-            this.radio_all.UseVisualStyleBackColor = true;
-            // 
-            // radio_WhiteMode
-            // 
-            this.radio_WhiteMode.AutoSize = true;
-            this.radio_WhiteMode.Location = new System.Drawing.Point(364, 215);
-            this.radio_WhiteMode.Name = "radio_WhiteMode";
-            this.radio_WhiteMode.Size = new System.Drawing.Size(149, 28);
-            this.radio_WhiteMode.TabIndex = 49;
-            this.radio_WhiteMode.TabStop = true;
-            this.radio_WhiteMode.Text = "WhiteMode";
-            this.radio_WhiteMode.UseVisualStyleBackColor = true;
-            // 
-            // radio_BlackMode
-            // 
-            this.radio_BlackMode.AutoSize = true;
-            this.radio_BlackMode.Location = new System.Drawing.Point(530, 217);
-            this.radio_BlackMode.Name = "radio_BlackMode";
-            this.radio_BlackMode.Size = new System.Drawing.Size(149, 28);
-            this.radio_BlackMode.TabIndex = 50;
-            this.radio_BlackMode.TabStop = true;
-            this.radio_BlackMode.Text = "BlackMode";
-            this.radio_BlackMode.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
