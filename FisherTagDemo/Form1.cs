@@ -1132,6 +1132,7 @@ namespace FisherTagDemo
             {
                 ShowMessage($"获取定位器当前位置失败，返回数据为null");
                 BaseFrmControl.ShowErrorMessageBox(this, $"获取定位器当前位置失败，返回数据为null");
+                _isShowPositionIng = false;
                 return;
             }
             AnalysisDevCurrentInfo(devInfos);
