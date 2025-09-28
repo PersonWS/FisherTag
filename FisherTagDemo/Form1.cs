@@ -81,7 +81,7 @@ namespace FisherTagDemo
         /// </summary>
         List<string> _gps_LocatorFilter;
 
-
+        bool _isOnlyShowGps = false;
         public Form1()
         {
             InitializeComponent();
@@ -117,7 +117,6 @@ namespace FisherTagDemo
             _dt_locator.Columns.Add("Updtime");
             _dt_locator.Columns.Add("Gpstime");
             _dt_locator.PrimaryKey = new DataColumn[] { _dt_locator.Columns["seq"], _dt_locator.Columns["Macid"] };
-
             _dt_rfid.Columns.Add("seq");
             _dt_rfid.Columns.Add("ShipName_船牌号");
             _dt_rfid.Columns.Add("TagSerialNum");
@@ -504,6 +503,8 @@ namespace FisherTagDemo
                 dgv_locatorList.DataSource = _dt_locator;
                 dgv_locatorList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 dgv_locatorList.RowHeadersWidth = 20;
+                dgv_locatorList.Columns["Objectid"].Visible = false;
+                dgv_locatorList.Columns["Server_time"].Visible = false;
                 CheckControlNames(this, "locator", true);
             }
             //启动定时器定时查询报警信息
@@ -666,6 +667,8 @@ namespace FisherTagDemo
                         _log.Warn($"pointsData:{points[i]}数据异常");
                         continue;
                     }
+                    else if (_isOnlyShowGps&& !pointsData[5].Contains("GPS"))
+                    { continue; }
                     Int64 utcTime = 0;
                     Int64.TryParse(pointsData[2].ToString(), out utcTime);
                     LocatoreHistoryLocation his = new LocatoreHistoryLocation(pointsData[0], pointsData[1], utcTime);
@@ -1666,6 +1669,11 @@ namespace FisherTagDemo
                 item.Cells["seq"].Value = (++i).ToString("000");
             }
 
+        }
+
+        private void chk_onlyGps_CheckedChanged(object sender, EventArgs e)
+        {
+            _isOnlyShowGps = chk_onlyGps.Checked;
         }
     }
 }
