@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>百度地图示例 - 带测距功能</title>
+    <title>百度地图示例 - 带测距和轨迹绘制功能</title>
     <link rel="icon" href="data:,"> <!-- 禁用 favicon.ico 请求 -->
     <style>
         html, body, #mapContainer {
@@ -110,6 +110,116 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        
+        /* 测距点序号标签样式 */
+        .measure-label {
+            color: white;
+            background: transparent;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* 经纬度输入区域样式 */
+        #coordinateInputContainer {
+            position: absolute;
+            top: 120px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 320px;
+            display: none; /* 默认隐藏 */
+        }
+        #coordinateInput {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+            resize: vertical;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .coordinate-example {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+        .coordinate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .coordinate-title {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-button:hover {
+            color: #333;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+        }
+        .coordinate-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .coordinate-buttons button {
+            flex: 1;
+        }
+        
+        /* 绘制轨迹按钮样式 */
+        #drawTrajectoryButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        #drawTrajectoryButton:hover {
+            background-color: #45a049;
+        }
+        
+        /* 清除轨迹按钮样式 */
+        #clearTrajectoryButton {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+        #clearTrajectoryButton:hover {
+            background-color: #d32f2f;
+        }
+        
+        /* 经纬度控制按钮样式 */
+        #coordinateControlButton {
+            background-color: #FF9800;
+            color: white;
+            border: none;
+        }
+        #coordinateControlButton:hover {
+            background-color: #F57C00;
+        }
     </style>
     <script type="text/javascript">
         var map, geocoder;
@@ -123,6 +233,10 @@
         var measureLine = null; // 测距线
         var measureMarkers = []; // 测距标记点
         var measureResultDiv = null; // 测距结果展示区域
+
+        // 轨迹绘制相关变量
+        var coordinatePolyline = null; // 存储绘制的轨迹线
+        var coordinateMarkers = []; // 存储轨迹点标记
 
         // 加载百度地图脚本
         function loadBaiduMapScript() {
@@ -167,6 +281,12 @@
                     addMeasurePoint(e.point);
                 }
             });
+            
+            // 绑定经纬度控制按钮事件
+            document.getElementById("coordinateControlButton").addEventListener("click", toggleCoordinateDialog);
+            
+            // 绑定关闭按钮事件
+            document.getElementById("closeCoordinateDialog").addEventListener("click", closeCoordinateDialog);
         }
 
         // 初始化测距功能
@@ -530,9 +650,12 @@ function drawTrajectory(data, drawPolyline = true) {
             // 添加测距点
             measurePoints.push(point);
             
-            // 创建测距点标记
+            // 创建测距点标记 - 使用标准百度地图图标
             var marker = new BMap.Marker(point, {
-                icon: new BMap.Icon('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="%233388FF" stroke="white" stroke-width="2"/></svg>', new BMap.Size(20, 20))
+                icon: new BMap.Icon('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI4IiBmaWxsPSIjMzM4OEZGIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiLz48L3N2Zz4=', 
+                new BMap.Size(20, 20), {
+                    anchor: new BMap.Size(10, 10)
+                })
             });
             map.addOverlay(marker);
             measureMarkers.push(marker);
@@ -547,7 +670,8 @@ function drawTrajectory(data, drawPolyline = true) {
                 backgroundColor: "transparent",
                 border: "none",
                 fontSize: "12px",
-                fontWeight: "bold"
+                fontWeight: "bold",
+                textAlign: "center"
             });
             map.addOverlay(label);
             measureMarkers.push(label);
@@ -616,6 +740,135 @@ function drawTrajectory(data, drawPolyline = true) {
                 measureResultDiv.style.display = "none";
             }
         }
+        
+        // 经纬度轨迹绘制功能
+        function drawCoordinateLine() {
+            var coordinateInput = document.getElementById("coordinateInput").value;
+            if (!coordinateInput.trim()) {
+                alert("请输入经纬度坐标！");
+                return;
+            }
+            
+            try {
+                // 解析输入的经纬度数据
+                var points = parseCoordinateInput(coordinateInput);
+                
+                if (points.length < 2) {
+                    alert("至少需要两个点才能绘制轨迹线！");
+                    return;
+                }
+                
+                // 清除之前的轨迹线和标记
+                clearCoordinateLine();
+                
+                // 创建新的轨迹线
+                coordinatePolyline = new BMap.Polyline(points, {
+                    strokeColor: "#FF3300", // 使用红色区分
+                    strokeWeight: 4,
+                    strokeOpacity: 0.8,
+                    strokeStyle: "dashed" // 虚线样式
+                });
+                
+                // 添加轨迹线到地图
+                map.addOverlay(coordinatePolyline);
+                
+                // 添加标记点
+                for (var i = 0; i < points.length; i++) {
+                    var marker = new BMap.Marker(points[i]);
+                    map.addOverlay(marker);
+                    coordinateMarkers.push(marker);
+                    
+                    // 添加序号标签
+                    var label = new BMap.Label((i+1).toString(), {
+                        position: points[i],
+                        offset: new BMap.Size(10, -10)
+                    });
+                    label.setStyle({
+                        color: "#FF3300",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        fontSize: "14px",
+                        fontWeight: "bold"
+                    });
+                    map.addOverlay(label);
+                    coordinateMarkers.push(label);
+                }
+                
+                // 调整地图视野以显示所有点
+                map.setViewport(points);
+                
+                alert("成功绘制轨迹线，共 " + points.length + " 个点！");
+                
+            } catch (error) {
+                alert("经纬度格式错误，请检查输入！\n正确格式示例：116.404,39.915");
+                console.error("坐标解析错误:", error);
+            }
+        }
+        
+        // 解析经纬度输入
+        function parseCoordinateInput(input) {
+            var points = [];
+            var lines = input.split('\n');
+            
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].trim();
+                if (!line) continue;
+                
+                // 支持多种分隔符：逗号、空格、制表符
+                var parts = line.split(/[,，\s\t]+/);
+                if (parts.length < 2) {
+                    throw new Error("每行必须包含经度和纬度");
+                }
+                
+                var lng = parseFloat(parts[0]);
+                var lat = parseFloat(parts[1]);
+                
+                if (isNaN(lng) || isNaN(lat)) {
+                    throw new Error("经纬度必须是数字");
+                }
+                
+                // 验证经纬度范围
+                if (lng < -180 || lng > 180 || lat < -90 || lat > 90) {
+                    throw new Error("经纬度范围无效：经度[-180,180]，纬度[-90,90]");
+                }
+                
+                points.push(new BMap.Point(lng, lat));
+            }
+            
+            return points;
+        }
+        
+        // 清除轨迹线
+        function clearCoordinateLine() {
+            if (coordinatePolyline) {
+                map.removeOverlay(coordinatePolyline);
+                coordinatePolyline = null;
+            }
+            
+            // 清除所有轨迹标记和标签
+            for (var i = 0; i < coordinateMarkers.length; i++) {
+                map.removeOverlay(coordinateMarkers[i]);
+            }
+            coordinateMarkers = [];
+            
+            // 重新添加导航控件
+            addNavigationControl();
+        }
+        
+        // 切换经纬度对话框显示/隐藏
+        function toggleCoordinateDialog() {
+            var dialog = document.getElementById("coordinateInputContainer");
+            if (dialog.style.display === "block") {
+                dialog.style.display = "none";
+            } else {
+                dialog.style.display = "block";
+            }
+        }
+        
+        // 关闭经纬度对话框
+        function closeCoordinateDialog() {
+            document.getElementById("coordinateInputContainer").style.display = "none";
+        }
 
         // 异步加载百度地图脚本
         loadBaiduMapScript();
@@ -632,8 +885,21 @@ function drawTrajectory(data, drawPolyline = true) {
     </div>
     <div id="measureControls">
         <button id="measureButton" onclick="toggleMeasure()">距离测量</button>
+        <button id="coordinateControlButton">绘制轨迹</button>
     </div>
     <div id="measureResult"></div>
+    <div id="coordinateInputContainer">
+        <div class="coordinate-header">
+            <div class="coordinate-title">经纬度轨迹绘制</div>
+            <button id="closeCoordinateDialog" class="close-button">×</button>
+        </div>
+        <textarea id="coordinateInput" placeholder="请输入经纬度坐标，每行一个点，格式：经度,纬度&#10;例如：&#10;116.404,39.915&#10;116.414,39.925&#10;116.424,39.935"></textarea>
+        <div class="coordinate-example">支持格式：116.404,39.915 或 116.404 39.915</div>
+        <div class="coordinate-buttons">
+            <button id="drawTrajectoryButton" onclick="drawCoordinateLine()">绘制轨迹</button>
+            <button id="clearTrajectoryButton" onclick="clearCoordinateLine()">清除轨迹</button>
+        </div>
+    </div>
     <button id="resetButton">重置轨迹</button>
 </body>
 </html>
